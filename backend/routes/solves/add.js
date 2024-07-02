@@ -27,7 +27,7 @@ router.post("/:solverId", verifyToken, isAdmin, async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(competitionId)) {
       return res.status(400).json({ message: "ID natjecanja nije ispravan." });
     }
-
+    console.log(competitionId);
     const competition = await Competition.findById(competitionId);
     if (!competition) {
       return res

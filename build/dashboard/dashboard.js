@@ -58,7 +58,31 @@ async function getCompetitionNameById(id) {
     return null;
   }
 }
-async function createCompetitionHtml(competition) {
+function addAddSolveListenerToInputs() {
+  const solveInputs = document.querySelectorAll(".solve-input");
+  console.log(solveInputs);
+  solveInputs.forEach((input, userIndex) => {
+    input.addEventListener("keydown", (e) => {
+      const elementValues = input.id.slice("solve-input-".length).split("-");
+      console.log(elementValues);
+      const competitionId = elementValues[0];
+      const event = elementValues[1];
+      const round = parseInt(elementValues[2]);
+      const userId = input.dataset.userid;
+      if (e.key === "Enter") {
+        addSolve(
+          userId,
+          round - 1,
+          userIndex,
+          [+input.value],
+          event,
+          competitionId
+        );
+      }
+    });
+  });
+}
+async function createCompetitionHtml(competition, user) {
   const competitionName = await getCompetitionNameById(competition.id);
   let html = "";
   html += `<div class="competition">`;
@@ -87,6 +111,10 @@ async function createCompetitionHtml(competition) {
         const time = solve === 0 ? "DNF/DNS" : formatTime(solve);
         html += `<li class="solve-li solve-li-${solveNumber}">${solveNumber}: ${time}</li>`;
       });
+      const showAddSolveInput = solves.length < 5;
+      html += showAddSolveInput
+        ? `<input inputmode="numeric" pattern="[0-9 ]*" placeholder="npr. 15467" type="text" class="solve-input" id="solve-input-${competition.competitionId}-${eventName}-${roundNumber}" data-userid="${user._id}"/>`
+        : "";
       html += `</ul>`; // close .solves
       html += `</div>`; // close .round
     });
@@ -124,11 +152,12 @@ window.showCompetition = async function (userId, index) {
     }
     userDiv.querySelector(".comp").innerHTML = "";
     user.competitions.forEach(async (competition, index) => {
-      const competitionHtml = await createCompetitionHtml(competition);
+      const competitionHtml = await createCompetitionHtml(competition, user);
 
       userDiv
         .querySelector(".comp")
         .insertAdjacentHTML("beforeend", competitionHtml);
+      addAddSolveListenerToInputs();
     });
     return;
     for (let i = 0; i < 3; i++) {
@@ -185,7 +214,7 @@ window.showCompetition = async function (userId, index) {
   }
 }; // Make showCompetition() global by using window.showCompetition = ...
 
-window.addSolve = async function (
+async function addSolve(
   userId,
   roundIndex,
   userIndex,
@@ -228,9 +257,7 @@ window.addSolve = async function (
 
   alert("Greška prilikom dodavanja slaganja. Pokušaj ponovno.");
   return response.status;
-};
-console.log(addSolve("6681a0d0effeb153aadd2a8d", 1, 0, [3, 6.8, 5], "4x4"));
-
+}
 window.getUsers = async function () {
   const body = {
     method: "GET",

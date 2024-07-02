@@ -1,4 +1,4 @@
-const User = require("../Models/User");
+const User = require("../Models/user");
 /**
  * Function to update solver's solves in a given competition and round
  * @param {mongoose.Model} solver - Mongoose model for the user schema
@@ -6,7 +6,13 @@ const User = require("../Models/User");
  * @param {Number} round - The round number to add solves to
  * @param {mongoose.Model} competition - Mongoose model for the competition schema
  */
-async function updateSolves(solver, events, round, competition) {
+async function updateSolves(
+  solver,
+  events,
+  round,
+  competition,
+  replace = false
+) {
   try {
     // Find the user who is the solver
     const user = await User.findById(solver._id);
@@ -35,8 +41,12 @@ async function updateSolves(solver, events, round, competition) {
       );
     }
     // Add the new solves to the specified round
-    userEvent.rounds[round - 1] = events.rounds;
-
+    replace
+      ? (userEvent.rounds[round - 1] = events.rounds)
+      : userEvent.rounds[round - 1].push(...events.rounds);
+    if (userEvent.rounds[round - 1].length > 5) {
+      userEvent.rounds[round - 1] = userEvent.rounds[round - 1].slice(0, 5);
+    }
     // Save the updated user data
     await user.save();
     console.log("Solves updated successfully");
