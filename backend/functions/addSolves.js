@@ -40,10 +40,16 @@ async function updateSolves(
         (event) => event.event === events.event
       );
     }
+    // If you add solves to round 2 and there are no solves in round 1, round 1 is null and it needs to be replaced
+    if (!userEvent.rounds[round - 1]) {
+      replace = true;
+    }
     // Add the new solves to the specified round
-    replace
-      ? (userEvent.rounds[round - 1] = events.rounds)
-      : userEvent.rounds[round - 1].push(...events.rounds);
+    if (replace) {
+      userEvent.rounds[round - 1] = events.rounds;
+    } else {
+      userEvent.rounds[round - 1].push(...events.rounds);
+    }
     if (userEvent.rounds[round - 1].length > 5) {
       userEvent.rounds[round - 1] = userEvent.rounds[round - 1].slice(0, 5);
     }

@@ -45,14 +45,14 @@ async function announceWinner(winnerId) {
 
   return response.json();
 }
-async function getCompetitionNameById(id) {
+async function getCompetitionById(id) {
   try {
     const allCompetitionsResponse = await fetch(`${url}/competitions/get`);
     const allCompetitions = await allCompetitionsResponse.json();
     const competition = allCompetitions.find(
       (competition) => competition.id === id
     );
-    return competition.name;
+    return competition;
   } catch (error) {
     console.error("Error fetching competition data:", error);
     return null;
@@ -60,11 +60,9 @@ async function getCompetitionNameById(id) {
 }
 function addAddSolveListenerToInputs() {
   const solveInputs = document.querySelectorAll(".solve-input");
-  console.log(solveInputs);
   solveInputs.forEach((input, userIndex) => {
     input.addEventListener("keydown", (e) => {
       const elementValues = input.id.slice("solve-input-".length).split("-");
-      console.log(elementValues);
       const competitionId = elementValues[0];
       const event = elementValues[1];
       const round = parseInt(elementValues[2]);
@@ -83,10 +81,14 @@ function addAddSolveListenerToInputs() {
   });
 }
 async function createCompetitionHtml(competition, user) {
-  const competitionName = await getCompetitionNameById(competition.id);
+  const competitionInfo = await getCompetitionById(competition.id);
+  console.log(competitionInfo);
+  console.log(competition);
+  const competitionName = competitionInfo.name;
   let html = "";
   html += `<div class="competition">`;
   html += `<h2>${competitionName ? competitionName : "Greška u nazivu"}</h2>`;
+
   competition.events.forEach((event, index) => {
     // solves is an object which follows this structure:
     /*
