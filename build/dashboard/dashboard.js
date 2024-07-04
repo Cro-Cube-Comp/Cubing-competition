@@ -72,7 +72,7 @@ function addAddSolveListenerToInputs() {
           userId,
           round - 1,
           userIndex,
-          [+input.value],
+          [formatInputToSeconds(input.value)],
           event,
           competitionId
         );
