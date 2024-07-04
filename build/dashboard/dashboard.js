@@ -80,6 +80,17 @@ function addAddSolveListenerToInputs() {
     });
   });
 }
+async function createCompetitionsHtml(user) {
+  let compHtml = "";
+  if (!user.competitions) return compHtml;
+
+  for (const competition of user.competitions) {
+    const competitionHtml = await createCompetitionHtml(competition, user);
+    compHtml += competitionHtml;
+  }
+
+  return compHtml;
+}
 async function createCompetitionHtml(competition, user) {
   const competitionInfo = await getCompetitionById(competition.id);
   console.log(competitionInfo);
@@ -147,14 +158,9 @@ window.showCompetition = async function (userId, index) {
       ).innerHTML = `<p>Korisnik nema unesenih slaganja.</p>`;
       return;
     }
-    user.competitions.forEach(async (competition, index) => {
-      const competitionHtml = await createCompetitionHtml(competition, user);
-
-      userDiv
-        .querySelector(".comp")
-        .insertAdjacentHTML("beforeend", competitionHtml);
-      addAddSolveListenerToInputs();
-    });
+    const compHtml = await createCompetitionsHtml(user);
+    userDiv.querySelector(".comp").innerHTML = compHtml;
+    addAddSolveListenerToInputs();
     return;
     for (let i = 0; i < 3; i++) {
       const round = user.rounds[i] || [];
