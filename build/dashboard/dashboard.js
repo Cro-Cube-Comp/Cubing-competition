@@ -60,23 +60,35 @@ async function getCompetitionById(id) {
 }
 function addAddSolveListenerToInputs() {
   const solveInputs = document.querySelectorAll(".solve-input");
-  solveInputs.forEach((input, userIndex) => {
+  solveInputs.forEach((input) => {
+    const elementValues = input.id.slice("solve-input-".length).split("-");
+    const userId = elementValues[0];
+    const competitionId = elementValues[1];
+    const event = elementValues[2];
+    const round = parseInt(elementValues[3]);
     input.addEventListener("keydown", (e) => {
-      const elementValues = input.id.slice("solve-input-".length).split("-");
-      const competitionId = elementValues[0];
-      const event = elementValues[1];
-      const round = parseInt(elementValues[2]);
-      const userId = input.dataset.userid;
       if (e.key === "Enter") {
         addSolve(
           userId,
           round - 1,
-          userIndex,
           [formatInputToSeconds(input.value)],
           event,
           competitionId
         );
       }
+    });
+    const button = document.getElementById(
+      `solve-add-btn-${userId}-${event}-${round}`
+    );
+    button.addEventListener("click", () => {
+      addSolve(
+        userId,
+        round - 1,
+        userIndex,
+        [formatInputToSeconds(input.value)],
+        event,
+        competitionId
+      );
     });
   });
 }
@@ -92,9 +104,8 @@ async function createCompetitionsHtml(user) {
   return compHtml;
 }
 async function createCompetitionHtml(competition, user) {
+  const userId = user._id;
   const competitionInfo = await getCompetitionById(competition.id);
-  console.log(competitionInfo);
-  console.log(competition);
   const competitionName = competitionInfo.name;
   let html = "";
   html += `<div class="competition">`;
@@ -120,11 +131,14 @@ async function createCompetitionHtml(competition, user) {
         .map((solve, j) => {
           const solveNumber = j + 1;
           const time = solve === 0 ? "DNF/DNS" : formatTime(solve);
-          return `<li class="solve-li solve-li-${solveNumber}">${time}</li>`;
+          return `<li class="solve-li solve-li-${solveNumber}">${time}</li> <button type="button" onclick="deleteSolve('${userId}', ${j}, ${i}, '${eventName}', '${competitionInfo._id}')">Izbriši</button>`;
         })
         .join("");
       html += `</ol>`;
-      html += `<input inputmode="numeric" pattern="[0-9 ]*" placeholder="Dodaj slaganje" type="text" class="solve-input" id="solve-input-${competition.competitionId}-${eventName}-${roundNumber}" data-userid="${user._id}"/>`;
+      if (solves.length < 5) {
+        html += `<input inputmode="numeric" pattern="[0-9 ]*" placeholder="Dodaj slaganje" type="text" class="solve-input" id="solve-input-${userId}-${competition.competitionId}-${eventName}-${roundNumber}" data-userid=""/>
+      <button class="solve-add-btn" id="solve-add-btn-${userId}-${eventName}-${roundNumber}">Dodaj</button>`;
+      }
       html += `</div>`; // close .round
     }
     html += `</div>`; // close .event
@@ -134,8 +148,7 @@ async function createCompetitionHtml(competition, user) {
 }
 window.showCompetition = async function (userId, index) {
   enableAllSolveButtons();
-  const allUserDiv = document.querySelectorAll(".user");
-  const userDiv = allUserDiv[index];
+  const userDiv = document.getElementById(`user-${userId}`);
   const showCompBtn = userDiv.querySelector(".showComp-btn");
   const prevHTML = showCompBtn.innerHTML;
   showCompBtn.disabled = true;
@@ -216,14 +229,7 @@ window.showCompetition = async function (userId, index) {
   }
 }; // Make showCompetition() global by using window.showCompetition = ...
 
-async function addSolve(
-  userId,
-  roundIndex,
-  userIndex,
-  solves,
-  event = "3x3",
-  competitionId = "6681a3717073260f1dbd0a25"
-) {
+async function addSolve(userId, roundIndex, solves, event, competitionId) {
   const roundNumber = roundIndex + 1;
   const solveData = {
     round: roundNumber,
@@ -247,7 +253,7 @@ async function addSolve(
 
   // Ažurira prikaz natjecanja nakon uspješnog dodavanja
   if (response.ok) {
-    showCompetition(userId, userIndex);
+    await showCompetition(userId);
     return response.status;
   }
 
@@ -326,7 +332,7 @@ window.displayUsers = function (users) {
     const id = user.id;
     const role = user.role;
     const group = user.group;
-    html += `<div class="user">`;
+    html += `<div class="user" id="user-${id}">`;
     html += `<div class="username-div">`;
     html += `<p class="username">${username}</p>`;
     html += `<img class="manage-accounts" src="../Images/manage_accounts.svg"/>`;
@@ -345,7 +351,13 @@ window.displayUsers = function (users) {
   usersDiv.innerHTML = html;
 };
 
-window.deleteSolve = async function (userId, roundIndex, solveIndex, index) {
+window.deleteSolve = async function (
+  userId,
+  solveIndex,
+  roundIndex,
+  eventName,
+  compId
+) {
   const roundNumber = roundIndex + 1;
   const solveNumber = solveIndex + 1;
   // Call the backend to delete the solve
@@ -355,12 +367,16 @@ window.deleteSolve = async function (userId, roundIndex, solveIndex, index) {
     headers: addToken({
       "Content-Type": "application/json",
     }),
-    body: JSON.stringify({ round: roundNumber, solve: solveNumber }),
+    body: JSON.stringify({
+      round: roundNumber,
+      solve: solveNumber,
+      event: eventName,
+      competitionId: compId,
+    }),
   });
 
   if (response.ok) {
-    // Remove the solve from the DOM or refresh the list of solves
-    showCompetition(userId, index);
+    showCompetition(userId);
     return;
   }
   // Handle errors
