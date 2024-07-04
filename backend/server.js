@@ -5,6 +5,9 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const compression = require("compression");
 const generalLimiter = require("./rateLimiter/general");
+const isRateLimitingEnabled =
+  require("./functions/options").isRateLimitingEnabled;
+const isCorsEnabled = require("./functions/options").isCorsEnabled;
 console.log(`Running ${__filename}`);
 // Load the environment variables from the .env file
 dotenv.config();
@@ -31,9 +34,21 @@ const corsOptions = {
   },
   optionsSuccessStatus: 200, // For legacy browser support
 };
-app.set("trust proxy", 1);
-app.use(cors(corsOptions));
-app.use(generalLimiter);
+if (isRateLimitingEnabled) {
+  app.set("trust proxy", 1);
+  app.use(generalLimiter);
+} else {
+  console.warn(
+    "Rate limiting is disabled. It's recommended to enable it. Use only for development purposes."
+  );
+}
+if (isCorsEnabled) {
+  app.use(cors(corsOptions));
+} else {
+  console.warn(
+    "CORS is disabled. It's recommended to enable it. Use only for development purposes."
+  );
+}
 const compressionOptions = {
   level: 8,
   threshold: 100 * 1024, // Ignore smaller than 100KB
