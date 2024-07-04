@@ -88,39 +88,34 @@ async function createCompetitionHtml(competition, user) {
   let html = "";
   html += `<div class="competition">`;
   html += `<h2>${competitionName ? competitionName : "Greška u nazivu"}</h2>`;
+  competitionInfo.events.forEach((event, index) => {
+    const eventName = event.name; // 3x3,4x4,3x3oh...
+    const userEvent = competition.events.find(
+      (event) => event.event === eventName
+    ) || {
+      rounds: [],
+      event: eventName,
+    };
 
-  competition.events.forEach((event, index) => {
-    // solves is an object which follows this structure:
-    /*
-  {
-    _id: "6681a0d0effeb1adfadfd",
-    event: "3x3",
-    solves: [3, 1, 5],
-  },
-    */
-    const eventName = event.event;
     html += `<div class="event ">
-                <h3>${eventName}</h3>`;
-
-    event.rounds.forEach((solves, j) => {
-      const roundNumber = j + 1;
-      html += `<div class="round">`;
+              <h3>${eventName}</h3>`;
+    for (let i = 0; i < event.rounds; i++) {
+      const roundNumber = i + 1;
+      const solves = userEvent.rounds[i] || [];
+      html += `<div class="round round-${i + 1}">`;
       html += `<h4>Runda ${roundNumber}</h4>`;
-      html += `<ul class="solves">`;
-      solves = solves ? solves : [];
-      solves.forEach((solve, solveIndex) => {
-        const solveNumber = solveIndex + 1;
-        const time = solve === 0 ? "DNF/DNS" : formatTime(solve);
-        html += `<li class="solve-li solve-li-${solveNumber}">${solveNumber}: ${time}</li>`;
-      });
-      const showAddSolveInput = solves.length < 5;
-      html += showAddSolveInput
-        ? `<input inputmode="numeric" pattern="[0-9 ]*" placeholder="npr. 15467" type="text" class="solve-input" id="solve-input-${competition.competitionId}-${eventName}-${roundNumber}" data-userid="${user._id}"/>`
-        : "";
-      html += `</ul>`; // close .solves
+      html += `<ol class="solves-list">`;
+      html += solves
+        .map((solve, j) => {
+          const solveNumber = j + 1;
+          const time = solve === 0 ? "DNF/DNS" : formatTime(solve);
+          return `<li class="solve-li solve-li-${solveNumber}">${time}</li>`;
+        })
+        .join("");
+      html += `</ol>`;
+      html += `<input inputmode="numeric" pattern="[0-9 ]*" placeholder="Dodaj slaganje" type="text" class="solve-input" id="solve-input-${competition.competitionId}-${eventName}-${roundNumber}" data-userid="${user._id}"/>`;
       html += `</div>`; // close .round
-    });
-
+    }
     html += `</div>`; // close .event
   });
   html += `</div>`; // close .competition
@@ -152,7 +147,6 @@ window.showCompetition = async function (userId, index) {
       ).innerHTML = `<p>Korisnik nema unesenih slaganja.</p>`;
       return;
     }
-    userDiv.querySelector(".comp").innerHTML = "";
     user.competitions.forEach(async (competition, index) => {
       const competitionHtml = await createCompetitionHtml(competition, user);
 
