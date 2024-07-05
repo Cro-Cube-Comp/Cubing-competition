@@ -45,10 +45,21 @@ async function announceWinner(winnerId) {
 
   return response.json();
 }
-async function getCompetitionById(id) {
+async function getCompetitions(returnAsJson = false) {
   try {
     const allCompetitionsResponse = await fetch(`${url}/competitions/get`);
-    const allCompetitions = await allCompetitionsResponse.json();
+    if (returnAsJson) {
+      return await allCompetitionsResponse.json();
+    }
+    return allCompetitionsResponse;
+  } catch (error) {
+    console.error("Error fetching all competitions:\n", error);
+    throw new Error("Error fetching all competitions.");
+  }
+}
+async function getCompetitionById(id) {
+  try {
+    const allCompetitions = await getCompetitions(true);
     const competition = allCompetitions.find(
       (competition) => competition.id === id
     );
