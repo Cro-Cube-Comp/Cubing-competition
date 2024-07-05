@@ -3,9 +3,9 @@ const Competition = require("../Models/competitions");
 async function getCompetitionById(id, fields = null) {
   try {
     if (fields) {
-      return await Competition.findOne({ _id: id }).select(fields);
+      return await Competition.findOne({ _id: { $eq: id } }).select(fields);
     } else {
-      return await Competition.findOne({ _id: id });
+      return await Competition.findOne({ _id: { $eq: id } });
     }
   } catch (error) {
     console.error(error);
