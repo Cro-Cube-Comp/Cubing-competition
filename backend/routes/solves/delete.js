@@ -106,11 +106,7 @@ async function deleteSolve(
     }
 
     const solveIndex = solveNumber - 1;
-    if (roundToDelete[solveIndex]) {
-      roundToDelete.splice(solveIndex, 1);
-      //roundToDelete[solveIndex] = null;
-      //roundToDelete = roundToDelete.filter((solve) => solve !== 0 && !solve);
-    }
+    roundToDelete.splice(solveIndex, 1);
     await user.save();
     return {
       status: 200,
