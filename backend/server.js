@@ -2,12 +2,17 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+
 const cors = require("cors");
+const corsOptions = require("./config/corsOptions");
+const isCorsEnabled = require("./functions/options").isCorsEnabled;
+
 const compression = require("compression");
+
 const generalLimiter = require("./rateLimiter/general");
 const isRateLimitingEnabled =
   require("./functions/options").isRateLimitingEnabled;
-const isCorsEnabled = require("./functions/options").isCorsEnabled;
+
 console.log(`Running ${__filename}`);
 // Load the environment variables from the .env file
 dotenv.config();
@@ -16,24 +21,6 @@ dotenv.config();
 const app = express();
 // Use JSON middleware to parse the request body
 app.use(express.json());
-// Define the list of allowed origins
-const allowedOrigins = [
-  "http://localhost:2500",
-  "http://127.0.0.1:2500",
-  "https://cro-cube-comp.github.io",
-];
-
-// CORS middleware function to check the origin against the allowed list
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  optionsSuccessStatus: 200, // For legacy browser support
-};
 if (isRateLimitingEnabled) {
   app.set("trust proxy", 1);
   app.use(generalLimiter);
