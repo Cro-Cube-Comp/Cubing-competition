@@ -1,4 +1,6 @@
 const express = require("express");
+const mongoose = require("mongoose");
+const allowedEvents = require("../../config/allowedEvents");
 const verifyToken = require("../../middleware/verifyToken");
 const { getUserById } = require("../../functions/getUserById");
 const { getCompetitionById } = require("../../functions/getCompetitionById");
@@ -11,19 +13,7 @@ router.delete("/:userId", verifyToken, isAdmin, async (req, res) => {
     const eventToDelete = req.body.event;
     const roundToDelete = req.body.round;
     const solveToDelete = req.body.solve;
-    if (typeof roundToDelete !== "number") {
-      res.status(400).json({ message: "Runda za brisanje treba biti broj." });
-    }
-    if (typeof solveToDelete !== "number") {
-      res
-        .status(400)
-        .json({ message: "Slaganje za brisanje treba biti broj." });
-    }
-    if (typeof eventToDelete !== "string") {
-      res.status(400).json({
-        message: `Event natjecanja treba biti tekst. Naveli ste: ${eventToDelete}`,
-      });
-    }
+    checkTypes(solveToDelete, roundToDelete, eventToDelete, compToDelete, res);
     const competition = await getCompetitionById(compToDelete);
     if (!competition) {
       return res.status(400).json({
@@ -119,6 +109,30 @@ async function deleteSolve(
       status: 500,
       message: `Neuspjelo brisanje. Greška u serveru.`,
     };
+  }
+}
+function checkTypes(
+  solveToDelete,
+  roundToDelete,
+  eventToDelete,
+  compToDelete,
+  res
+) {
+  if (typeof roundToDelete !== "number") {
+    res.status(400).json({ message: "Runda za brisanje treba biti broj." });
+  }
+  if (typeof solveToDelete !== "number") {
+    res.status(400).json({ message: "Slaganje za brisanje treba biti broj." });
+  }
+  if (allowedEvents.indexOf(eventToDelete) === -1) {
+    res.status(400).json({
+      message: `Event natjecanja treba biti tekst. Naveli ste: ${eventToDelete}`,
+    });
+  }
+  if (!mongoose.Types.ObjectId.isValid(compToDelete)) {
+    return res.status(400).json({
+      message: `ID nije valjan. Naveli ste: ${compToDelete}.`,
+    });
   }
 }
 module.exports = router;

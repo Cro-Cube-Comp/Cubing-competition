@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const allowedEvents = ["3x3", "3x3oh", "4x4", "2x2"];
+const allowedEvents = require("../config/allowedEvents");
 const eventSchema = new mongoose.Schema({
   name: { type: String, required: true, enum: allowedEvents },
   rounds: { type: Number, required: true },
