@@ -45,10 +45,10 @@ async function announceWinner(winnerId) {
 
   return response.json();
 }
-async function getCompetitions(returnAsJson = false) {
+async function getCompetitions(parseAsJson = false) {
   try {
     const allCompetitionsResponse = await fetch(`${url}/competitions/get`);
-    if (returnAsJson) {
+    if (parseAsJson) {
       return await allCompetitionsResponse.json();
     }
     return allCompetitionsResponse;
