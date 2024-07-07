@@ -4,13 +4,12 @@ const dotenv = require("dotenv");
 
 const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
-const isCorsEnabled = require("./functions/options").isCorsEnabled;
+const isCorsEnabled = require("./config/isCorsEnabled");
 
 const compression = require("compression");
 
 const generalLimiter = require("./rateLimiter/general");
-const isRateLimitingEnabled =
-  require("./functions/options").isRateLimitingEnabled;
+const isRateLimitingEnabled = require("./config/isRateLimitingEnabled");
 
 console.log(`Running ${__filename}`);
 // Load the environment variables from the .env file

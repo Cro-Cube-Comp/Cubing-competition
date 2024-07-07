@@ -1,5 +1,5 @@
 const rateLimit = require("express-rate-limit");
-const { isRateLimitingEnabled } = require("../functions/options");
+const isRateLimitingEnabled = require("../config/isRateLimitingEnabled");
 // Specific rate limit for the login route
 const loginLimiter = isRateLimitingEnabled
   ? rateLimit({

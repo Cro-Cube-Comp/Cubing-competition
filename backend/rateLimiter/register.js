@@ -1,5 +1,5 @@
 const rateLimit = require("express-rate-limit");
-const { isRateLimitingEnabled } = require("../functions/options");
+const isRateLimitingEnabled = require("../config/isRateLimitingEnabled");
 // Specific rate limit for the login route
 const registerLimiter = isRateLimitingEnabled ? rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
