@@ -29,7 +29,13 @@ function formatTime(seconds) {
   // Return the formatted time string
   return formattedTime;
 }
+function onlyNumbersSpacesAndDots(str) {
+  return /^[0-9 .]*$/.test(str);
+}
 function formatInputToSeconds(str) {
+  if (!onlyNumbersSpacesAndDots(str)) {
+    return null;
+  }
   // Check if the string is already in the format of a decimal number
   if (str.includes(".")) {
     return parseFloat(parseFloat(str).toFixed(2));
