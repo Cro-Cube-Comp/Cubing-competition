@@ -69,6 +69,19 @@ async function getCompetitionById(id) {
     return null;
   }
 }
+function createSolvesArrayFromInput(input) {
+  // 1. Split by spaces
+  // 2. Use the formatter to convert each solve to seconds (ex. 1543 = 15.43)
+  // 3. Filter the ones that include letters
+  // 4. Accept only the first 5 solves
+  return input.value
+    .split(" ")
+    .map((solve) => {
+      return formatInputToSeconds(solve);
+    })
+    .filter((solve) => Boolean(solve))
+    .slice(0, 5);
+}
 function addAddSolveListenerToInputs() {
   const solveInputs = document.querySelectorAll(".solve-input");
   solveInputs.forEach((input) => {
@@ -78,40 +91,27 @@ function addAddSolveListenerToInputs() {
     const event = elementValues[2];
     const round = parseInt(elementValues[3]);
     input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        const solves = input.value
-          .split(" ")
-          .map((solve) => {
-            return formatInputToSeconds(solve);
-          })
-          .filter((solve) => Boolean(solve))
-          .slice(0, 5);
-        if (solves.length === 0) {
-          return;
-        }
-        // 1. Split by spaces
-        // 2. Use the formatter to convert each solve to seconds (ex. 1543 = 15.43)
-        // 3. Filter the ones that include letters
-        // 4. Accept only the first 5 solves
-        addSolve(userId, round - 1, solves, event, competitionId);
+      if (e.key !== "Enter") return;
+      const solves = createSolvesArrayFromInput(input);
+      if (solves.length === 0) {
+        return;
       }
+      addSolve(userId, round - 1, solves, event, competitionId);
     });
     const button = document.getElementById(
       `solve-add-btn-${userId}-${event}-${round}`
     );
     button.addEventListener("click", () => {
-      addSolve(
-        userId,
-        round - 1,
-        userIndex,
-        [formatInputToSeconds(input.value)],
-        event,
-        competitionId
-      );
+      const solves = createSolvesArrayFromInput(input);
+      if (solves.length === 0) {
+        return;
+      }
+      addSolve(userId, round - 1, solves, event, competitionId);
     });
   });
 }
 async function createCompetitionsHtml(user) {
+  // Inner html of .comp div will be html this function returns
   let compHtml = "";
   if (!user.competitions) user.competitions = [];
   const allComps = await getCompetitions(true);
