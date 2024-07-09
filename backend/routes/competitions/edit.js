@@ -11,9 +11,13 @@ router.put("/edit/:id", verifyToken, isAdmin, async (req, res) => {
       .json({ message: "ID je krivo unesen ili nedostaje." });
   }
   try {
-    const competition = await competitions.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const competition = await competitions.findOneAndUpdate(
+      { _id: { $eq: id } },
+      req.body,
+      {
+        new: true,
+      }
+    );
     if (competition) {
       return res.status(200).json({ message: "Natjecanje je izmenjeno." });
     } else {
