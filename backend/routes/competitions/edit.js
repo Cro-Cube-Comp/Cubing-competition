@@ -13,7 +13,11 @@ router.put("/edit/:id", verifyToken, isAdmin, async (req, res) => {
   try {
     const competition = await competitions.findOneAndUpdate(
       { _id: { $eq: id } },
-      req.body,
+      {
+        name: req.body.name,
+        date: req.body.date,
+        events: req.body.events,
+      },
       {
         new: true,
       }
