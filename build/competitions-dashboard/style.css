@@ -1,0 +1,7 @@
+.edit-comp-modal[open] {
+  width: 90vw;
+  border-radius: 3px;
+  border: 2px solid rgb(87, 86, 86);
+  display: grid;
+  grid-template-columns: 1fr;
+}
