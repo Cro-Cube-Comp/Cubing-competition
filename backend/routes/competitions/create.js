@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const competition = require("../../Models/competitions");
+const allowedEvents = require("../../config/allowedEvents");
 const isAdmin = require("../../utils/helpers/isAdmin");
 const verifyToken = require("../../middleware/verifyToken");
 router.post("/create", verifyToken, isAdmin, async (req, res) => {
@@ -16,7 +17,13 @@ router.post("/create", verifyToken, isAdmin, async (req, res) => {
         .status(400)
         .json({ message: `Ime i broj runda su obavezni. (#${index + 1})` });
     }
+    if (!allowedEvents.includes(event.name)) {
+      return res
+        .status(400)
+        .json({ message: `Event "${event.name}" nije dozvoljen. (#${i + 1})` });
+    }
   });
+
   // event.solvers can be undefined, that means that solvers will be empty array
   const newCompetitionEvents = events.map((event) => {
     return {

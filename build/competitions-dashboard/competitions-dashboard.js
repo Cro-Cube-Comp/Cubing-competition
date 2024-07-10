@@ -6,8 +6,6 @@ import {
   getRole,
 } from "../Scripts/credentials.js";
 const createCompBtn = document.querySelector(".create-comp-btn");
-const createCompDateInput = document.querySelector(".comp-date");
-const createCompNameInput = document.querySelector(".create-comp-name");
 function getEvents(competition) {
   return competition.events;
 }
@@ -148,9 +146,74 @@ async function createCompetition(name, date, events) {
       events,
     }),
   });
-  const data = await response.json();
-  return data;
+  const parsedData = await response.json();
+  return {
+    status: response.status,
+    success: response.ok,
+    parsed: parsedData,
+  };
 }
+function createMakeCompModalAndAppendToBody() {
+  const modal = document.createElement("dialog");
+  modal.classList.add("make-comp-modal");
+  modal.innerHTML = `<form class="make-comp-form">
+  <h2>Kreiraj natjecanje</h2>
+  <label for="comp-name">Ime natjecanja</label>
+  <br />
+  <input type="text" id="comp-name" name="name" required>
+  <br />
+  <label for="comp-date">Datum natjecanja</label>
+  <br />
+  <input type="datetime-local" id="comp-date" name="date" required>
+  <br />
+  <label for="comp-events">Eventovi</label>
+  <p>Prihvaća se: 3x3 ,4x4, 3x3oh, 2x2. Razdvoji ih razmakom.</p>
+  <br />
+  <input name="events" type="text" id="comp-events" required>
+  <br />
+  <button type="submit" class="make-comp-submit">Kreiraj</button>
+</form>`;
+  document.body.appendChild(modal);
+  return modal;
+}
+function addListenerToCreateComp(modal) {
+  const submitBtn = modal.querySelector(".make-comp-submit");
+  const date = modal.querySelector("#comp-date");
+  const title = modal.querySelector("#comp-name");
+  const eventsInput = modal.querySelector("#comp-events");
+  submitBtn.addEventListener("click", async (e) => {
+    e.preventDefault(); // Prevent page reload
+    submitBtn.innerHTML = loadingHTML;
+    const result = await createCompetition(
+      title.value,
+      date.value,
+      eventsInput.value
+        .toLowerCase()
+        .split(" ")
+        .map((event) => {
+          return { name: event.trim(), rounds: 3 };
+        })
+        .filter((event) => event.name) // Remove empty strings which show up after using 2 spaces
+    );
+    modal.close();
+    if (result.success) {
+      main();
+      return;
+    }
+    console.error(result.parsed.message);
+    alert("Greška prilikom izrade natjecanja");
+  });
+}
+function createMakeCompModal() {
+  const modal = createMakeCompModalAndAppendToBody();
+  addListenerToCreateComp(modal);
+  modal.showModal();
+}
+createCompBtn.addEventListener("click", () => {
+  createMakeCompModal();
+});
+
+main();
 async function main() {
   if (!isAdmin(getRole())) {
     window.location.href = "../";
@@ -158,20 +221,3 @@ async function main() {
   tokenValid(true);
   await makeAndInsertCompetitions();
 }
-createCompBtn.addEventListener("click", () => {
-  const name = createCompNameInput.value;
-  const date = new Date(createCompDateInput.value).toISOString();
-  const event = {
-    name: "3x3",
-    rounds: 3,
-  };
-
-  if (name && date) {
-    createCompetition(name, date, [event]);
-  } else {
-    console.error("Name and date are required.");
-    alert("Ime i datum natjecanja su obavezni.");
-  }
-});
-
-main();
