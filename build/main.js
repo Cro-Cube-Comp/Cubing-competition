@@ -15,7 +15,11 @@ async function getPosts() {
   const posts = await data.json();
   return posts;
 }
-function createCard(title=undefined, description=undefined, authorUsername=undefined) {
+function createCard(
+  title = undefined,
+  description = undefined,
+  authorUsername = undefined
+) {
   if (!title || !description) {
     throw new Error("Title and description are required.");
   }
@@ -30,10 +34,14 @@ function createCard(title=undefined, description=undefined, authorUsername=undef
               ${description}
             </p>
           </div>
-          ${authorUsername ? `<div class="post-author-container">
+          ${
+            authorUsername
+              ? `<div class="post-author-container">
         <p class="post-author-p">Objavio <span class="post-author">${authorUsername}</span>
         </p>
-      </div>` : ""}
+      </div>`
+              : ""
+          }
         </div>
       </div>
   `;
@@ -58,7 +66,10 @@ function addCreatePostCard() {
 }
 function generateLogOutCard(username = getUsername()) {
   if (!username) return;
-  let html = createCard("Odjavi se", `<p>Ako se želiš odjaviti iz korisničkog računa "${username}" klikni <span class="logout-span">ovdje</span>.</p>`);
+  let html = createCard(
+    "Odjavi se",
+    `<p>Ako se želiš odjaviti iz korisničkog računa "${username}" klikni <span class="logout-span">ovdje</span>.</p>`
+  );
   return html;
 }
 
@@ -89,7 +100,11 @@ document.querySelector(".share").addEventListener("click", async () => {
 function createPostHtml(post) {
   const { title, description } = post;
   const authorUsername = post.author.username;
-  const html = createCard(title, `<p class="post-description">${description}</p>`, authorUsername)
+  const html = createCard(
+    title,
+    `<p class="post-description">${description}</p>`,
+    authorUsername
+  );
   return html;
 }
 async function checkIfLoggedInAndTokenValid() {
@@ -97,6 +112,13 @@ async function checkIfLoggedInAndTokenValid() {
     logOut();
     window.location.href = "./Login";
   }
+}
+function addCompDashboardCard() {
+  const html = createCard(
+    "Natjecanja",
+    `<p>Ti si admin! Možeš kreirati i uređivati natjecanje. Klikni <a href="./competitions-dashboard">ovdje</a>.</p>`
+  );
+  cardsDiv.insertAdjacentHTML("beforeend", html);
 }
 async function main() {
   checkIfLoggedInAndTokenValid();
@@ -112,6 +134,7 @@ const role = getRole();
 if (role && isAdmin(role)) {
   addDashboardCard();
   addCreatePostCard();
+  addCompDashboardCard();
 }
 if (username) {
   logInElement.innerHTML = username;
