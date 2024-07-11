@@ -47,7 +47,7 @@ async function deleteCompetition(id) {
     parsed: await response.json(),
   };
 }
-async function editCompetition(id, name, date) {
+async function editCompetition(id, name, date, events) {
   console.log(id, name, date);
   const response = await fetch(`${url}/competitions/edit/${id}`, {
     method: "PUT",
@@ -57,6 +57,7 @@ async function editCompetition(id, name, date) {
     body: JSON.stringify({
       name,
       date,
+      events,
     }),
   });
   return {
@@ -76,15 +77,23 @@ function createEditCompModal(id, comp) {
   const compDate = add2HoursToDate(new Date(comp.date))
     .toISOString()
     .split(".")[0];
+  const events = comp.events.map((event) => event.name).join(" ");
   console.log();
   const modal = document.createElement("dialog");
   modal.classList.add("edit-comp-modal");
   modal.innerHTML = `<form class="edit-comp-form">
   <h2>Uredi natjecanje</h2>
   <label for="comp-name">Ime natjecanja</label>
+  <br />
   <input type="text" id="comp-name" name="name" required>
+   <br />
   <label for="comp-date">Datum natjecanja</label>
+  <br />
   <input type="datetime-local" id="comp-date" name="date" required>
+  <br />
+  <label for="comp-events">Eventovi</label>
+  <br />
+  <input id="comp-events" name="events" type="text" required>
   <button type="submit" class="edit-comp-submit">Potvrdi</button>
 </form>`;
   document.body.appendChild(modal);
@@ -92,6 +101,7 @@ function createEditCompModal(id, comp) {
   const form = modal.querySelector(".edit-comp-form");
   form.querySelector("#comp-name").value = compName;
   form.querySelector("#comp-date").value = compDate;
+  form.querySelector("#comp-events").value = events;
   const submitBtn = modal.querySelector(".edit-comp-submit");
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -99,7 +109,15 @@ function createEditCompModal(id, comp) {
     const result = await editCompetition(
       id,
       form.querySelector("#comp-name").value,
-      form.querySelector("#comp-date").value
+      form.querySelector("#comp-date").value,
+      form
+        .querySelector("#comp-events")
+        .value.toLowerCase()
+        .split(" ")
+        .map((event) => {
+          return { name: event.trim(), rounds: 3 };
+        })
+        .filter((event) => event.name) // Remove empty strings which show up after using 2 spaces
     );
     modal.close();
     if (result.success) {
