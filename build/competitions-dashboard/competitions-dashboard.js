@@ -15,14 +15,22 @@ async function getCompetitions() {
 
   return data;
 }
+function offsetDate(date, offset) {
+  const date2 = new Date(date);
+  date2.setHours(date2.getHours() + offset);
+  return date2;
+}
 async function createCompetitionHtml(competition) {
   const events = getEvents(competition);
+  const offsetInHours = new Date(competition.date).getTimezoneOffset() / 60;
+  const compDate = offsetDate(new Date(competition.date), offsetInHours);
+
   const eventsHtml = events
     .map((event) => `<li class="event">${event.name}</li>`)
     .join("\n");
   const html = `<div class="competition">
     <h2>${competition.name}</h2>
-    <p>Datum: ${new Date(competition.date).toLocaleString()}</p>
+    <p>Datum: ${compDate.toLocaleString()}</p>
     <h2>Eventovi</h2>
     <ul class="events-list">
     ${eventsHtml}
@@ -66,17 +74,10 @@ async function editCompetition(id, name, date, events) {
     parsed: await response.json(),
   };
 }
-function add2HoursToDate(date) {
-  const date2 = new Date(date);
-  date2.setHours(date2.getHours() + 2);
-  return date2;
-}
 function createEditCompModal(id, comp) {
   const compName = comp.name;
   // Offset it by 2 hours since Croatia is GMT+2
-  const compDate = add2HoursToDate(new Date(comp.date))
-    .toISOString()
-    .split(".")[0];
+  const compDate = new Date(comp.date).toISOString().split(".")[0];
   const events = comp.events.map((event) => event.name).join(" ");
   console.log();
   const modal = document.createElement("dialog");
