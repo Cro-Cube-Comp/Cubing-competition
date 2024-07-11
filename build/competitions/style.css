@@ -6,61 +6,21 @@
     rgb(50, 43, 49),
     rgb(96, 96, 96)
   );
+  --font-color: white;
 }
 body {
   background: var(--background);
-  color: white;
+  color: var(--font-color);
 }
-.comp-location-p,
-.comp-date-p {
-  font-style: italic;
+.event {
+  border-left: 2px solid black;
+  padding-left:  max(1vw, 10px);
 }
-.grupe {
-  background-color: rgb(33, 33, 33);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  color: white;
+.round {
+  border-left: 2px solid rgb(35, 35, 35);
+  padding-left: max(2vw, 15px);
 }
-.comp-title {
-  display: flex;
-  align-items: center;
-}
-.runda {
-  background-color: gray;
-}
-#runda1,
-#runda3 {
-  background-color: rgb(90, 90, 90);
-}
-.runda h3 {
-  display: inline-block;
-  margin: 10px 0px;
-}
-.runda p {
-  margin-bottom: 0;
-}
-.showhide {
-  margin-left: 10px;
-  cursor: pointer;
-}
-.bold {
-  font-weight: 700;
-}
-.hidden {
-  display: none;
-}
-.solve-times {
-  letter-spacing: 0.5px; /* Adjust the value as needed */
-}
-.average {
-  color: lightgreen;
-}
-.red {
-  color: rgb(255, 10, 47);
-}
-@media screen and (max-width: 500px) {
-  .grupe {
-    grid-template-columns: 1fr;
-    row-gap: 20px;
-  }
+.user {
+  padding-left: max(3vw, 20px);
+  margin-bottom: 1vh;
 }

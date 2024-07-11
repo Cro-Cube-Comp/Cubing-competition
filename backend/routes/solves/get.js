@@ -11,7 +11,7 @@ router.get("/", cache(5), async (req, res) => {
       second: "2-digit",
       timeZone: "Europe/Zagreb",
     }).format(new Date());
-    const users = await User.find({}, "");
+    const users = await User.find({}, "").select("-role -password -__v");
     users.filter((user) => {
       return user.competitions.length > 0;
     });
