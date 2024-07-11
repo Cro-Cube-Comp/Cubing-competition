@@ -45,11 +45,129 @@ async function announceWinner(winnerId) {
 
   return response.json();
 }
+async function getCompetitions(parseAsJson = false) {
+  try {
+    const allCompetitionsResponse = await fetch(`${url}/competitions/get`);
+    if (parseAsJson) {
+      return await allCompetitionsResponse.json();
+    }
+    return allCompetitionsResponse;
+  } catch (error) {
+    console.error("Error fetching all competitions:\n", error);
+    throw new Error("Error fetching all competitions.");
+  }
+}
+async function getCompetitionById(id) {
+  try {
+    const allCompetitions = await getCompetitions(true);
+    const competition = allCompetitions.find(
+      (competition) => competition.id === id
+    );
+    return competition;
+  } catch (error) {
+    console.error("Error fetching competition data:", error);
+    return null;
+  }
+}
+function createSolvesArrayFromInput(input) {
+  // 1. Split by spaces
+  // 2. Use the formatter to convert each solve to seconds (ex. 1543 = 15.43)
+  // 3. Filter the ones that include letters
+  // 4. Accept only the first 5 solves
+  return input.value
+    .split(" ")
+    .map((solve) => {
+      return formatInputToSeconds(solve);
+    })
+    .filter((solve) => Boolean(solve))
+    .slice(0, 5);
+}
+function addAddSolveListenerToInputs() {
+  const solveInputs = document.querySelectorAll(".solve-input");
+  solveInputs.forEach((input) => {
+    const elementValues = input.id.slice("solve-input-".length).split("-");
+    const userId = elementValues[0];
+    const competitionId = elementValues[1];
+    const event = elementValues[2];
+    const round = parseInt(elementValues[3]);
+    input.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      const solves = createSolvesArrayFromInput(input);
+      if (solves.length === 0) {
+        return;
+      }
+      addSolve(userId, round - 1, solves, event, competitionId);
+    });
+    const button = document.getElementById(
+      `solve-add-btn-${userId}-${event}-${round}`
+    );
+    button.addEventListener("click", () => {
+      const solves = createSolvesArrayFromInput(input);
+      if (solves.length === 0) {
+        return;
+      }
+      addSolve(userId, round - 1, solves, event, competitionId);
+    });
+  });
+}
+async function createCompetitionsHtml(user) {
+  // Inner html of .comp div will be html this function returns
+  let compHtml = "";
+  if (!user.competitions) user.competitions = [];
+  const allComps = await getCompetitions(true);
+  for (const comp of allComps) {
+    const competitionHtml = await createCompetitionHtml(comp, user);
+    compHtml += competitionHtml;
+  }
+  return compHtml;
+}
+async function createCompetitionHtml(comp, user) {
+  const compDate = new Date(comp.date).toLocaleString();
+  const compId = comp._id;
+  const userId = user._id;
+  const userComp =
+    user.competitions.find((comp) => comp.competitionId === compId) || null;
+  let html = "";
+  html += `<div class="competition">`;
+  html += `<h2>${comp.name}</h2>`;
+  html += `<p>Datum: ${compDate}</p>`;
+  comp.events.forEach((event) => {
+    const eventName = event.name; // 3x3,4x4,3x3oh...
+    const userEvent = userComp
+      ? userComp.events.find((event) => event.event === eventName) || null
+      : null;
+    html += `<div class="event">`;
+    html += `<h3>${eventName}</h3>`;
+    for (let i = 0; i < event.rounds; i++) {
+      const roundNumber = i + 1;
+      const solves = userEvent ? userEvent.rounds[i] || [] : [];
+      html += `<div class="round round-${roundNumber}">`;
+      html += `<h4>Runda ${roundNumber}</h4>`;
+      html += `<p>Ao5: ${getAverage(solves)}</p>`;
+      html += `<ol class="solves-list">`;
+      html += solves
+        .map((solve, j) => {
+          const solveNumber = j + 1;
+          const time = solve === 0 ? "DNF/DNS" : formatTime(solve);
+          return `<li class="solve-li solve-li-${solveNumber}">${time}</li> <button type="button" onclick="deleteSolve('${userId}', ${j}, ${i}, '${eventName}', '${compId}')">Izbriši</button>`;
+        })
+        .join("");
+      html += `</ol>`;
+      if (solves.length < 5) {
+        html += `<input inputmode="numeric" pattern="[0-9 ]*" placeholder="Dodaj slaganje" type="text" class="solve-input" id="solve-input-${userId}-${compId}-${eventName}-${roundNumber}" data-userid=""/>
+      <button class="solve-add-btn" id="solve-add-btn-${userId}-${eventName}-${roundNumber}">Dodaj</button>`;
+      }
+      html += `</div>`; // close .round
+    }
+    html += `</div>`; // close .event
+  });
+  html += `</div>`; // close .competition
 
+  return html;
+}
 window.showCompetition = async function (userId, index) {
   enableAllSolveButtons();
-  const allUserDiv = document.querySelectorAll(".user");
-  const userDiv = allUserDiv[index];
+  const userDiv = document.getElementById(`user-${userId}`);
   const showCompBtn = userDiv.querySelector(".showComp-btn");
   const prevHTML = showCompBtn.innerHTML;
   showCompBtn.disabled = true;
@@ -61,54 +179,14 @@ window.showCompetition = async function (userId, index) {
     }).then((response) => response.json());
 
     if (!user) {
-      userDiv.querySelector(".comp").innerHTML = `<p>User not found.</p>`;
+      userDiv.querySelector(
+        ".comp"
+      ).innerHTML = `<p>Korisnik nije pronađen.</p>`;
       return;
     }
-
-    let html = "";
-    for (let i = 0; i < 3; i++) {
-      const round = user.rounds[i] || [];
-      html += `<div class="round">
-                <h3>Runda ${i + 1}</h3>`;
-
-      if (round.solves && round.solves.length > 0) {
-        html += `<p>Ao5: ${getAverage(round.solves)}</p>
-                 <ul>`;
-        round.solves.forEach((solve, j) => {
-          const time = solve === 0 ? "DNF/DNS" : formatTime(solve);
-          html += `<li>${j + 1}: ${time}
-                   <button type="button" onclick="deleteSolve('${userId}', ${i}, ${j}, ${index})">Izbriši</button></li>`;
-        });
-        html += `</ul>`;
-      } else {
-        html += `<p>Nema slaganja za ovu rundu.</p>`;
-      }
-
-      if (!round.solves || round.solves.length < 5) {
-        html += `<form id="add-solve-${i}">
-                  <label for="solve-${i}">Slaganje:</label>
-                  <input inputmode="numeric" pattern="[0-9 ]*" placeholder="npr. 15467" type="text" id="solve-${i}-${index}" name="solve" data-id="${userId}" data-i="${i}" data-index="${index}" class="solve-input"/>
-                  <button class="solve-add-btn" type="button" onclick="addSolve('${userId}', ${i}, ${index})">Dodaj</button>
-                 </form>`;
-      }
-
-      html += `</div>`;
-    }
-
-    userDiv.querySelector(".comp").innerHTML = html;
-
-    const solveTimeInputs = userDiv.querySelectorAll(".solve-input");
-    solveTimeInputs.forEach((input) => {
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          const userId = input.dataset.id;
-          const i = +input.dataset.i;
-          const index = +input.dataset.index;
-          addSolve(userId, i, index);
-        }
-      });
-    });
+    const compHtml = await createCompetitionsHtml(user);
+    userDiv.querySelector(".comp").innerHTML = compHtml;
+    addAddSolveListenerToInputs();
   } catch (error) {
     console.error("Error fetching user data:", error);
     userDiv.querySelector(
@@ -120,40 +198,15 @@ window.showCompetition = async function (userId, index) {
   }
 }; // Make showCompetition() global by using window.showCompetition = ...
 
-window.addSolve = async function (userId, roundIndex, index) {
-  const solveInput = document.getElementById(`solve-${roundIndex}-${index}`);
-  let solveValue = solveInput.value;
-
-  // Provjerava odgovara li unos regularnom izrazu za brojeve odvojene razmacima
-  if (!solveValue.match(/^\d+(?:[ .]\d+)*$/)) {
-    console.error(
-      "Pokušali ste dodati slaganja, ali unos ne odgovara regularnom izrazu."
-    );
-    alert("Samo brojevi i razmaci. Ne koristi dva razmaka jedan pored drugog.");
-    return;
-  }
-
-  // Razdvaja unesene vrijednosti i filtrira prazne stringove
-  let solves = solveValue.split(" ").filter(Boolean);
-
-  // Uklanja null, NaN i brojeve dulje od 6 znamenki
-  solves = solves.filter((solve) => solve && solve.length <= 6);
-
-  // Ograničava na maksimalno 5 slaganja
-  if (solves.length > 5) {
-    solves = solves.slice(0, 5);
-    alert("Uneseno više od 5 slaganja, samo prvih 5 će biti poslano.");
-  }
-
-  solves = solves.map((solve) => formatInputToSeconds(solve));
-  if (solves.length === 0) {
-    alert("Mora biti barem 1 slaganje.");
-    return;
-  }
+async function addSolve(userId, roundIndex, solves, event, competitionId) {
   const roundNumber = roundIndex + 1;
   const solveData = {
     round: roundNumber,
-    solves,
+    solves: {
+      event: event,
+      rounds: solves,
+    },
+    competitionId,
   };
 
   // Šalje podatke na server
@@ -169,19 +222,19 @@ window.addSolve = async function (userId, roundIndex, index) {
 
   // Ažurira prikaz natjecanja nakon uspješnog dodavanja
   if (response.ok) {
-    showCompetition(userId, index);
-    return;
+    await showCompetition(userId);
+    return response.status;
   }
 
   // Prikazuje poruku o grešci ako postoji
   if (data.message) {
     alert(data.message);
-    return;
+    return response.status;
   }
 
   alert("Greška prilikom dodavanja slaganja. Pokušaj ponovno.");
-};
-
+  return response.status;
+}
 window.getUsers = async function () {
   const body = {
     method: "GET",
@@ -248,7 +301,7 @@ window.displayUsers = function (users) {
     const id = user.id;
     const role = user.role;
     const group = user.group;
-    html += `<div class="user">`;
+    html += `<div class="user" id="user-${id}">`;
     html += `<div class="username-div">`;
     html += `<p class="username">${username}</p>`;
     html += `<img class="manage-accounts" src="../Images/manage_accounts.svg"/>`;
@@ -267,7 +320,13 @@ window.displayUsers = function (users) {
   usersDiv.innerHTML = html;
 };
 
-window.deleteSolve = async function (userId, roundIndex, solveIndex, index) {
+window.deleteSolve = async function (
+  userId,
+  solveIndex,
+  roundIndex,
+  eventName,
+  compId
+) {
   const roundNumber = roundIndex + 1;
   const solveNumber = solveIndex + 1;
   // Call the backend to delete the solve
@@ -277,12 +336,16 @@ window.deleteSolve = async function (userId, roundIndex, solveIndex, index) {
     headers: addToken({
       "Content-Type": "application/json",
     }),
-    body: JSON.stringify({ round: roundNumber, solve: solveNumber }),
+    body: JSON.stringify({
+      round: roundNumber,
+      solve: solveNumber,
+      event: eventName,
+      competitionId: compId,
+    }),
   });
 
   if (response.ok) {
-    // Remove the solve from the DOM or refresh the list of solves
-    showCompetition(userId, index);
+    showCompetition(userId);
     return;
   }
   // Handle errors
@@ -306,7 +369,7 @@ function enableAllSolveButtons() {
 async function main() {
   tokenValid(true);
   if (isUser(getRole())) {
-    alert("Admins only!");
+    alert("Samo administratori");
     location.href = "../";
   }
   getToken();

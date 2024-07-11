@@ -1,10 +1,16 @@
-// Require the necessary modules
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+
 const cors = require("cors");
+const corsOptions = require("./config/corsOptions");
+const isCorsEnabled = require("./config/isCorsEnabled");
+
 const compression = require("compression");
+
 const generalLimiter = require("./rateLimiter/general");
+const isRateLimitingEnabled = require("./config/isRateLimitingEnabled");
+
 console.log(`Running ${__filename}`);
 // Load the environment variables from the .env file
 dotenv.config();
@@ -13,27 +19,21 @@ dotenv.config();
 const app = express();
 // Use JSON middleware to parse the request body
 app.use(express.json());
-// Define the list of allowed origins
-const allowedOrigins = [
-  "http://localhost:2500",
-  "http://127.0.0.1:2500",
-  "https://cro-cube-comp.github.io",
-];
-
-// CORS middleware function to check the origin against the allowed list
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  optionsSuccessStatus: 200, // For legacy browser support
-};
-app.set("trust proxy", 1);
-app.use(cors(corsOptions));
-app.use(generalLimiter);
+if (isRateLimitingEnabled) {
+  app.set("trust proxy", 1);
+  app.use(generalLimiter);
+} else {
+  console.warn(
+    "Rate limiting is disabled. It's recommended to enable it. Use only for development purposes."
+  );
+}
+if (isCorsEnabled) {
+  app.use(cors(corsOptions));
+} else {
+  console.warn(
+    "CORS is disabled. It's recommended to enable it. Use only for development purposes."
+  );
+}
 const compressionOptions = {
   level: 8,
   threshold: 100 * 1024, // Ignore smaller than 100KB
@@ -87,10 +87,14 @@ app.use("/scrambles", require("./routes/scrambles/passwords"));
 // Token validation
 app.use("/token", require("./routes/token/validate"));
 app.use("/health-check", require("./routes/health_check/health_check"));
-
+// Competitions
+app.use("/competitions", require("./routes/competitions/create"));
+app.use("/competitions", require("./routes/competitions/get"));
+app.use("/competitions", require("./routes/competitions/delete"));
+app.use("/competitions", require("./routes/competitions/edit"));
+// Backup
 app.use("/backup", require("./routes/backup/get"));
 // Start the server on the specified port
-console.log(`ENV PORT: ${process.env.PORT}`);
 const PORT = process.env.PORT || 3000;
 
 mongoose.connection.once("open", () => {
