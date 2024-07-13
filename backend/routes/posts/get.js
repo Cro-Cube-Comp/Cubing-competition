@@ -21,6 +21,7 @@ router.get("/", async (req, res) => {
     );
     res.status(200).json(response); // Sending the constructed response
   } catch (err) {
+    console.error(`Error in getting posts:\n ${err}`);
     res.status(500).json({ message: "Neuspješno dohvaćanje objava." });
   }
 });

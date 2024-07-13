@@ -37,6 +37,7 @@ router.put("/edit/:id", verifyToken, isAdmin, findUser, async (req, res) => {
     }
     return res.status(200).json({ message: "Objava je ažurirana.", post });
   } catch (error) {
+    console.error(`Error in editing post:\n ${error}`);
     res.status(500).json({ message: "Greška u serveru." });
   }
 });

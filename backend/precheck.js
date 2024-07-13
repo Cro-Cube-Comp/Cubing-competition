@@ -48,6 +48,7 @@ const checkDbConnection = async () => {
 
 // Main function to perform prechecks
 const precheck = async () => {
+  console.time("Precheck");
   if (!checkEnvVars()) {
     console.warn(
       "Some environment variables are missing. Please check your .env file."
@@ -56,6 +57,7 @@ const precheck = async () => {
   }
   await checkDbConnection();
   console.log("Precheck successful.");
+  console.timeEnd("Precheck");
   process.exit(0); // Exit the process with success
 };
 

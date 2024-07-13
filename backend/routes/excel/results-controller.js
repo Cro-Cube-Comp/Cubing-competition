@@ -10,8 +10,8 @@ const formatTime = require("../../functions/formatTime");
 async function getResultsInExcel(users, competition) {
   // users - all users in moongodb
   // competition for which we will return results
+  console.time("getResultsInExcel");
   try {
-    console.log("Creating excel workbook");
     const workbook = new Workbook();
     const compId = competition._id;
     competition.events.forEach((event) => {
@@ -62,6 +62,7 @@ async function getResultsInExcel(users, competition) {
       });
     });
     //await workbook.xlsx.writeFile(`./${competition.name}.xlsx`);
+    console.timeEnd("getResultsInExcel");
     return workbook;
   } catch (error) {
     console.error(error);

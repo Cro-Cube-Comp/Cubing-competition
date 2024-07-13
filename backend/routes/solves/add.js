@@ -14,7 +14,7 @@ router.post("/:solverId", verifyToken, isAdmin, async (req, res) => {
     const { solves, round, competitionId } = req.body;
     if (!solver) {
       return res.status(400).json({
-        message: `Natjecatelj ne postoji. Kontaktirajte programere za pomoć. (Naveli ste: ${solverId})`,
+        message: `Natjecatelj ne postoji. (Naveli ste: ${solverId})`,
       });
     }
     if (!solves) {
