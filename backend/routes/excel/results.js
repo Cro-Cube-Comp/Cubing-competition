@@ -18,6 +18,7 @@ router.get("/", cache(10), verifyToken, isAdmin, async (req, res) => {
     }
     const users = await User.find();
     const competition = await getCompetitionById(competitionId);
+    const fileName = competition.name + ".xlsx";
     const workbook = await getResultsInExcel(users, competition);
     // Set the headers to prompt download on the client side
     res.setHeader(
