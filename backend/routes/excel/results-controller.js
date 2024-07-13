@@ -1,5 +1,5 @@
-import { Workbook } from "exceljs";
-import User from "../../Models/user";
+const { Workbook } = require("exceljs");
+const User = require("../../Models/user");
 const Competition = require("../../Models/competitions");
 const formatTime = require("../../functions/formatTime");
 /**
@@ -100,4 +100,4 @@ function autoSizeColumnsInASheet(worksheet) {
   });
   return worksheet;
 }
-module.exports =  getResultsInExcel;
+module.exports = getResultsInExcel;

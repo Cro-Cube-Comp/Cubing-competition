@@ -1,5 +1,6 @@
 import { tokenValid, addToken } from "../Scripts/credentials.js";
 import { url, loadingHTML } from "../Scripts/variables.js";
+const compResultsSelect = document.querySelector("#comp-results-select");
 function downloadFile(url, fileName) {
   if (!url || !fileName) return -1;
   const anchor = document.createElement("a");
@@ -15,7 +16,9 @@ const getResultsBtn = document.querySelector(".results");
 getResultsBtn.addEventListener("click", getResults);
 function getResults() {
   getResultsBtn.disabled = true;
-  const resultsUrl = addToken(`${url}/results`);
+  const resultsUrl = addToken(
+    `${url}/results?competitionId=${compResultsSelect.value}`
+  );
   downloadFile(resultsUrl, "results"); // You can specify the desired file name
   getResultsBtn.disabled = false;
 }
@@ -53,3 +56,23 @@ changePasswordSubmitBtn.addEventListener("click", async () => {
   document.querySelector(".message").innerText = changePasswordOutput.message;
 });
 tokenValid(true);
+async function getCompetitions(parseAsJson = false) {
+  try {
+    const allCompetitionsResponse = await fetch(`${url}/competitions/get`);
+    if (parseAsJson) {
+      return await allCompetitionsResponse.json();
+    }
+    return allCompetitionsResponse;
+  } catch (error) {
+    console.error("Error fetching all competitions:\n", error);
+    throw new Error("Error fetching all competitions.");
+  }
+}
+compResultsSelect.innerHTML = "";
+const competitions = await getCompetitions(true);
+competitions.forEach((competition) => {
+  const option = document.createElement("option");
+  option.value = competition._id;
+  option.innerText = competition.name;
+  compResultsSelect.appendChild(option);
+});
