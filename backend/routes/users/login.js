@@ -20,12 +20,13 @@ router.post("/", loginLimiter, async (req, res) => {
     // Find the user by username
     const user = await User.findOne({ username: { $eq: username } }).select(
       "+password"
-    );
-    const errorMessage = "Korisničko ime ili lozinka nisu ispravni.";
+    ); // Select the password field only
 
     // Check if the user exists and the password matches
     if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ message: errorMessage });
+      return res
+        .status(401)
+        .json({ message: "Korisničko ime ili lozinka nisu ispravni." });
     }
 
     // Generate a JSON web token with the user id as the payload
@@ -33,7 +34,7 @@ router.post("/", loginLimiter, async (req, res) => {
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: process.env.TOKEN_EXPIRATION || "1d",
       }
     );
 
@@ -43,7 +44,7 @@ router.post("/", loginLimiter, async (req, res) => {
     });
   } catch (err) {
     // Log the error for internal debugging, but don't expose details to the client
-    console.error(err);
+    console.error(`Error in login:\n ${err}`);
     res.status(500).json({ message: "Došlo je do pogreške na poslužitelju." });
   }
 });

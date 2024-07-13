@@ -1,3 +1,4 @@
+console.time("Imports");
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
@@ -7,10 +8,11 @@ const corsOptions = require("./config/corsOptions");
 const isCorsEnabled = require("./config/isCorsEnabled");
 
 const compression = require("compression");
+const compressionFilter = require("./config/compressionFilter");
 
 const generalLimiter = require("./rateLimiter/general");
 const isRateLimitingEnabled = require("./config/isRateLimitingEnabled");
-
+console.timeEnd("Imports");
 console.log(`Running ${__filename}`);
 // Load the environment variables from the .env file
 dotenv.config();
@@ -35,39 +37,31 @@ if (isCorsEnabled) {
   );
 }
 const compressionOptions = {
-  level: 8,
-  threshold: 100 * 1024, // Ignore smaller than 100KB
-  filter: (req, res) => {
-    if (req.headers["x-no-compression"]) {
-      // don't compress responses with this request header
-      return false;
-    }
-
-    // fallback to standard filter function
-    return compression.filter(req, res);
-  },
+  filter: compressionFilter,
 };
 app.use(compression(compressionOptions));
 // Connect to the MongoDB database using mongoose
 console.log("Trying to connect to mongoDB...");
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {})
-  .catch((err) => console.error("Failed to connect to MongoDB: \n" + err));
-// Redirect
-app.get("/", (req, res) => {
-  return res.redirect(308, "https://cutt.ly/CroComp");
-});
-// register and login
+try {
+  console.time("Connect to MongoDB");
+  await mongoose.connect(process.env.MONGO_URI);
+  console.timeEnd("Connect to MongoDB");
+} catch (error) {
+  console.error("Failed to connect to MongoDB: \n" + error);
+  process.exit(1);
+}
+console.log("Connected to MongoDB");
+console.time("Routes");
+// Register and login
 app.use("/register", require("./routes/users/register"));
 app.use("/login", require("./routes/users/login"));
-// admin
+// Admin
 app.use("/admin/assign", require("./routes/admin/assign"));
-// solves
+// Solves
 app.use("/solves/add", require("./routes/solves/add"));
 app.use("/solves/delete", require("./routes/solves/delete"));
 app.use("/solves/get", require("./routes/solves/get"));
-// users
+// Users
 app.use("/users", require("./routes/users/all"));
 app.use("/users", require("./routes/users/get"));
 app.use("/users", require("./routes/users/delete"));
@@ -82,8 +76,6 @@ app.use("/results", require("./routes/excel/results"));
 // Winner
 app.use("/winner", require("./routes/winner/announce"));
 app.use("/winner", require("./routes/winner/get"));
-// Scrambles
-app.use("/scrambles", require("./routes/scrambles/passwords"));
 // Token validation
 app.use("/token", require("./routes/token/validate"));
 app.use("/health-check", require("./routes/health_check/health_check"));
@@ -94,10 +86,8 @@ app.use("/competitions", require("./routes/competitions/delete"));
 app.use("/competitions", require("./routes/competitions/edit"));
 // Backup
 app.use("/backup", require("./routes/backup/get"));
+console.timeEnd("Routes");
 // Start the server on the specified port
 const PORT = process.env.PORT || 3000;
 
-mongoose.connection.once("open", () => {
-  console.log("Connected to MongoDB");
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

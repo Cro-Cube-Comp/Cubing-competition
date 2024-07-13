@@ -6,17 +6,20 @@ import { exit } from "process";
 config();
 
 console.log(`Running ${import.meta.file}`);
-
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("Connected to mongodb");
-    main().then(() => {
-      console.log("DONE...");
-      exit();
-    });
-  })
-  .catch((err) => console.error("Failed to connect to MongoDB: \n" + err));
+try {
+  console.time("Connect to mongodb");
+  await mongoose.connect(process.env.MONGO_URI);
+  console.timeEnd("Connect to mongodb");
+} catch (error) {
+  console.error("Failed to connect to MongoDB: \n" + err);
+  process.exit(1);
+}
+console.log("Connected to mongodb");
+console.time("Backup");
+await main();
+console.timeEnd("Backup");
+console.log("DONE...");
+exit();
 
 async function main() {
   const db = mongoose.connection;

@@ -27,7 +27,9 @@ router.get("/", cache(10), verifyToken, isAdmin, async (req, res) => {
     );
     res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
     // Pipe the workbook to the response
+    console.time("Send workbook");
     workbook.xlsx.write(res).then(() => {
+      console.timeEnd("Send workbook");
       res.end();
     });
   } catch (error) {

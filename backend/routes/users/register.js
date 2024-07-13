@@ -48,7 +48,7 @@ router.post("/", registerLimiter, verifyToken, isAdmin, async (req, res) => {
       res.status(409).json({ message: "Korisničko ime već postoji." });
     } else {
       // Log the error for internal debugging, but don't expose details to the client
-      console.error(err);
+      console.error(`Failed to register user:\n ${err}`);
       res.status(500).json({ message: "Došlo je do pogreške kod servera." });
     }
   }
