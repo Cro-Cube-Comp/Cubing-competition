@@ -18,6 +18,7 @@ async function updateSolves(
     const user = await User.findById(solver._id);
     if (!user) throw new Error("User not found");
     if (!user.competitions) user.competitions = [];
+    console.time("Add solve");
     // Find the competition the user participated in
     let userCompetition = user.competitions.find((comp) =>
       comp.competitionId.equals(competition._id)
@@ -53,6 +54,7 @@ async function updateSolves(
     if (userEvent.rounds[round - 1].length > 5) {
       userEvent.rounds[round - 1] = userEvent.rounds[round - 1].slice(0, 5);
     }
+    console.timeEnd("Add solve");
     // Save the updated user data
     await user.save();
     console.log("Solves updated successfully");
