@@ -110,13 +110,56 @@ function addAddSolveListenerToInputs() {
     });
   });
 }
-async function createCompetitionsHtml(user) {
+function createSelectCompetitionTag(allComps, userId, selectedCompId) {
+  const select = document.createElement("select");
+  select.classList.add("select-comp");
+  select.id = `select-comp-${userId}`;
+  allComps.forEach((comp) => {
+    const compId = comp._id;
+    const compName = comp.name;
+
+    const option = document.createElement("option");
+    option.value = compId;
+    option.innerHTML = compName;
+    option.classList.add("select-comp-option");
+    select.appendChild(option);
+    if (selectedCompId && selectedCompId === compId) {
+      // Select option which is the competition the user is currently viewing
+      // Unless, it will be the first option, which is the default
+      option.setAttribute("selected", "selected");
+    }
+  });
+  return select;
+}
+function addSwitchCompetitionListeners() {
+  const selectComps = document.querySelectorAll(".select-comp");
+  selectComps.forEach((select) => {
+    select.addEventListener("change", (e) => {
+      const compId = e.target.value;
+      const userId = e.target.id.slice("select-comp-".length);
+      showCompetition(userId, compId);
+    });
+  });
+}
+async function createCompetitionsHtml(user, compId = undefined) {
   // Inner html of .comp div will be html this function returns
   let compHtml = "";
   if (!user.competitions) user.competitions = [];
   const allComps = await getCompetitions(true);
-  for (const comp of allComps) {
-    const competitionHtml = await createCompetitionHtml(comp, user);
+  const selectCompHtml = createSelectCompetitionTag(
+    allComps,
+    user._id,
+    compId
+  ).outerHTML;
+  compHtml += selectCompHtml;
+  if (compId) {
+    const comp = allComps.find((comp) => comp._id === compId);
+    if (comp) {
+      const competitionHtml = await createCompetitionHtml(comp, user);
+      compHtml += competitionHtml;
+    }
+  } else {
+    const competitionHtml = await createCompetitionHtml(allComps[0], user);
     compHtml += competitionHtml;
   }
   return compHtml;
@@ -165,7 +208,7 @@ async function createCompetitionHtml(comp, user) {
 
   return html;
 }
-window.showCompetition = async function (userId, index) {
+window.showCompetition = async function (userId, compId = undefined) {
   enableAllSolveButtons();
   const userDiv = document.getElementById(`user-${userId}`);
   const showCompBtn = userDiv.querySelector(".showComp-btn");
@@ -184,9 +227,10 @@ window.showCompetition = async function (userId, index) {
       ).innerHTML = `<p>Korisnik nije pronađen.</p>`;
       return;
     }
-    const compHtml = await createCompetitionsHtml(user);
+    const compHtml = await createCompetitionsHtml(user, compId);
     userDiv.querySelector(".comp").innerHTML = compHtml;
     addAddSolveListenerToInputs();
+    addSwitchCompetitionListeners();
   } catch (error) {
     console.error("Error fetching user data:", error);
     userDiv.querySelector(
@@ -222,7 +266,7 @@ async function addSolve(userId, roundIndex, solves, event, competitionId) {
 
   // Ažurira prikaz natjecanja nakon uspješnog dodavanja
   if (response.ok) {
-    await showCompetition(userId);
+    await showCompetition(userId, competitionId);
     return response.status;
   }
 
@@ -311,7 +355,7 @@ window.displayUsers = function (users) {
     // Add a delete button for each user
     html += `<button onclick="deleteUser('${id}')">Izbriši</button>`;
     html += `<button onclick="assignAdmin('${id}', '${username}')">Postavi za admina</button>`;
-    html += `<button class="showComp-btn" onclick="showCompetition('${id}', ${index})">Natjecanje</button>`;
+    html += `<button class="showComp-btn" onclick="showCompetition('${id}')">Natjecanje</button>`;
     html += `<button class="set-winner-${id}" onclick="setWinner('${id}')">Pobjednik</button>`;
     html += `<div class="comp">`;
     html += `</div>`;
@@ -345,7 +389,7 @@ window.deleteSolve = async function (
   });
 
   if (response.ok) {
-    showCompetition(userId);
+    showCompetition(userId, compId);
     return;
   }
   // Handle errors
