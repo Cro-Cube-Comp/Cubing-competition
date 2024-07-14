@@ -111,13 +111,9 @@ function addAddSolveListenerToInputs() {
   });
 }
 function createSelectCompetitionTag(allComps, userId, selectedCompId) {
-  // selectedCompId - Not currently used
   const select = document.createElement("select");
   select.classList.add("select-comp");
   select.id = `select-comp-${userId}`;
-  const changeCompOption = document.createElement("option");
-  changeCompOption.appendChild(document.createTextNode("-- Natjecanje --"));
-  select.appendChild(changeCompOption);
   allComps.forEach((comp) => {
     const compId = comp._id;
     const compName = comp.name;
@@ -127,6 +123,11 @@ function createSelectCompetitionTag(allComps, userId, selectedCompId) {
     option.innerHTML = compName;
     option.classList.add("select-comp-option");
     select.appendChild(option);
+    if (selectedCompId && selectedCompId === compId) {
+      // Select option which is the competition the user is currently viewing
+      // Unless, it will be the first option, which is the default
+      option.setAttribute("selected", "selected");
+    }
   });
   return select;
 }
@@ -265,7 +266,7 @@ async function addSolve(userId, roundIndex, solves, event, competitionId) {
 
   // Ažurira prikaz natjecanja nakon uspješnog dodavanja
   if (response.ok) {
-    await showCompetition(userId);
+    await showCompetition(userId, competitionId);
     return response.status;
   }
 
@@ -354,7 +355,7 @@ window.displayUsers = function (users) {
     // Add a delete button for each user
     html += `<button onclick="deleteUser('${id}')">Izbriši</button>`;
     html += `<button onclick="assignAdmin('${id}', '${username}')">Postavi za admina</button>`;
-    html += `<button class="showComp-btn" onclick="showCompetition('${id}', ${index})">Natjecanje</button>`;
+    html += `<button class="showComp-btn" onclick="showCompetition('${id}')">Natjecanje</button>`;
     html += `<button class="set-winner-${id}" onclick="setWinner('${id}')">Pobjednik</button>`;
     html += `<div class="comp">`;
     html += `</div>`;
@@ -388,7 +389,7 @@ window.deleteSolve = async function (
   });
 
   if (response.ok) {
-    showCompetition(userId);
+    showCompetition(userId, compId);
     return;
   }
   // Handle errors
