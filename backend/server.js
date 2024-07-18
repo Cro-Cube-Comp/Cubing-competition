@@ -84,6 +84,7 @@ app.use("/competitions", require("./routes/competitions/create"));
 app.use("/competitions", require("./routes/competitions/get"));
 app.use("/competitions", require("./routes/competitions/delete"));
 app.use("/competitions", require("./routes/competitions/edit"));
+app.use("/competitions", require("./routes/competitions/lock"));
 // Backup
 app.use("/backup", require("./routes/backup/get"));
 console.timeEnd("Routes");

@@ -1,9 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const { getCompetitionById } = require("../../functions/getCompetitionById");
-router.post("/:id/lock", async (req, res) => {
+const verifyToken = require("../../middleware/verifyToken");
+const isAdmin = require("../../utils/helpers/isAdmin");
+router.post("/:id/lock", verifyToken, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: "ID je krivo unesen." });
+    }
     const competition = await getCompetitionById(id);
     if (!competition) {
       return res.status(404).json({ message: "Natjecanje ne postoji." });
@@ -21,3 +26,4 @@ router.post("/:id/lock", async (req, res) => {
       .json({ message: "Greška prilikom zaključavanja natjecanja." });
   }
 });
+module.exports = router;
