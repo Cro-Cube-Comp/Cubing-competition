@@ -5,3 +5,39 @@
   display: grid;
   grid-template-columns: 1fr;
 }
+.delete-button {
+  background-color: rgb(225, 83, 83);
+  border: none;
+  border-radius: 2px;
+  padding: 2px 5px;
+  cursor: pointer;
+}
+.delete-button:active {
+  transform: translateY(2px);
+}
+.delete-button.locked {
+  background-color: rgb(113, 104, 104);
+}
+.edit-button {
+  background-color: rgb(38, 174, 83);
+  border: none;
+  border-radius: 2px;
+  padding: 2px 5px;
+  cursor: pointer;
+}
+.edit-button:active {
+  transform: translateY(2px);
+}
+.edit-button.locked {
+  background-color: rgb(113, 104, 104);
+}
+.lock-button {
+  background-color: rgb(211, 207, 207); /* Unlocked: show color for locking */
+  border: none;
+  border-radius: 2px;
+  padding: 2px 5px;
+  cursor: pointer;
+}
+.lock-button:active {
+  transform: translateY(2px) scale(0.9);
+}

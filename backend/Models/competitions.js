@@ -10,6 +10,7 @@ const competitionSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   date: { type: Date, required: true },
   events: [eventSchema],
+  isLocked: { type: Boolean, default: false },
 });
 const competition = mongoose.model("competitions", competitionSchema);
 
