@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const competition = require("../../Models/competitions");
+const Competition = require("../../Models/competition");
 const allowedEvents = require("../../config/allowedEvents");
 const isAdmin = require("../../utils/helpers/isAdmin");
 const verifyToken = require("../../middleware/verifyToken");
@@ -33,7 +33,7 @@ router.post("/create", verifyToken, isAdmin, async (req, res) => {
     };
   });
   try {
-    const newCompetition = new competition({
+    const newCompetition = new Competition({
       name: name,
       events: newCompetitionEvents,
       date: date,

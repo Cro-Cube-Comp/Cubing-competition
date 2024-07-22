@@ -1,4 +1,4 @@
-const Competition = require("../Models/competitions");
+const Competition = require("../Models/competition");
 
 async function getCompetitionById(id, fields = null) {
   try {

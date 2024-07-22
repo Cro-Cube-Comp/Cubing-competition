@@ -1,4 +1,4 @@
-const Competition = require("../../Models/competitions");
+const Competition = require("../../Models/competition");
 const express = require("express");
 const router = express.Router();
 

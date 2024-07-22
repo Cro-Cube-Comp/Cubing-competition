@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Competition = require("../../Models/competitions");
+const Competition = require("../../Models/competition");
 const verifyToken = require("../../middleware/verifyToken");
 const updateSolves = require("../../functions/addSolves");
 const { getUserById } = require("../../functions/getUserById");

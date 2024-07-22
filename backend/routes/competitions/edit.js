@@ -1,5 +1,5 @@
 const express = require("express");
-const competitions = require("../../Models/competitions");
+const Competition = require("../../Models/competition");
 const isAdmin = require("../../utils/helpers/isAdmin");
 const verifyToken = require("../../middleware/verifyToken");
 const router = express.Router();
@@ -12,7 +12,7 @@ router.put("/:id", verifyToken, isAdmin, async (req, res) => {
     return res.status(400).json({ message: requesValidation.message });
   }
   try {
-    const competition = await competitions.findById(id);
+    const competition = await Competition.findById(id);
     if (!competition) {
       return res.status(404).json({ message: "Natjecanje ne postoji." });
     }
