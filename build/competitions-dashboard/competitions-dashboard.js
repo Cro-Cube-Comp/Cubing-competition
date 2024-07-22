@@ -10,7 +10,7 @@ function getEvents(competition) {
   return competition.events;
 }
 async function getCompetitions() {
-  const response = await fetch(`${url}/competitions/get`);
+  const response = await fetch(`${url}/competitions`);
   const data = await response.json();
 
   return data;
@@ -51,7 +51,7 @@ async function createCompetitionHtml(competition) {
   return html;
 }
 async function deleteCompetition(id) {
-  const response = await fetch(`${url}/competitions/delete/${id}`, {
+  const response = await fetch(`${url}/competitions/${id}`, {
     method: "DELETE",
     headers: addToken({
       "Content-Type": "application/json",
@@ -64,7 +64,7 @@ async function deleteCompetition(id) {
   };
 }
 async function editCompetition(id, name, date, events) {
-  const response = await fetch(`${url}/competitions/edit/${id}`, {
+  const response = await fetch(`${url}/competitions/${id}`, {
     method: "PUT",
     headers: addToken({
       "Content-Type": "application/json",

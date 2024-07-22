@@ -5,7 +5,7 @@ import {
   getAverageNoFormat,
 } from "../Scripts/solveTime.js";
 async function getCompetitions() {
-  const data = await fetch(`${url}/competitions/get`);
+  const data = await fetch(`${url}/competitions`);
   const parsedJSON = await data.json();
   return {
     parsed: parsedJSON,

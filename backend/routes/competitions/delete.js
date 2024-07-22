@@ -4,7 +4,7 @@ const isAdmin = require("../../utils/helpers/isAdmin");
 const verifyToken = require("../../middleware/verifyToken");
 const router = express.Router();
 
-router.delete("/delete/:id", verifyToken, isAdmin, async (req, res) => {
+router.delete("/:id", verifyToken, isAdmin, async (req, res) => {
   const { id } = req.params;
   if (!id || typeof id !== "string") {
     return res

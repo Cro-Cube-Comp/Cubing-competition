@@ -58,7 +58,7 @@ changePasswordSubmitBtn.addEventListener("click", async () => {
 tokenValid(true);
 async function getCompetitions(parseAsJson = false) {
   try {
-    const allCompetitionsResponse = await fetch(`${url}/competitions/get`);
+    const allCompetitionsResponse = await fetch(`${url}/competitions`);
     if (parseAsJson) {
       return await allCompetitionsResponse.json();
     }

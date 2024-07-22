@@ -4,7 +4,7 @@ const isAdmin = require("../../utils/helpers/isAdmin");
 const verifyToken = require("../../middleware/verifyToken");
 const router = express.Router();
 
-router.put("/edit/:id", verifyToken, isAdmin, async (req, res) => {
+router.put("/:id", verifyToken, isAdmin, async (req, res) => {
   const { id } = req.params;
   const { name, date, events } = req.body;
   const requesValidation = validateRequest(id, name, date, events);
