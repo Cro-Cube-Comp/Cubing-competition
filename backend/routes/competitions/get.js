@@ -1,8 +1,8 @@
-const Competition = require("../../Models/competitions");
+const Competition = require("../../Models/competition");
 const express = require("express");
 const router = express.Router();
 
-router.get("/get", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const competitions = await Competition.find({});
     return res.status(200).json(competitions);

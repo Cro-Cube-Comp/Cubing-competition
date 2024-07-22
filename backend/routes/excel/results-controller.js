@@ -1,6 +1,6 @@
 const { Workbook } = require("exceljs");
 const User = require("../../Models/user");
-const Competition = require("../../Models/competitions");
+const Competition = require("../../Models/competition");
 const formatTime = require("../../functions/formatTime");
 /**
  *
