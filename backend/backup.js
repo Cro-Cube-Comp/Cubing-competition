@@ -35,12 +35,12 @@ async function backupCollections() {
       const filePath = join(backupDir, `${collectionName}-backup.json`);
       await writeFile(filePath, data);
       console.log(
-        `Backup of the '${collectionName}' collection saved successfully.`
+        `Backup of the '${collectionName}' collection saved successfully.`,
       );
     } catch (err) {
       console.error(
         `Error writing to file for collection '${collectionName}':`,
-        err
+        err,
       );
     }
   }
@@ -52,7 +52,7 @@ async function main() {
   await backupCollections();
   console.timeEnd("Backup");
   console.log("DONE...");
-  exit();  
+  exit();
 }
 
 console.log(`Running ${import.meta.file}`);
