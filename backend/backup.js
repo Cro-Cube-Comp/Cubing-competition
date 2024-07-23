@@ -43,12 +43,12 @@ async function main() {
       const filePath = join(backupDir, `${collectionName}-backup.json`);
       await writeFile(filePath, data);
       console.log(
-        `Backup of the '${collectionName}' collection saved successfully.`
+        `Backup of the '${collectionName}' collection saved successfully.`,
       );
     } catch (err) {
       console.error(
         `Error writing to file for collection '${collectionName}':`,
-        err
+        err,
       );
     }
   }
