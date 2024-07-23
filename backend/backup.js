@@ -11,7 +11,7 @@ try {
   await mongoose.connect(process.env.MONGO_URI);
   console.timeEnd("Connect to mongodb");
 } catch (error) {
-  console.error("Failed to connect to MongoDB: \n" + err);
+  console.error("Failed to connect to MongoDB: \n" + error);
   process.exit(1);
 }
 console.log("Connected to mongodb");
@@ -27,19 +27,23 @@ async function main() {
 
   console.log("Connected to the database.");
 
-  const collectionName = "users";
+  const collections = await db.db.listCollections().toArray();
 
-  // Use the native MongoDB driver to get the collection data
-  const collection = db.collection(collectionName);
-  const data = JSON.stringify(await collection.find({}).toArray(), null, 2);
+  for (const collectionInfo of collections) {
+    const collectionName = collectionInfo.name;
+    const collection = db.collection(collectionName);
+    const data = JSON.stringify(await collection.find({}).toArray()); // minified json
 
-  // Write the JSON string to a file
-  try {
-    await writeFile(`${collectionName}-backup.json`, data);
-    console.log(
-      `Backup of the '${collectionName}' collection saved successfully.`
-    );
-  } catch (err) {
-    console.error("Error writing to file:", err);
+    try {
+      await writeFile(`${collectionName}-backup.json`, data);
+      console.log(
+        `Backup of the '${collectionName}' collection saved successfully.`
+      );
+    } catch (err) {
+      console.error(
+        `Error writing to file for collection '${collectionName}':`,
+        err
+      );
+    }
   }
 }
