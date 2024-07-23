@@ -11,7 +11,7 @@ async function updateSolves(
   events,
   round,
   competition,
-  replace = false
+  replace = false,
 ) {
   try {
     // Find the user who is the solver
@@ -21,24 +21,24 @@ async function updateSolves(
     console.time("Add solve");
     // Find the competition the user participated in
     let userCompetition = user.competitions.find((comp) =>
-      comp.competitionId.equals(competition._id)
+      comp.competitionId.equals(competition._id),
     );
     if (!userCompetition) {
       user.competitions.push({ competitionId: competition._id, solves: [] });
       userCompetition = user.competitions.find((comp) =>
-        comp.competitionId.equals(competition._id)
+        comp.competitionId.equals(competition._id),
       );
     }
 
     // Find the event in the user's competition data
     let userEvent = userCompetition.events.find(
-      (event) => event.event === events.event
+      (event) => event.event === events.event,
     );
     if (!userEvent) {
       // If event doesn't exist, create a new one
       userCompetition.events.push({ event: events.event, rounds: [] });
       userEvent = userCompetition.events.find(
-        (event) => event.event === events.event
+        (event) => event.event === events.event,
       );
     }
     // If you add solves to round 2 and there are no solves in round 1, round 1 is null and it needs to be replaced

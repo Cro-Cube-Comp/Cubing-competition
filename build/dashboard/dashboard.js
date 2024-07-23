@@ -61,7 +61,7 @@ async function getCompetitionById(id) {
   try {
     const allCompetitions = await getCompetitions(true);
     const competition = allCompetitions.find(
-      (competition) => competition.id === id
+      (competition) => competition.id === id,
     );
     return competition;
   } catch (error) {
@@ -99,7 +99,7 @@ function addAddSolveListenerToInputs() {
       addSolve(userId, round - 1, solves, event, competitionId);
     });
     const button = document.getElementById(
-      `solve-add-btn-${userId}-${event}-${round}`
+      `solve-add-btn-${userId}-${event}-${round}`,
     );
     button.addEventListener("click", () => {
       const solves = createSolvesArrayFromInput(input);
@@ -149,7 +149,7 @@ async function createCompetitionsHtml(user, compId = undefined) {
   const selectCompHtml = createSelectCompetitionTag(
     allComps,
     user._id,
-    compId
+    compId,
   ).outerHTML;
   compHtml += selectCompHtml;
   if (compId) {
@@ -222,9 +222,8 @@ window.showCompetition = async function (userId, compId = undefined) {
     }).then((response) => response.json());
 
     if (!user) {
-      userDiv.querySelector(
-        ".comp"
-      ).innerHTML = `<p>Korisnik nije pronađen.</p>`;
+      userDiv.querySelector(".comp").innerHTML =
+        `<p>Korisnik nije pronađen.</p>`;
       return;
     }
     const compHtml = await createCompetitionsHtml(user, compId);
@@ -233,9 +232,8 @@ window.showCompetition = async function (userId, compId = undefined) {
     addSwitchCompetitionListeners();
   } catch (error) {
     console.error("Error fetching user data:", error);
-    userDiv.querySelector(
-      ".comp"
-    ).innerHTML = `<p>Error loading competition data.</p>`;
+    userDiv.querySelector(".comp").innerHTML =
+      `<p>Error loading competition data.</p>`;
   } finally {
     showCompBtn.disabled = false;
     showCompBtn.innerHTML = prevHTML;
@@ -369,7 +367,7 @@ window.deleteSolve = async function (
   solveIndex,
   roundIndex,
   eventName,
-  compId
+  compId,
 ) {
   const roundNumber = roundIndex + 1;
   const solveNumber = solveIndex + 1;

@@ -23,7 +23,7 @@ router.get("/", cache(10), verifyToken, isAdmin, async (req, res) => {
     // Set the headers to prompt download on the client side
     res.setHeader(
       "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     );
     res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
     // Pipe the workbook to the response
