@@ -184,10 +184,10 @@ async function loadPosts() {
     const html = createPostHtml(post);
     document.querySelector(".posts").insertAdjacentHTML("beforeend", html);
     attachDeleteEvent(
-      document.querySelector(`.delete-post-btn[data-id="${post.id}"]`)
+      document.querySelector(`.delete-post-btn[data-id="${post.id}"]`),
     );
     attachEditEvent(
-      document.querySelector(`.edit-post-btn[data-id="${post.id}"]`)
+      document.querySelector(`.edit-post-btn[data-id="${post.id}"]`),
     );
   });
 }
@@ -235,7 +235,7 @@ async function openEditPostDialog(id = undefined) {
 async function editPost(
   id = undefined,
   newTitle = undefined,
-  newDescription = undefined
+  newDescription = undefined,
 ) {
   if (
     !id ||
@@ -319,7 +319,7 @@ function underlineSelectedTextFromInput(input = undefined) {
 function hyperlinkSelectedTextFromInput(
   input = undefined,
   url = undefined,
-  newTab = true
+  newTab = true,
 ) {
   if (!input) {
     throw new Error("Param input missing.");
