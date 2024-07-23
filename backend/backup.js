@@ -1,7 +1,8 @@
 import { config } from "dotenv";
 import mongoose from "mongoose";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import { exit } from "process";
+import { join } from "path";
 
 config();
 
@@ -28,14 +29,19 @@ async function main() {
   console.log("Connected to the database.");
 
   const collections = await db.db.listCollections().toArray();
+  const backupDir = "backups";
+
+  // Create the backups directory if it doesn't exist
+  await mkdir(backupDir, { recursive: true });
 
   for (const collectionInfo of collections) {
     const collectionName = collectionInfo.name;
     const collection = db.collection(collectionName);
-    const data = JSON.stringify(await collection.find({}).toArray()); // minified json
+    const data = JSON.stringify(await collection.find({}).toArray());
 
     try {
-      await writeFile(`${collectionName}-backup.json`, data);
+      const filePath = join(backupDir, `${collectionName}-backup.json`);
+      await writeFile(filePath, data);
       console.log(
         `Backup of the '${collectionName}' collection saved successfully.`
       );
