@@ -99,14 +99,14 @@ var $,
           n === 0
             ? yield e === 1 ? this : this.invert()
             : e === 1
-            ? (yield* this.A.experimentalExpand(1, n - 1),
-              yield* this.B.experimentalExpand(1, n - 1),
-              yield* this.A.experimentalExpand(-1, n - 1),
-              yield* this.B.experimentalExpand(-1, n - 1))
-            : (yield* this.B.experimentalExpand(1, n - 1),
-              yield* this.A.experimentalExpand(1, n - 1),
-              yield* this.B.experimentalExpand(-1, n - 1),
-              yield* this.A.experimentalExpand(-1, n - 1));
+              ? (yield* this.A.experimentalExpand(1, n - 1),
+                yield* this.B.experimentalExpand(1, n - 1),
+                yield* this.A.experimentalExpand(-1, n - 1),
+                yield* this.B.experimentalExpand(-1, n - 1))
+              : (yield* this.B.experimentalExpand(1, n - 1),
+                yield* this.A.experimentalExpand(1, n - 1),
+                yield* this.B.experimentalExpand(-1, n - 1),
+                yield* this.A.experimentalExpand(-1, n - 1));
       }
       toString() {
         return `[${r(this, $).toString()}, ${r(this, T).toString()}]`;
@@ -290,7 +290,7 @@ var A,
           l = (h) => {
             if (a)
               throw new Error(
-                `Unexpected character at index ${h}. Are you missing a space?`
+                `Unexpected character at index ${h}. Are you missing a space?`,
               );
           };
         e: for (; r(this, o) < r(this, A).length; ) {
@@ -314,7 +314,7 @@ var A,
                 N = g(
                   new i(new B("U_SQ_"), parseInt(c)),
                   h + 1,
-                  h + 1 + c.length
+                  h + 1 + c.length,
                 ),
                 b = g(new i(new B("D_SQ_"), parseInt(L[1])), p, r(this, o) - 1),
                 J = g(new u([N, b]), h + 1, r(this, o) - 1);
@@ -330,7 +330,7 @@ var A,
           } else if (this.tryConsumeNext("^")) {
             if (!Be.caratNISSNotationEnabled)
               throw new Error(
-                "Alg contained a carat but carat NISS notation is not enabled."
+                "Alg contained a carat but carat NISS notation is not enabled.",
               );
             this.mustConsumeNext("(");
             let S = this.parseAlgWithStopping([")"]);
@@ -404,15 +404,15 @@ var A,
           if (n < 0) throw new Error("uh-oh");
           if ((a === "++" || a === "--") && n !== 1)
             throw new Error(
-              "Pochmann ++ or -- moves cannot have an amount other than 1."
+              "Pochmann ++ or -- moves cannot have an amount other than 1.",
             );
           if ((a === "++" || a === "--") && !s)
             throw new Error(
-              "Pochmann ++ or -- moves cannot have an amount written as a number."
+              "Pochmann ++ or -- moves cannot have an amount written as a number.",
             );
           if ((a === "+" || a === "-") && s)
             throw new Error(
-              "Clock dial moves must have an amount written as a natural number followed by + or -."
+              "Clock dial moves must have an amount written as a natural number followed by + or -.",
             );
           a.startsWith("+") &&
             (e = e.modified({
@@ -432,17 +432,17 @@ var A,
             ? "++"
             : "+"
           : this.tryConsumeNext("-")
-          ? this.tryConsumeNext("-")
-            ? "--"
-            : "-"
-          : null;
+            ? this.tryConsumeNext("-")
+              ? "--"
+              : "-"
+            : null;
       }
       parseAmountAndTrackEmptyAbsAmount() {
         let t = r(this, o),
           [, e, n] = this.parseRegex(oe);
         if (e?.startsWith("0") && e !== "0")
           throw new Error(
-            `Error at char index ${t}: An amount can only start with 0 if it's exactly the digit 0.`
+            `Error at char index ${t}: An amount can only start with 0 if it's exactly the digit 0.`,
           );
         return [ee(e, 1) * (n === "'" ? -1 : 1), !e];
       }
@@ -451,7 +451,7 @@ var A,
           [, e, n] = this.parseRegex(oe);
         if (e?.startsWith("0") && e !== "0")
           throw new Error(
-            `Error at char index ${t}: An amount number can only start with 0 if it's exactly the digit 0.`
+            `Error at char index ${t}: An amount number can only start with 0 if it's exactly the digit 0.`,
           );
         return ee(e, 1) * (n === "'" ? -1 : 1);
       }
@@ -497,7 +497,7 @@ var ie = class {
         !Number.isInteger(this.amount) || this.amount < Pe || this.amount > ne)
       )
         throw new Error(
-          `AlgNode amount absolute value must be a non-negative integer below ${re}.`
+          `AlgNode amount absolute value must be a non-negative integer below ${re}.`,
         );
     }
     suffix() {
@@ -536,14 +536,14 @@ var ie = class {
               r(this, d) > ne))
         )
           throw new Error(
-            `QuantumMove inner layer must be a positive integer below ${re}.`
+            `QuantumMove inner layer must be a positive integer below ${re}.`,
           );
         if (
           r(this, x) !== null &&
           (!Number.isInteger(r(this, x)) || r(this, x) < 1 || r(this, x) > ne)
         )
           throw new Error(
-            `QuantumMove outer layer must be a positive integer below ${re}.`
+            `QuantumMove outer layer must be a positive integer below ${re}.`,
           );
         if (
           r(this, x) !== null &&
@@ -551,11 +551,11 @@ var ie = class {
           r(this, d) <= r(this, x)
         )
           throw new Error(
-            "QuantumMove outer layer must be smaller than inner layer."
+            "QuantumMove outer layer must be smaller than inner layer.",
           );
         if (r(this, x) !== null && r(this, d) === null)
           throw new Error(
-            "QuantumMove with an outer layer must have an inner layer"
+            "QuantumMove with an outer layer must have an inner layer",
           );
       }
       static fromString(e) {
@@ -565,7 +565,7 @@ var ie = class {
         return new B(
           e.family ?? r(this, q),
           e.innerLayer ?? r(this, d),
-          e.outerLayer ?? r(this, x)
+          e.outerLayer ?? r(this, x),
         );
       }
       isIdentical(e) {
@@ -588,7 +588,7 @@ var ie = class {
       }
       experimentalExpand() {
         throw new Error(
-          "experimentalExpand() cannot be called on a `QuantumMove` directly."
+          "experimentalExpand() cannot be called on a `QuantumMove` directly.",
         );
       }
       toString() {
@@ -694,7 +694,7 @@ var ie = class {
         ) {
           if (t.amount !== 1)
             throw new Error(
-              "Square-1 tuples cannot have an amount other than 1."
+              "Square-1 tuples cannot have an amount other than 1.",
             );
           return [n, s];
         }
@@ -800,7 +800,7 @@ var je = "any-direction",
     }
     cancelQuantum() {
       let { cancel: t } = this.config;
-      return t === !0 ? je : t === !1 ? "none" : t?.directional ?? "none";
+      return t === !0 ? je : t === !1 ? "none" : (t?.directional ?? "none");
     }
     cancelAny() {
       return this.config.cancel && this.cancelQuantum() !== "none";
@@ -810,10 +810,10 @@ var je = "any-direction",
       return t === !0 || t === !1
         ? "canonical-centered"
         : t?.puzzleSpecificModWrap
-        ? t?.puzzleSpecificModWrap
-        : t?.directional === "same-direction"
-        ? "preserve-sign"
-        : "canonical-centered";
+          ? t?.puzzleSpecificModWrap
+          : t?.directional === "same-direction"
+            ? "preserve-sign"
+            : "canonical-centered";
     }
     puzzleSpecificSimplifyOptions() {
       return (
@@ -890,13 +890,13 @@ function Ze(t, e, n) {
     if (p)
       l = p.simplifySameAxisMoves(
         J,
-        s.cancelPuzzleSpecificModWrap() !== "none"
+        s.cancelPuzzleSpecificModWrap() !== "none",
       );
     else {
       let M = J.reduce((G, Y) => G + Y.amount, 0);
       if (N.size !== 1)
         throw new Error(
-          "Internal error: multiple quantums when one was expected"
+          "Internal error: multiple quantums when one was expected",
         );
       l = [new i(e.quantum, M)];
     }
@@ -944,7 +944,7 @@ var K,
         if (e.amount === 0) return;
         let s = new C(
           this.traverseAlg(e.alg, R(this, W, H).call(this, n)),
-          e.amount
+          e.amount,
         );
         if (s.alg.experimentalIsEmpty()) return;
         let a = R(this, V, se).call(this).get(e);
@@ -1131,9 +1131,9 @@ function tt(t, e) {
   return t.is(z) || e.is(z) || e.as(C)?.experimentalNISSPlaceholder
     ? ""
     : t.is(X) && !e.is(z)
-    ? `
+      ? `
 `
-    : " ";
+      : " ";
 }
 var it = {
     Sune: new u([
@@ -1157,7 +1157,7 @@ var it = {
     SuneCommutator: new u([
       new I(
         new u([new i("R", 1), new i("U", 1), new i("R", -2)]),
-        new u([new E(new u([new i("R", 1)]), new u([new i("U", 1)]))])
+        new u([new E(new u([new i("R", 1)]), new u([new i("U", 1)]))]),
       ),
     ]),
     Niklas: new u([
@@ -1174,18 +1174,18 @@ var it = {
       new i("x", -1),
       new I(
         new u([new E(new u([new i("R", 1)]), new u([new i("U", -1)]))]),
-        new u([new i("D", 1)])
+        new u([new i("D", 1)]),
       ),
       new I(
         new u([new E(new u([new i("R", 1)]), new u([new i("U", 1)]))]),
-        new u([new i("D", 1)])
+        new u([new i("D", 1)]),
       ),
       new i("x", 1),
     ]),
     FURURFCompact: new u([
       new E(
         new u([new i("F", 1)]),
-        new u([new I(new u([new i("U", 1)]), new u([new i("R", 1)]))])
+        new u([new I(new u([new i("U", 1)]), new u([new i("R", 1)]))]),
       ),
     ]),
     APermCompact: new u([
@@ -1194,9 +1194,9 @@ var it = {
         new u([
           new I(
             new u([new i("F", 2)]),
-            new u([new i("R", -1), new i("B", -1), new i("R", 1)])
+            new u([new i("R", -1), new i("B", -1), new i("R", 1)]),
           ),
-        ])
+        ]),
       ),
     ]),
     FURURFMoves: new u([
@@ -1229,9 +1229,9 @@ var it = {
         new u([
           new C(
             new u([new I(new u([new i("R", 1)]), new u([new i("U", 1)]))]),
-            3
+            3,
           ),
-        ])
+        ]),
       ),
     ]),
     TriplePause: new u([new _(), new _(), new _()]),

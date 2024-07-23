@@ -100,7 +100,7 @@ var G = class {
       let t = ft(
         e.kpuzzle.definition,
         e.kpuzzle.definition.startStateData,
-        e.transformationData
+        e.transformationData,
       );
       return new G(e.kpuzzle, t);
     }
@@ -131,7 +131,7 @@ var G = class {
     experimentalIsSolved(e) {
       if (!this.kpuzzle.definition.experimentalIsStateSolved)
         throw new Error(
-          "`KState.experimentalIsSolved()` is not supported for this puzzle at the moment."
+          "`KState.experimentalIsSolved()` is not supported for this puzzle at the moment.",
         );
       return this.kpuzzle.definition.experimentalIsStateSolved(this, e);
     }
@@ -172,20 +172,20 @@ var G = class {
       applyTransformation(e) {
         if (this.kpuzzle !== e.kpuzzle)
           throw new Error(
-            `Tried to apply a transformation for a KPuzzle (${e.kpuzzle.name()}) to a different KPuzzle (${this.kpuzzle.name()}).`
+            `Tried to apply a transformation for a KPuzzle (${e.kpuzzle.name()}) to a different KPuzzle (${this.kpuzzle.name()}).`,
           );
         return c(this, P)
           ? new D(this.kpuzzle, e.transformationData)
           : c(e, P)
-          ? new D(this.kpuzzle, this.transformationData)
-          : new D(
-              this.kpuzzle,
-              je(
-                this.kpuzzle.definition,
-                this.transformationData,
-                e.transformationData
-              )
-            );
+            ? new D(this.kpuzzle, this.transformationData)
+            : new D(
+                this.kpuzzle,
+                je(
+                  this.kpuzzle.definition,
+                  this.transformationData,
+                  e.transformationData,
+                ),
+              );
       }
       applyMove(e) {
         return this.applyTransformation(this.kpuzzle.moveToTransformation(e));
@@ -374,10 +374,10 @@ var F,
         return typeof e == "string"
           ? this.algToTransformation(e)
           : e?.is?.(q)
-          ? this.algToTransformation(e)
-          : e?.is?.(T)
-          ? this.moveToTransformation(e)
-          : e;
+            ? this.algToTransformation(e)
+            : e?.is?.(T)
+              ? this.moveToTransformation(e)
+              : e;
       }
       startState() {
         return new G(this, this.definition.startStateData);
@@ -396,7 +396,7 @@ var F,
                 for (let i of r) if (!i) return !1;
               }
               return !0;
-            })()
+            })(),
           )
         );
       }
@@ -411,10 +411,10 @@ function zi(e, t, r, i, n) {
   return s === null
     ? E
     : typeof s == "string"
-    ? s
-    : n
-    ? s.hintMask ?? s.mask
-    : (console.log(s), s.mask);
+      ? s
+      : n
+        ? (s.hintMask ?? s.mask)
+        : (console.log(s), s.mask);
 }
 var B = class {
     constructor(e, t) {
@@ -753,7 +753,7 @@ async function J(e, t) {
         i.set(n.and([n.or(n.moves(["U", "F", "R"])), d()]), "Dim"),
         i.set(
           n.and([n.move("F"), n.not(n.or(n.moves(["U", "R"])))]),
-          "Regular"
+          "Regular",
         );
       break;
     }
@@ -772,7 +772,7 @@ async function J(e, t) {
     }
     default:
       console.warn(
-        `Unsupported stickering for ${e.id}: ${t}. Setting all pieces to dim.`
+        `Unsupported stickering for ${e.id}: ${t}. Setting all pieces to dim.`,
       ),
         i.set(n.and(n.moves([])), "Dim");
   }
@@ -856,7 +856,7 @@ var pe,
         u(this, ve, void 0);
         u(this, xe, void 0);
         (this.puzzleSpecificSimplifyOptionsPromise = bt(
-          this.kpuzzle.bind(this)
+          this.kpuzzle.bind(this),
         )),
           (this.pgId = e.pgID),
           (this.id = e.id),
@@ -1319,8 +1319,8 @@ var kt = {
       new k(
         (
           await import("./puzzles-dynamic-side-events-S25NGSZR-V75ZYFJ2.js")
-        ).cube2x2x2JSON
-      )
+        ).cube2x2x2JSON,
+      ),
   ),
   svg: async () =>
     (await import("./puzzles-dynamic-side-events-S25NGSZR-V75ZYFJ2.js"))
@@ -1399,7 +1399,7 @@ function Et(e, t) {
   let r = Tt[e][t]?.[0];
   if (!r)
     throw new Error(
-      `Could not find a reference move (axis: ${e}, move source type: ${t})`
+      `Could not find a reference move (axis: ${e}, move source type: ${t})`,
     );
   return r;
 }
@@ -1494,12 +1494,12 @@ var Pn = {
     svg: v(
       async () =>
         (await import("./puzzles-dynamic-3x3x3-QN5DUJUA-LUB5BYWK.js"))
-          .cube3x3x3SVG
+          .cube3x3x3SVG,
     ),
     llSVG: v(
       async () =>
         (await import("./puzzles-dynamic-3x3x3-QN5DUJUA-LUB5BYWK.js"))
-          .cube3x3x3LLSVG
+          .cube3x3x3LLSVG,
     ),
     pg: v(async () => ge("3x3x3")),
     stickeringMask: (e) => J(Rt, e),
@@ -1516,13 +1516,13 @@ var Pn = {
         new k(
           (
             await import("./puzzles-dynamic-side-events-S25NGSZR-V75ZYFJ2.js")
-          ).clockJSON
-        )
+          ).clockJSON,
+        ),
     ),
     svg: v(
       async () =>
         (await import("./puzzles-dynamic-side-events-S25NGSZR-V75ZYFJ2.js"))
-          .clockSVG
+          .clockSVG,
     ),
   };
 async function Cn(e, t) {
@@ -1543,7 +1543,7 @@ async function Cn(e, t) {
           n.and([n.move("F"), n.move("BL")]),
           n.and([n.move("F"), n.move("BR")]),
           n.and([n.move("BL"), n.move("BR")]),
-        ])
+        ]),
       ),
     h = () =>
       n.not(
@@ -1551,7 +1551,7 @@ async function Cn(e, t) {
           n.and([n.move("F"), n.move("BL")]),
           n.and([n.move("F"), n.move("BR")]),
           n.and([n.move("BL"), n.move("BR")]),
-        ])
+        ]),
       );
   switch (t) {
     case "full":
@@ -1582,7 +1582,7 @@ async function Cn(e, t) {
     }
     default:
       console.warn(
-        `Unsupported stickering for ${e.id}: ${t}. Setting all pieces to dim.`
+        `Unsupported stickering for ${e.id}: ${t}. Setting all pieces to dim.`,
       ),
         i.set(n.and(n.moves([])), "Dim");
   }
@@ -1612,7 +1612,7 @@ var Nn = class extends I {
         (this.svg = v(
           async () =>
             (await import("./puzzles-dynamic-unofficial-QXSDLTK5-B722FFJC.js"))
-              .ftoSVG
+              .ftoSVG,
         ));
     }
     stickeringMask(e) {
@@ -1634,7 +1634,7 @@ async function Fn(e, t) {
       return J(e, t);
     default:
       console.warn(
-        `Unsupported stickering for ${e.id}: ${t}. Setting all pieces to dim.`
+        `Unsupported stickering for ${e.id}: ${t}. Setting all pieces to dim.`,
       );
   }
   return J(e, "full");
@@ -1662,7 +1662,7 @@ var An = class extends I {
         (this.svg = v(
           async () =>
             (await import("./puzzles-dynamic-side-events-S25NGSZR-V75ZYFJ2.js"))
-              .pyraminxSVG
+              .pyraminxSVG,
         ));
     }
   },
@@ -1677,13 +1677,13 @@ var An = class extends I {
         new k(
           (
             await import("./puzzles-dynamic-side-events-S25NGSZR-V75ZYFJ2.js")
-          ).sq1HyperOrbitJSON
-        )
+          ).sq1HyperOrbitJSON,
+        ),
     ),
     svg: v(
       async () =>
         (await import("./puzzles-dynamic-side-events-S25NGSZR-V75ZYFJ2.js"))
-          .sq1HyperOrbitSVG
+          .sq1HyperOrbitSVG,
     ),
   },
   Yn = {
@@ -1714,7 +1714,7 @@ var An = class extends I {
     svg: v(
       async () =>
         (await import("./puzzles-dynamic-unofficial-QXSDLTK5-B722FFJC.js"))
-          .kilominxSVG
+          .kilominxSVG,
     ),
   },
   Kn = {
@@ -1727,8 +1727,8 @@ var An = class extends I {
         new k(
           (
             await import("./puzzles-dynamic-unofficial-QXSDLTK5-B722FFJC.js")
-          ).rediCubeJSON
-        )
+          ).rediCubeJSON,
+        ),
     ),
     svg: async () =>
       (await import("./puzzles-dynamic-unofficial-QXSDLTK5-B722FFJC.js"))
@@ -1738,7 +1738,7 @@ var An = class extends I {
 Pt.llSVG = v(
   async () =>
     (await import("./puzzles-dynamic-4x4x4-DT42HVIY-YJ72NI54.js"))
-      .cube4x4x4LLSVG
+      .cube4x4x4LLSVG,
 );
 var Hn = {
     id: "melindas2x2x2x2",
@@ -1749,13 +1749,13 @@ var Hn = {
         new k(
           (
             await import("./puzzles-dynamic-side-events-S25NGSZR-V75ZYFJ2.js")
-          ).melindas2x2x2x2OrbitJSON
-        )
+          ).melindas2x2x2x2OrbitJSON,
+        ),
     ),
     svg: v(
       async () =>
         (await import("./puzzles-dynamic-side-events-S25NGSZR-V75ZYFJ2.js"))
-          .melindas2x2x2x2OrbitSVG
+          .melindas2x2x2x2OrbitSVG,
     ),
   },
   Ai = {
@@ -1912,7 +1912,7 @@ var Ae,
         l(
           this,
           L,
-          Ze(() => this.getDefaultValue())
+          Ze(() => this.getDefaultValue()),
         ),
           t && l(this, L, this.deriveFromPromiseOrValue(t, c(this, L)));
       }
@@ -1965,7 +1965,7 @@ var Ae,
             this,
             b(this, Ue, $t).call(this),
             t,
-            c(this, ze)
+            c(this, ze),
           ),
         };
         return l(this, ne, r), this.userVisibleErrorTracker?.reset(), r.output;
@@ -2149,7 +2149,7 @@ var we = globalThis.performance,
             e.preventDefault(),
               this.showPanel(++this.mode % this.dom.children.length);
           },
-          !1
+          !1,
         ),
         this.showPanel(0);
     }
@@ -2178,7 +2178,7 @@ var we = globalThis.performance,
         let t = we.memory;
         this.memPanel.update(
           t.usedJSHeapSize / 1048576,
-          t.jsHeapSizeLimit / 1048576
+          t.jsHeapSizeLimit / 1048576,
         );
       }
       return e;
@@ -2228,10 +2228,10 @@ var we = globalThis.performance,
         (this.context.fillStyle = this.fg),
         this.context.fillText(
           `${Math.round(e)} ${this.name} (${Math.round(this.min)}-${Math.round(
-            this.max
+            this.max,
           )})`,
           Ct,
-          Ot
+          Ot,
         ),
         this.context.drawImage(
           this.dom,
@@ -2242,7 +2242,7 @@ var we = globalThis.performance,
           Q,
           U,
           ee - w,
-          te
+          te,
         ),
         this.context.fillRect(Q + ee - w, U, w, te),
         (this.context.fillStyle = this.bg),
@@ -2509,7 +2509,7 @@ var ci = class {
       (t = e.detail).attachedInfo ?? (t.attachedInfo = {});
       let { temperedX: r, temperedY: i } = this.onMovement(
           e.detail.movementX,
-          e.detail.movementY
+          e.detail.movementY,
         ),
         n = e.detail.attachedInfo;
       (n.lastTemperedX = r * 10),
@@ -2529,7 +2529,7 @@ var ci = class {
               latitude: o.latitude + 2 * a * Me * r,
               longitude: o.longitude - 2 * n * Me,
             };
-          })()
+          })(),
         ),
         { temperedX: n, temperedY: a }
       );
@@ -2544,7 +2544,7 @@ var ci = class {
             e.timeStamp,
             e.detail.attachedInfo.lastTemperedX,
             e.detail.attachedInfo.lastTemperedY,
-            this.onMovementBound
+            this.onMovementBound,
           );
     }
   };
@@ -2552,7 +2552,7 @@ async function ui(e, t, r = !1) {
   let i = new (await Ge).Spherical(
     t.distance,
     (90 - (r ? -1 : 1) * t.latitude) / Me,
-    ((r ? 180 : 0) + t.longitude) / Me
+    ((r ? 180 : 0) + t.longitude) / Me,
   );
   i.makeSafe(), e.position.setFromSpherical(i), e.lookAt(0, 0, 0);
 }
@@ -2563,8 +2563,8 @@ function di() {
   return Ne.shareAllNewRenderers !== "auto"
     ? (Ne.shareAllNewRenderers || rt++, Ne.shareAllNewRenderers !== "never")
     : rt < mi
-    ? (rt++, !1)
-    : ((nn = !0), !0);
+      ? (rt++, !1)
+      : ((nn = !0), !0);
 }
 function Xi() {
   return nn;
@@ -2624,7 +2624,7 @@ var He,
           l(this, Le, new Zt(this.render.bind(this))),
           (this.scene = r ?? null),
           (this.loadingElement = this.addElement(
-            document.createElement("div")
+            document.createElement("div"),
           )),
           this.loadingElement.classList.add("loading"),
           Ne.showRenderStats &&
@@ -2637,7 +2637,7 @@ var He,
           this.addElement((await this.canvasInfo()).canvas),
           b(this, ke, ct).call(this),
           new ResizeObserver(b(this, ke, ct).bind(this)).observe(
-            this.contentWrapper
+            this.contentWrapper,
           ),
           this.orbitControls(),
           b(this, He, rn).call(this),
@@ -2674,7 +2674,7 @@ var He,
               this.loadingElement?.remove();
               let r = t.getContext("2d");
               return { canvas: t, context: r };
-            })()
+            })(),
           )
         );
       }
@@ -2689,13 +2689,13 @@ var He,
               return (
                 t.position.copy(
                   new (await Ge).Vector3(2, 4, 4).multiplyScalar(
-                    this.options?.backView ? -1 : 1
-                  )
+                    this.options?.backView ? -1 : 1,
+                  ),
                 ),
                 t.lookAt(0, 0, 0),
                 t
               );
-            })()
+            })(),
           )
         );
       }
@@ -2710,7 +2710,7 @@ var He,
                 this.model,
                 !!this.options?.backView,
                 (await this.canvasInfo()).canvas,
-                await b(this, Te, lt).call(this)
+                await b(this, Te, lt).call(this),
               );
               return (
                 this.model &&
@@ -2719,11 +2719,11 @@ var He,
                     async (r) => {
                       let i = await this.camera();
                       ui(i, r, this.options?.backView), this.scheduleRender();
-                    }
+                    },
                   ),
                 t
               );
-            })()
+            })(),
           )
         );
       }
@@ -2770,9 +2770,9 @@ var He,
             this.dispatchEvent(
               new CustomEvent("press", {
                 detail: { pressInfo: r.detail, cameraPromise: this.camera() },
-              })
+              }),
             );
-        }
+        },
       );
     }),
     (Ee = new WeakMap()),
@@ -2832,7 +2832,7 @@ var He,
               }),
               t
             );
-          })()
+          })(),
         )
       );
     }),

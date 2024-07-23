@@ -30,7 +30,7 @@ router.put("/edit/:id", verifyToken, isAdmin, findUser, async (req, res) => {
       },
       {
         new: true,
-      }
+      },
     );
     if (!post) {
       return res.status(404).json({ message: "Objava nije pronađena." });

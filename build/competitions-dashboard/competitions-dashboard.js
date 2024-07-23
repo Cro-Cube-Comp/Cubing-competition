@@ -45,8 +45,8 @@ async function createCompetitionHtml(competition) {
     <button id="lock-btn-${
       competition._id
     }" class="lock-button ${lockedClass}"><img src="${
-    competition.isLocked ? "../Images/unlocked.svg" : "../Images/locked.svg"
-  }"></button>
+      competition.isLocked ? "../Images/unlocked.svg" : "../Images/locked.svg"
+    }"></button>
   </div>`;
   return html;
 }
@@ -124,7 +124,7 @@ function createEditCompModal(id, comp) {
         .map((event) => {
           return { name: event.trim(), rounds: 3 };
         })
-        .filter((event) => event.name) // Remove empty strings which show up after using 2 spaces
+        .filter((event) => event.name), // Remove empty strings which show up after using 2 spaces
     );
     modal.close();
     if (result.success) {
@@ -171,7 +171,7 @@ async function makeAndInsertCompetitions() {
       console.error(
         `Error locking competition: ${result.parsed.message}
         
-        Status: ${result.status}`
+        Status: ${result.status}`,
       );
       alert("Greška prilikom zaključavanja natjecanja");
     });
@@ -239,7 +239,7 @@ function addListenerToCreateComp(modal) {
         .map((event) => {
           return { name: event.trim(), rounds: 3 };
         })
-        .filter((event) => event.name) // Remove empty strings which show up after using 2 spaces
+        .filter((event) => event.name), // Remove empty strings which show up after using 2 spaces
     );
     modal.close();
     if (result.success) {

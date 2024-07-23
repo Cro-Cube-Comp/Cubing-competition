@@ -3,8 +3,8 @@ function getAverage(solves) {
   return typeof noFormatAverage === "string"
     ? formatTime(noFormatAverage)
     : noFormatAverage === -1
-    ? "Potrebno 5 slaganja"
-    : "DNF";
+      ? "Potrebno 5 slaganja"
+      : "DNF";
 }
 function formatTime(seconds) {
   // Convert seconds to milliseconds without rounding
