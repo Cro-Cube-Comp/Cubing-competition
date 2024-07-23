@@ -10,7 +10,7 @@
 # supported CodeQL languages.
 #
 name: "CodeQL"
-
+permissions: write-all
 on:
   push:
     branches: ["main"]

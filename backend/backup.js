@@ -52,7 +52,7 @@ async function main() {
   await backupCollections();
   console.timeEnd("Backup");
   console.log("DONE...");
-  exit();
+  exit();  
 }
 
 console.log(`Running ${import.meta.file}`);
