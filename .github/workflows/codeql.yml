@@ -12,10 +12,6 @@
 name: "CodeQL"
 
 on:
-  workflow_run:
-    workflows: ["Prettify code"]
-    types:
-      - completed
   push:
     branches: ["main"]
   pull_request:
@@ -25,7 +21,7 @@ on:
 
 jobs:
   analyze:
-    name: Analyze (${{ matrix.language }})
+    name: Analyze (${{ matrix.language }}) &  Prettier
     # Runner size impacts CodeQL analysis time. To learn more, please see:
     #   - https://gh.io/recommended-hardware-resources-for-running-codeql
     #   - https://gh.io/supported-runners-and-hardware-resources
@@ -61,6 +57,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # Make sure the actual branch is checked out when running on pull requests
+          ref: ${{ github.head_ref }}
+      # Prettify code before analysis
+      - name: Run Prettier
+        uses: creyD/prettier_action@v4.3
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
