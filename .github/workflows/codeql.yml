@@ -9,9 +9,7 @@
 # the `language` matrix defined below to confirm you have the correct set of
 # supported CodeQL languages.
 #
-name: "CodeQL & Prettier"
-
-permissions: write-all
+name: "CodeQL"
 
 on:
   push:
@@ -22,21 +20,8 @@ on:
     - cron: "19 18 * * 3"
 
 jobs:
-  prettier:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          # Make sure the actual branch is checked out when running on pull requests
-          token: ${{ secrets.PAT }}
-
-      - name: Prettify code
-        uses: creyD/prettier_action@v4.3
-
   analyze:
-    name: Analyze (${{ matrix.language }}) &  Prettier
+    name: Analyze (${{ matrix.language }})
     # Runner size impacts CodeQL analysis time. To learn more, please see:
     #   - https://gh.io/recommended-hardware-resources-for-running-codeql
     #   - https://gh.io/supported-runners-and-hardware-resources
@@ -72,6 +57,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
