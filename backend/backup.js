@@ -18,7 +18,7 @@ async function connectToDatabase() {
   }
 }
 
-async function backupCollections   () {
+async function backupCollections() {
   const db = mongoose.connection;
   db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
@@ -35,12 +35,12 @@ async function backupCollections   () {
       const filePath = join(backupDir, `${collectionName}-backup.json`);
       await writeFile(filePath, data);
       console.log(
-        `Backup of the '${collectionName}' collection saved successfully.`,
+        `Backup of the '${collectionName}' collection saved successfully.`
       );
     } catch (err) {
       console.error(
         `Error writing to file for collection '${collectionName}':`,
-        err,
+        err
       );
     }
   }
