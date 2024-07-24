@@ -28,7 +28,7 @@ function zipFolder(sourceFolder, outPath) {
   output.on("close", () => {
     console.log(`${archive.pointer()} total bytes`);
     console.log(
-      "Archiver has been finalized and the output file descriptor has closed."
+      "Archiver has been finalized and the output file descriptor has closed.",
     );
   });
 
