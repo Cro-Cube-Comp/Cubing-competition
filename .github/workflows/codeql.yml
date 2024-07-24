@@ -12,10 +12,6 @@
 name: "CodeQL"
 
 on:
-  workflow_run:
-    workflows: ["Prettify code"]
-    types:
-      - completed
   push:
     branches: ["main"]
   pull_request:

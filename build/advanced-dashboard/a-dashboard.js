@@ -22,7 +22,14 @@ function getResults() {
   downloadFile(resultsUrl, "results"); // You can specify the desired file name
   getResultsBtn.disabled = false;
 }
-
+const backupsBtn = document.querySelector(".backups");
+backupsBtn.addEventListener("click", getBackups);
+function getBackups() {
+  backupsBtn.disabled = true;
+  const backupsUrl = addToken(`${url}/backup`);
+  downloadFile(backupsUrl, "backups"); // You can specify the desired file name
+  backupsBtn.disabled = false;
+}
 async function changePassword(username, newPassword) {
   const body = {
     username,
