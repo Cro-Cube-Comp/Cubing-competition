@@ -16,6 +16,7 @@ const generalLimiter = require("./rateLimiter/general");
 const isRateLimitingEnabled = require("./config/isRateLimitingEnabled");
 
 const cookieParser = require("cookie-parser");
+const csrf = require("lusca").csrf;
 
 console.timeEnd("Imports");
 console.log(`Running ${__filename}`);
@@ -24,8 +25,6 @@ dotenv.config();
 
 // Create an express app
 const app = express();
-// Cookie parser middleware
-app.use(cookieParser());
 // Use JSON middleware to parse the request body
 app.use(express.json());
 // Rate limiting middleware
@@ -60,6 +59,9 @@ app.use(
     secure: Boolean(process.env.PRODUCTION), // Use secure cookies in production
   })
 );
+// Cookie parser middleware
+app.use(cookieParser());
+app.use(csrf()); // CSRF protection
 // Cookies
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Credentials", "true"); // Cookies
