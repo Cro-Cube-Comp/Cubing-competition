@@ -56,7 +56,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: { maxAge: 1000 * 60 * 60 * 24 },
-    secure: Boolean(process.env.PRODUCTION), // Use secure cookies in production
+    secure: !process.env.UNSECURE_COOKIES, // Use secure cookies in production
   })
 );
 // Cookie parser middleware
