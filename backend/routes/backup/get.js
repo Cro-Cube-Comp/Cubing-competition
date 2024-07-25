@@ -3,14 +3,14 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const router = express.Router();
-const verifyToken = require("../../middleware/verifyToken");
+const verifyUser = require("../../middleware/verifyUser");
 const isAdmin = require("../../utils/helpers/isAdmin");
 const archiver = require("archiver");
 const backupsPath = path.join(__dirname, "../../backups");
 const backupPath = path.join(__dirname, "../../backups.zip");
 zipFolder(backupsPath, backupPath);
 
-router.get("/", verifyToken, isAdmin, async (req, res) => {
+router.get("/", verifyUser, isAdmin, async (req, res) => {
   try {
     return res.status(200).sendFile(backupPath);
   } catch (error) {

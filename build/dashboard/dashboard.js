@@ -3,14 +3,7 @@ import {
   formatTime,
   getAverage,
 } from "../Scripts/solveTime.js";
-import {
-  getRole,
-  getId,
-  getToken,
-  tokenValid,
-  isUser,
-  addToken,
-} from "../Scripts/credentials.js";
+import { getRole, getId, tokenValid, isUser } from "../Scripts/credentials.js";
 import { url, loadingHTML } from "../Scripts/variables.js";
 const usersDiv = document.querySelector(".users");
 window.setWinner = async function (winnerId) {
@@ -36,7 +29,8 @@ async function announceWinner(winnerId) {
   const response = await fetch(`${url}/winner/announce`, {
     method: "POST",
     body: JSON.stringify({ id: winnerId }),
-    headers: addToken({ "Content-Type": "application/json" }),
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -61,7 +55,7 @@ async function getCompetitionById(id) {
   try {
     const allCompetitions = await getCompetitions(true);
     const competition = allCompetitions.find(
-      (competition) => competition.id === id,
+      (competition) => competition.id === id
     );
     return competition;
   } catch (error) {
@@ -99,7 +93,7 @@ function addAddSolveListenerToInputs() {
       addSolve(userId, round - 1, solves, event, competitionId);
     });
     const button = document.getElementById(
-      `solve-add-btn-${userId}-${event}-${round}`,
+      `solve-add-btn-${userId}-${event}-${round}`
     );
     button.addEventListener("click", () => {
       const solves = createSolvesArrayFromInput(input);
@@ -149,7 +143,7 @@ async function createCompetitionsHtml(user, compId = undefined) {
   const selectCompHtml = createSelectCompetitionTag(
     allComps,
     user._id,
-    compId,
+    compId
   ).outerHTML;
   compHtml += selectCompHtml;
   if (compId) {
@@ -218,12 +212,14 @@ window.showCompetition = async function (userId, compId = undefined) {
 
   try {
     const user = await fetch(`${url}/users/${userId}`, {
-      headers: addToken({}),
+      headers: {},
+      credentials: "include",
     }).then((response) => response.json());
 
     if (!user) {
-      userDiv.querySelector(".comp").innerHTML =
-        `<p>Korisnik nije pronađen.</p>`;
+      userDiv.querySelector(
+        ".comp"
+      ).innerHTML = `<p>Korisnik nije pronađen.</p>`;
       return;
     }
     const compHtml = await createCompetitionsHtml(user, compId);
@@ -232,8 +228,9 @@ window.showCompetition = async function (userId, compId = undefined) {
     addSwitchCompetitionListeners();
   } catch (error) {
     console.error("Error fetching user data:", error);
-    userDiv.querySelector(".comp").innerHTML =
-      `<p>Error loading competition data.</p>`;
+    userDiv.querySelector(
+      ".comp"
+    ).innerHTML = `<p>Error loading competition data.</p>`;
   } finally {
     showCompBtn.disabled = false;
     showCompBtn.innerHTML = prevHTML;
@@ -254,10 +251,11 @@ async function addSolve(userId, roundIndex, solves, event, competitionId) {
   // Šalje podatke na server
   const response = await fetch(`${url}/solves/add/${userId}`, {
     method: "POST",
-    headers: addToken({
+    headers: {
       "Content-Type": "application/json",
-    }),
+    },
     body: JSON.stringify(solveData),
+    credentials: "include",
   });
 
   const data = await response.json();
@@ -278,12 +276,12 @@ async function addSolve(userId, roundIndex, solves, event, competitionId) {
   return response.status;
 }
 window.getUsers = async function () {
-  const body = {
+  const reqOptions = {
     method: "GET",
-    headers: addToken({}),
+    credentials: "include",
   };
   try {
-    const data = await fetch(`${url}/users/all`, body);
+    const data = await fetch(`${url}/users/all`, reqOptions);
     const result = await data.json();
     return result;
   } catch (error) {
@@ -301,6 +299,7 @@ window.deleteUser = async function (id) {
     const body = {
       method: "DELETE",
       headers: addToken({}),
+      credentials: "include",
     };
     const data = await fetch(`${url}/users/${id}`, body);
     const result = await data.json();
@@ -319,7 +318,7 @@ window.deleteUser = async function (id) {
 window.assignAdmin = async function (id, username) {
   const body = {
     method: "POST",
-    headers: addToken({}),
+    credentials: "include",
   };
   try {
     const data = await fetch(`${url}/admin/assign/${id}`, body);
@@ -367,7 +366,7 @@ window.deleteSolve = async function (
   solveIndex,
   roundIndex,
   eventName,
-  compId,
+  compId
 ) {
   const roundNumber = roundIndex + 1;
   const solveNumber = solveIndex + 1;
@@ -375,9 +374,10 @@ window.deleteSolve = async function (
   disableAllSolveButtons();
   const response = await fetch(`${url}/solves/delete/${userId}`, {
     method: "DELETE",
-    headers: addToken({
+    headers: {
       "Content-Type": "application/json",
-    }),
+    },
+    credentials: "include",
     body: JSON.stringify({
       round: roundNumber,
       solve: solveNumber,
@@ -409,12 +409,10 @@ function enableAllSolveButtons() {
 }
 
 async function main() {
-  tokenValid(true);
   if (isUser(getRole())) {
     alert("Samo administratori");
     location.href = "../";
   }
-  getToken();
 
   const users = await getUsers();
   displayUsers(users);

@@ -29,16 +29,6 @@ function getId(action = false) {
   }
   return id;
 }
-function getToken(action = false) {
-  const token = localStorage.getItem("token");
-  if (action && !token) {
-    logOut();
-    alert("Prijavi se ponovno.");
-    location.href = "../Login/";
-    return null;
-  }
-  return token;
-}
 function logOut(refresh = false) {
   localStorage.removeItem("token");
   localStorage.removeItem("username");
@@ -48,20 +38,10 @@ function logOut(refresh = false) {
   }
 }
 async function tokenValid(action = false) {
-  // action, if true it will logout user if token is not valid
-  console.log("Checking token validity...");
-  const tokenValidUrl = addToken(`${url}/token`);
-  const data = await fetch(tokenValidUrl);
-  console.log(data.ok ? "Token is valid." : "Token is invalid.");
-  if (action && !data.ok) {
-    console.log("Logging out...");
-    logOut();
-    window.location.href = "../Login";
-  }
-  return data.ok;
+  return true;
 }
 function loggedIn() {
-  return Boolean(getToken()) && Boolean(getRole()) && Boolean(getId());
+  return Boolean(getRole()) && Boolean(getId());
 }
 function isUser(role) {
   return role.toUpperCase() === "USER";
@@ -69,28 +49,13 @@ function isUser(role) {
 function isAdmin(role) {
   return role.toUpperCase() === "ADMIN";
 }
-function addToken(data = undefined, token = getToken()) {
-  if (typeof data === "string") {
-    return `${data}${data.includes("?") ? "&" : "?"}token=${token}`;
-  }
-  if (typeof data === "object") {
-    data.Authorization = token;
-    return data;
-  }
-  if (!data) {
-    return getToken();
-  }
-  return null;
-}
 export {
   getUsername,
   getRole,
   getId,
-  getToken,
   logOut,
   tokenValid,
   loggedIn,
   isUser,
   isAdmin,
-  addToken,
 };

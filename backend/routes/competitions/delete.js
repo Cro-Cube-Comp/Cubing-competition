@@ -1,10 +1,10 @@
 const express = require("express");
 const Competition = require("../../Models/competition");
 const isAdmin = require("../../utils/helpers/isAdmin");
-const verifyToken = require("../../middleware/verifyToken");
+const verifyUser = require("../../middleware/verifyUser");
 const router = express.Router();
 
-router.delete("/:id", verifyToken, isAdmin, async (req, res) => {
+router.delete("/:id", verifyUser, isAdmin, async (req, res) => {
   const { id } = req.params;
   if (!id || typeof id !== "string") {
     return res

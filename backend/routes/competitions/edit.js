@@ -1,10 +1,10 @@
 const express = require("express");
 const Competition = require("../../Models/competition");
 const isAdmin = require("../../utils/helpers/isAdmin");
-const verifyToken = require("../../middleware/verifyToken");
+const verifyUser = require("../../middleware/verifyUser");
 const router = express.Router();
 
-router.put("/:id", verifyToken, isAdmin, async (req, res) => {
+router.put("/:id", verifyUser, isAdmin, async (req, res) => {
   const { id } = req.params;
   const { name, date, events } = req.body;
   const requesValidation = validateRequest(id, name, date, events);

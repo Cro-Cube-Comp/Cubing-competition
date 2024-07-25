@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { getCompetitionById } = require("../../functions/getCompetitionById");
-const verifyToken = require("../../middleware/verifyToken");
+const verifyUser = require("../../middleware/verifyUser");
 const isAdmin = require("../../utils/helpers/isAdmin");
-router.post("/:id/lock", verifyToken, isAdmin, async (req, res) => {
+router.post("/:id/lock", verifyUser, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     if (!id) {

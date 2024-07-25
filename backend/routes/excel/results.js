@@ -2,11 +2,11 @@ const express = require("express");
 const User = require("../../Models/user");
 const { getCompetitionById } = require("../../functions/getCompetitionById");
 const getResultsInExcel = require("../../routes/excel/results-controller");
-const verifyToken = require("../../middleware/verifyToken");
+const verifyUser = require("../../middleware/verifyUser");
 const cache = require("../../middleware/cache");
 const isAdmin = require("../../utils/helpers/isAdmin");
 const router = express.Router();
-router.get("/", cache(10), verifyToken, isAdmin, async (req, res) => {
+router.get("/", cache(10), verifyUser, isAdmin, async (req, res) => {
   try {
     const queryString = req.url.split("?")[1];
     const params = new URLSearchParams(queryString);
@@ -23,7 +23,7 @@ router.get("/", cache(10), verifyToken, isAdmin, async (req, res) => {
     // Set the headers to prompt download on the client side
     res.setHeader(
       "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     );
     res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
     // Pipe the workbook to the response

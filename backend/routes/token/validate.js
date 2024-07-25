@@ -1,7 +1,7 @@
 const express = require("express");
-const verifyToken = require("../../middleware/verifyToken");
+const verifyUser = require("../../middleware/verifyUser");
 const router = express.Router();
-router.get("/", verifyToken, (req, res) => {
+router.get("/", verifyUser, (req, res) => {
   try {
     // Assuming verifyToken throws an error on invalid token
     res.status(200).json({ message: "Token is valid" });

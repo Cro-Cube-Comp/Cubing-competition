@@ -54,6 +54,7 @@ document
           "Content-Type": "application/json",
         }),
         body: JSON.stringify({ username, password, group }),
+        credentials: "include",
       });
       submitBtn.disabled = false; // Re-enable the button
       submitBtn.innerHTML = "Registriraj";

@@ -3,8 +3,8 @@ const Post = require("../../Models/post");
 const router = express.Router();
 const isAdmin = require("../../utils/helpers/isAdmin");
 const findUser = require("../../utils/helpers/findUser");
-const verifyToken = require("../../middleware/verifyToken");
-router.put("/edit/:id", verifyToken, isAdmin, findUser, async (req, res) => {
+const verifyUser = require("../../middleware/verifyUser");
+router.put("/edit/:id", verifyUser, isAdmin, findUser, async (req, res) => {
   try {
     const { id } = req.params;
     if (!id) return res.status(400).json({ message: "Id nije naveden." });

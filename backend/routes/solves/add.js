@@ -1,12 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Competition = require("../../Models/competition");
-const verifyToken = require("../../middleware/verifyToken");
+const verifyUser = require("../../middleware/verifyUser");
 const updateSolves = require("../../functions/addSolves");
 const { getUserById } = require("../../functions/getUserById");
 const isAdmin = require("../../utils/helpers/isAdmin");
 const router = express.Router();
-router.post("/:solverId", verifyToken, isAdmin, async (req, res) => {
+router.post("/:solverId", verifyUser, isAdmin, async (req, res) => {
   try {
     const solverId = req.params.solverId;
     const solver = await getUserById(solverId);

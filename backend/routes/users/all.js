@@ -1,9 +1,9 @@
 const express = require("express");
 const User = require("../../Models/user");
-const verifyToken = require("../../middleware/verifyToken");
+const verifyUser = require("../../middleware/verifyUser");
 const isAdmin = require("../../utils/helpers/isAdmin");
 const router = express.Router();
-router.get("/all", verifyToken, isAdmin, async (req, res) => {
+router.get("/all", verifyUser, isAdmin, async (req, res) => {
   try {
     // Fetch all users from the database
     const users = await User.find({}, "username role rounds group");

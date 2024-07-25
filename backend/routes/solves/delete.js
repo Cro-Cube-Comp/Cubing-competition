@@ -1,12 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const allowedEvents = require("../../config/allowedEvents");
-const verifyToken = require("../../middleware/verifyToken");
+const verifyUser = require("../../middleware/verifyUser");
 const { getUserById } = require("../../functions/getUserById");
 const { getCompetitionById } = require("../../functions/getCompetitionById");
 const isAdmin = require("../../utils/helpers/isAdmin");
 const router = express.Router();
-router.delete("/:userId", verifyToken, isAdmin, async (req, res) => {
+router.delete("/:userId", verifyUser, isAdmin, async (req, res) => {
   try {
     const userId = req.params.userId; // userid to delete solves
     const compToDelete = req.body.competitionId;
