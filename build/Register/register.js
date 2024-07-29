@@ -1,11 +1,5 @@
 import { url, loadingHTML } from "../Scripts/variables.js";
-import {
-  getRole,
-  isUser,
-  getToken,
-  addToken,
-  tokenValid,
-} from "../Scripts/credentials.js";
+import { getRole, isUser, tokenValid } from "../Scripts/credentials.js";
 const group1Checkbox = document.querySelector(".group-1");
 const submitBtn = document.querySelector(".submit-btn");
 const messageElement = document.getElementById("message");
@@ -46,13 +40,12 @@ document
 
     submitBtn.innerHTML = loadingHTML;
 
-    getToken(true); // Make sure that token exists, if not bring to login page
     try {
       const response = await fetch(`${url}/register`, {
         method: "POST",
-        headers: addToken({
+        headers: {
           "Content-Type": "application/json",
-        }),
+        },
         body: JSON.stringify({ username, password, group }),
         credentials: "include",
       });

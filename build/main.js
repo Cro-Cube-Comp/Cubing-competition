@@ -6,7 +6,6 @@ import {
   getRole,
   logOut,
   loggedIn,
-  addToken,
 } from "./Scripts/credentials.js";
 const cardsDiv = document.querySelector(".cards");
 async function getPosts() {

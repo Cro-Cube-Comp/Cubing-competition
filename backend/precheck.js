@@ -14,7 +14,7 @@ console.log(`Running ${import.meta.url}`);
 const requiredEnvVars = ["MONGO_URI", "SESSION_SECRET"];
 
 // List of optional environment variables
-const optionalEnvVars = ["PORT"];
+const optionalEnvVars = ["PORT", "DEFAULT_CSRF_TOKEN_LENGTH"];
 
 // Function to check if all required env vars are defined
 const checkEnvVars = () => {

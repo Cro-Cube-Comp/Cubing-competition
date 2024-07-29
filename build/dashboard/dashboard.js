@@ -298,7 +298,6 @@ window.deleteUser = async function (id) {
   try {
     const body = {
       method: "DELETE",
-      headers: addToken({}),
       credentials: "include",
     };
     const data = await fetch(`${url}/users/${id}`, body);

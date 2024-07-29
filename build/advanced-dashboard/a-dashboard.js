@@ -1,6 +1,7 @@
-import { tokenValid, addToken } from "../Scripts/credentials.js";
+import { tokenValid } from "../Scripts/credentials.js";
 import { url, loadingHTML } from "../Scripts/variables.js";
 const compResultsSelect = document.querySelector("#comp-results-select");
+// TODO: Fix this
 function downloadFile(url, fileName) {
   if (!url || !fileName) return -1;
   const anchor = document.createElement("a");
@@ -16,9 +17,7 @@ const getResultsBtn = document.querySelector(".results");
 getResultsBtn.addEventListener("click", getResults);
 function getResults() {
   getResultsBtn.disabled = true;
-  const resultsUrl = addToken(
-    `${url}/results?competitionId=${compResultsSelect.value}`,
-  );
+  const resultsUrl = `${url}/results?competitionId=${compResultsSelect.value}`;
   downloadFile(resultsUrl, "results"); // You can specify the desired file name
   getResultsBtn.disabled = false;
 }
@@ -38,7 +37,8 @@ async function changePassword(username, newPassword) {
   const request = {
     method: "POST",
     body: JSON.stringify(body),
-    headers: addToken({ "Content-Type": "application/json" }),
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
   };
   const data = await fetch(`${url}/users/change-password`, request);
   const response = await data.json();
@@ -47,7 +47,7 @@ async function changePassword(username, newPassword) {
   return response;
 }
 const changePasswordSubmitBtn = document.querySelector(
-  ".change-password-submit-btn",
+  ".change-password-submit-btn"
 );
 const newPasswordInput = document.querySelector(".new-password");
 const usernameInput = document.querySelector(".username");
@@ -65,7 +65,9 @@ changePasswordSubmitBtn.addEventListener("click", async () => {
 tokenValid(true);
 async function getCompetitions(parseAsJson = false) {
   try {
-    const allCompetitionsResponse = await fetch(`${url}/competitions`);
+    const allCompetitionsResponse = await fetch(`${url}/competitions`, {
+      credentials: "include",
+    });
     if (parseAsJson) {
       return await allCompetitionsResponse.json();
     }
