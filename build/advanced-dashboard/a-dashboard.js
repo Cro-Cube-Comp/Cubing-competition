@@ -1,32 +1,61 @@
 import { tokenValid } from "../Scripts/credentials.js";
 import { url, loadingHTML } from "../Scripts/variables.js";
 const compResultsSelect = document.querySelector("#comp-results-select");
-// TODO: Fix this
-function downloadFile(url, fileName) {
-  if (!url || !fileName) return -1;
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = fileName;
-  document.body.appendChild(anchor);
-  anchor.click();
-  document.body.removeChild(anchor);
+async function downloadFile(url, fileName) {
+  if (!url || !fileName) throw new Error("URL or file name is not defined.");
+  const data = await fetch(`${url}`, {
+    method: "GET",
+    credentials: "include",
+  });
+  if (!data.ok) {
+    console.error("Error fetching data:", data);
+    alert("Greška prilikom preuzimanja.");
+    return;
+  }
+  const blob = await data.blob();
+
+  // Create an anchor link
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = fileName;
+  link.click();
+
+  // Return a success message or handle any other logic
   return 1;
 }
 
+async function getCompetitionById(id) {
+  const allCompetitions = await getCompetitions(true);
+  const competition = allCompetitions.find(
+    (competition) => competition._id === id
+  );
+  return competition;
+}
 const getResultsBtn = document.querySelector(".results");
 getResultsBtn.addEventListener("click", getResults);
-function getResults() {
+async function getResults() {
+  const prevHtml = getResultsBtn.innerHTML;
   getResultsBtn.disabled = true;
+  getResultsBtn.innerHTML = loadingHTML;
   const resultsUrl = `${url}/results?competitionId=${compResultsSelect.value}`;
-  downloadFile(resultsUrl, "results"); // You can specify the desired file name
+  const competitionName = (await getCompetitionById(compResultsSelect.value))
+    .name;
+  await downloadFile(resultsUrl, `Rezultati ${competitionName}`);
+  getResultsBtn.innerHTML = prevHtml;
   getResultsBtn.disabled = false;
 }
 const backupsBtn = document.querySelector(".backups");
 backupsBtn.addEventListener("click", getBackups);
-function getBackups() {
+async function getBackups() {
+  const prevHtml = backupsBtn.innerHTML;
   backupsBtn.disabled = true;
-  const backupsUrl = addToken(`${url}/backup`);
-  downloadFile(backupsUrl, "backups"); // You can specify the desired file name
+  backupsBtn.innerHTML = loadingHTML;
+  const backupsUrl = `${url}/backup`;
+  await downloadFile(
+    backupsUrl,
+    `Sigurnosna kopija ${new Date().toLocaleDateString()}`
+  );
+  backupsBtn.innerHTML = prevHtml;
   backupsBtn.disabled = false;
 }
 async function changePassword(username, newPassword) {

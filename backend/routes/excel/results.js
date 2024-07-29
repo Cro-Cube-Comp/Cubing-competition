@@ -11,13 +11,16 @@ router.get("/", cache(10), verifyUser, isAdmin, async (req, res) => {
     const queryString = req.url.split("?")[1];
     const params = new URLSearchParams(queryString);
     const competitionId = params.get("competitionId");
-
     if (!competitionId) {
       res.status(400).json({ message: "Competition id not provided." });
       return;
     }
     const users = await User.find();
     const competition = await getCompetitionById(competitionId);
+    if (!competition) {
+      return res.status(404).json({ message: "Competition not found." });
+    }
+    console.log(competition);
     const fileName = competition.name + ".xlsx";
     const workbook = await getResultsInExcel(users, competition);
     // Set the headers to prompt download on the client side
