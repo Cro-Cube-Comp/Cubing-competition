@@ -1,10 +1,5 @@
 import { url, loadingHTML } from "../Scripts/variables.js";
-import {
-  addToken,
-  tokenValid,
-  isAdmin,
-  getRole,
-} from "../Scripts/credentials.js";
+import { tokenValid, isAdmin, getRole } from "../Scripts/credentials.js";
 const createCompBtn = document.querySelector(".create-comp-btn");
 function getEvents(competition) {
   return competition.events;
@@ -55,9 +50,10 @@ async function createCompetitionHtml(competition) {
 async function deleteCompetition(id) {
   const response = await fetch(`${url}/competitions/${id}`, {
     method: "DELETE",
-    headers: addToken({
+    headers: {
       "Content-Type": "application/json",
-    }),
+    },
+    credentials: "include",
   });
   return {
     status: response.status,
@@ -68,14 +64,15 @@ async function deleteCompetition(id) {
 async function editCompetition(id, name, date, events) {
   const response = await fetch(`${url}/competitions/${id}`, {
     method: "PUT",
-    headers: addToken({
+    headers: {
       "Content-Type": "application/json",
-    }),
+    },
     body: JSON.stringify({
       name,
       date,
       events,
     }),
+    credentials: "include",
   });
   return {
     status: response.status,
@@ -185,14 +182,15 @@ async function createCompetition(name, date, events) {
   }
   const response = await fetch(`${url}/competitions/create`, {
     method: "POST",
-    headers: addToken({
+    headers: {
       "Content-Type": "application/json",
-    }),
+    },
     body: JSON.stringify({
       name,
       date,
       events,
     }),
+    credentials: "include",
   });
   const parsedData = await response.json();
   return {
@@ -260,9 +258,10 @@ function createMakeCompModal() {
 async function lockCompetition(id) {
   const response = await fetch(`${url}/competitions/${id}/lock`, {
     method: "POST",
-    headers: addToken({
+    headers: {
       "Content-Type": "application/json",
-    }),
+    },
+    credentials: "include",
   });
   return {
     status: response.status,
