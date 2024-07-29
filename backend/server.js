@@ -1,3 +1,4 @@
+console.log(`Running ${__filename}`);
 console.time("Imports");
 const express = require("express");
 const mongoose = require("mongoose");
@@ -15,12 +16,9 @@ const compressionFilter = require("./config/compressionFilter");
 const generalLimiter = require("./rateLimiter/general");
 const isRateLimitingEnabled = require("./config/isRateLimitingEnabled");
 
-const lusca = require("lusca");
 console.timeEnd("Imports");
-console.log(`Running ${__filename}`);
 // Load the environment variables from the .env file
 dotenv.config();
-
 // Create an express app
 const app = express();
 // Use JSON middleware to parse the request body
@@ -56,14 +54,6 @@ app.use(
     saveUninitialized: false,
     cookie: { maxAge: 1000 * 60 * 60 * 24 },
     secure: !process.env.UNSECURE_COOKIES, // Use secure cookies in production
-  })
-);
-// CSRF protection middleware
-app.use(
-  lusca.csrf({
-    csrf: true,
-    xssProtection: true,
-    nosniff: true,
   })
 );
 // Connect to the MongoDB database using mongoose
@@ -102,15 +92,16 @@ app.use("/results", require("./routes/excel/results"));
 // Winner
 app.use("/winner", require("./routes/winner/announce"));
 app.use("/winner", require("./routes/winner/get"));
-// Token validation
-app.use("/token", require("./routes/token/validate"));
-app.use("/health-check", require("./routes/health_check/health_check"));
 // Competitions
 app.use("/competitions", require("./routes/competitions/create"));
 app.use("/competitions", require("./routes/competitions/get"));
 app.use("/competitions", require("./routes/competitions/delete"));
 app.use("/competitions", require("./routes/competitions/edit"));
 app.use("/competitions", require("./routes/competitions/lock"));
+// Token validation
+app.use("/token", require("./routes/token/validate"));
+// Health check
+app.use("/health-check", require("./routes/health_check/health_check"));
 // Backup
 app.use("/backup", require("./routes/backup/get"));
 console.timeEnd("Routes");

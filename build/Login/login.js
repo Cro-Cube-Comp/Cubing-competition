@@ -52,8 +52,7 @@ function displayError(element, message) {
   console.error(message);
 }
 
-function saveUserInfo({ token, id, username, role }) {
-  localStorage.setItem("token", token);
+function saveUserInfo({ id, username, role }) {
   localStorage.setItem("id", id);
   localStorage.setItem("username", username);
   localStorage.setItem("role", role);
