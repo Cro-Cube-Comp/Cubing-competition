@@ -15,9 +15,7 @@ const compressionFilter = require("./config/compressionFilter");
 const generalLimiter = require("./rateLimiter/general");
 const isRateLimitingEnabled = require("./config/isRateLimitingEnabled");
 
-const cookieParser = require("cookie-parser");
-const csrf = require("lusca").csrf;
-
+const lusca = require("lusca");
 console.timeEnd("Imports");
 console.log(`Running ${__filename}`);
 // Load the environment variables from the .env file
@@ -49,24 +47,25 @@ const compressionOptions = {
   filter: compressionFilter,
 };
 app.use(compression(compressionOptions));
+
 // Session middleware
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { maxAge: 1000 * 60 * 60 * 24 },
     secure: !process.env.UNSECURE_COOKIES, // Use secure cookies in production
   })
 );
-// Cookie parser middleware
-app.use(cookieParser());
-app.use(csrf()); // CSRF protection
-// Cookies
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Credentials", "true"); // Cookies
-  next();
-});
+// CSRF protection middleware
+app.use(
+  lusca.csrf({
+    csrf: true,
+    xssProtection: true,
+    nosniff: true,
+  })
+);
 // Connect to the MongoDB database using mongoose
 console.log("Trying to connect to mongoDB...");
 try {

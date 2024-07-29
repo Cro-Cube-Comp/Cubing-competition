@@ -7,6 +7,11 @@ dotenv.config();
 
 router.post("/", loginLimiter, async (req, res) => {
   try {
+    if (req.session.user) {
+      return res.status(400).json({
+        message: "Korisnik je prijavljen.",
+      });
+    }
     const { username, password } = req.body;
 
     // Validate the input
@@ -25,8 +30,13 @@ router.post("/", loginLimiter, async (req, res) => {
         .json({ message: "Korisničko ime ili lozinka nisu ispravni." });
     }
     // Authenticate the user
-    req.session.user = user;
-    req.session.save();
+    req.session.user = {
+      id: user._id.toString(),
+      username: username,
+      role: user.role,
+    };
+    console.log("User logged in and session.user is");
+    console.log(req.session.user);
     res.status(200).json({
       message: "Korisnik se uspješno prijavio.",
       info: { id: user._id, username: username, role: user.role },

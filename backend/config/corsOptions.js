@@ -7,6 +7,7 @@ const allowedOrigins = [
 
 // CORS middleware function to check the origin against the allowed list
 const corsOptions = {
+  credentials: true,
   origin: function (origin, callback) {
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
