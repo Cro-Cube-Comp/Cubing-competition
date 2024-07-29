@@ -52,7 +52,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 },
+    cookie: { maxAge: process.env.SESSION_MAX_AGE || 1000 * 60 * 60 * 24 },
     secure: !process.env.UNSECURE_COOKIES, // Use secure cookies in production
   })
 );
