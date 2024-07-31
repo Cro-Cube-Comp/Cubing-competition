@@ -1,7 +1,7 @@
 const express = require("express");
 const hashPassword = require("../../functions/hashPassword");
 const User = require("../../Models/user");
-const verifyToken = require("../../middleware/verifyToken");
+const verifyUser = require("../../middleware/verifyUser");
 const isAdmin = require("../../utils/helpers/isAdmin");
 const {
   checkUsernameAndPassword,
@@ -14,7 +14,7 @@ const {
 const registerLimiter = require("../../rateLimiter/register");
 const router = express.Router();
 // Define a route for user registration
-router.post("/", registerLimiter, verifyToken, isAdmin, async (req, res) => {
+router.post("/", registerLimiter, verifyUser, isAdmin, async (req, res) => {
   try {
     const { username, password, group } = req.body;
     // Call validation functions

@@ -3,8 +3,8 @@ const router = express.Router();
 const Competition = require("../../Models/competition");
 const allowedEvents = require("../../config/allowedEvents");
 const isAdmin = require("../../utils/helpers/isAdmin");
-const verifyToken = require("../../middleware/verifyToken");
-router.post("/create", verifyToken, isAdmin, async (req, res) => {
+const verifyUser = require("../../middleware/verifyUser");
+router.post("/create", verifyUser, isAdmin, async (req, res) => {
   const { events, name, date } = req.body;
   if (!events || !name || !date) {
     return res

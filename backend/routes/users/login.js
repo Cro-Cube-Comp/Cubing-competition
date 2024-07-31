@@ -1,13 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../../Models/user");
-const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const loginLimiter = require("../../rateLimiter/login");
 dotenv.config();
 
 router.post("/", loginLimiter, async (req, res) => {
   try {
+    if (req.session.user) {
+      return res.status(400).json({
+        message: "Korisnik je prijavljen.",
+      });
+    }
     const { username, password } = req.body;
 
     // Validate the input
@@ -18,29 +22,22 @@ router.post("/", loginLimiter, async (req, res) => {
     }
 
     // Find the user by username
-    const user = await User.findOne({ username: { $eq: username } }).select(
-      "+password",
-    ); // Select the password field only
-
-    // Check if the user exists and the password matches
+    const user = await User.findOne({ username: { $eq: username } });
+    // Check if the user exists
     if (!user || !(await user.comparePassword(password))) {
       return res
         .status(401)
         .json({ message: "Korisničko ime ili lozinka nisu ispravni." });
     }
-
-    // Generate a JSON web token with the user id as the payload
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: process.env.TOKEN_EXPIRATION || "1d",
-      },
-    );
-
+    // Authenticate the user
+    req.session.user = {
+      id: user._id.toString(),
+      username: username,
+      role: user.role,
+    };
     res.status(200).json({
       message: "Korisnik se uspješno prijavio.",
-      info: { id: user._id, token, username: username, role: user.role },
+      info: { id: user._id, username: username, role: user.role },
     });
   } catch (err) {
     // Log the error for internal debugging, but don't expose details to the client

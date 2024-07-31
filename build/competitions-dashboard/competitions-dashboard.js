@@ -1,16 +1,13 @@
 import { url, loadingHTML } from "../Scripts/variables.js";
-import {
-  addToken,
-  tokenValid,
-  isAdmin,
-  getRole,
-} from "../Scripts/credentials.js";
+import { sessionValid, isAdmin, getRole } from "../Scripts/credentials.js";
 const createCompBtn = document.querySelector(".create-comp-btn");
 function getEvents(competition) {
   return competition.events;
 }
 async function getCompetitions() {
-  const response = await fetch(`${url}/competitions`);
+  const response = await fetch(`${url}/competitions`, {
+    credentials: "include",
+  });
   const data = await response.json();
 
   return data;
@@ -45,17 +42,18 @@ async function createCompetitionHtml(competition) {
     <button id="lock-btn-${
       competition._id
     }" class="lock-button ${lockedClass}"><img src="${
-      competition.isLocked ? "../Images/unlocked.svg" : "../Images/locked.svg"
-    }"></button>
+    competition.isLocked ? "../Images/unlocked.svg" : "../Images/locked.svg"
+  }"></button>
   </div>`;
   return html;
 }
 async function deleteCompetition(id) {
   const response = await fetch(`${url}/competitions/${id}`, {
     method: "DELETE",
-    headers: addToken({
+    headers: {
       "Content-Type": "application/json",
-    }),
+    },
+    credentials: "include",
   });
   return {
     status: response.status,
@@ -66,14 +64,15 @@ async function deleteCompetition(id) {
 async function editCompetition(id, name, date, events) {
   const response = await fetch(`${url}/competitions/${id}`, {
     method: "PUT",
-    headers: addToken({
+    headers: {
       "Content-Type": "application/json",
-    }),
+    },
     body: JSON.stringify({
       name,
       date,
       events,
     }),
+    credentials: "include",
   });
   return {
     status: response.status,
@@ -124,7 +123,7 @@ function createEditCompModal(id, comp) {
         .map((event) => {
           return { name: event.trim(), rounds: 3 };
         })
-        .filter((event) => event.name), // Remove empty strings which show up after using 2 spaces
+        .filter((event) => event.name) // Remove empty strings which show up after using 2 spaces
     );
     modal.close();
     if (result.success) {
@@ -171,7 +170,7 @@ async function makeAndInsertCompetitions() {
       console.error(
         `Error locking competition: ${result.parsed.message}
         
-        Status: ${result.status}`,
+        Status: ${result.status}`
       );
       alert("Greška prilikom zaključavanja natjecanja");
     });
@@ -183,14 +182,15 @@ async function createCompetition(name, date, events) {
   }
   const response = await fetch(`${url}/competitions/create`, {
     method: "POST",
-    headers: addToken({
+    headers: {
       "Content-Type": "application/json",
-    }),
+    },
     body: JSON.stringify({
       name,
       date,
       events,
     }),
+    credentials: "include",
   });
   const parsedData = await response.json();
   return {
@@ -239,7 +239,7 @@ function addListenerToCreateComp(modal) {
         .map((event) => {
           return { name: event.trim(), rounds: 3 };
         })
-        .filter((event) => event.name), // Remove empty strings which show up after using 2 spaces
+        .filter((event) => event.name) // Remove empty strings which show up after using 2 spaces
     );
     modal.close();
     if (result.success) {
@@ -258,9 +258,10 @@ function createMakeCompModal() {
 async function lockCompetition(id) {
   const response = await fetch(`${url}/competitions/${id}/lock`, {
     method: "POST",
-    headers: addToken({
+    headers: {
       "Content-Type": "application/json",
-    }),
+    },
+    credentials: "include",
   });
   return {
     status: response.status,
@@ -277,6 +278,6 @@ async function main() {
   if (!isAdmin(getRole())) {
     window.location.href = "../";
   }
-  tokenValid(true);
+  sessionValid(true);
   await makeAndInsertCompetitions();
 }

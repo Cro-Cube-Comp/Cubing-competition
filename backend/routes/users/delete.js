@@ -1,9 +1,9 @@
 const express = require("express");
 const User = require("../../Models/user");
-const verifyToken = require("../../middleware/verifyToken");
+const verifyUser = require("../../middleware/verifyUser");
 const isAdmin = require("../../utils/helpers/isAdmin");
 const router = express.Router();
-router.delete("/:userId", verifyToken, isAdmin, async (req, res) => {
+router.delete("/:userId", verifyUser, isAdmin, async (req, res) => {
   try {
     const userId = req.params.userId; // Id of user to delete
 

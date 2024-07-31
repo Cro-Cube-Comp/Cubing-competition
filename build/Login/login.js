@@ -19,6 +19,7 @@ loginForm.addEventListener("submit", async (event) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
+      credentials: "include",
     });
 
     const data = await response.json();
@@ -27,7 +28,7 @@ loginForm.addEventListener("submit", async (event) => {
     if (response.status === 429) {
       displayError(
         messageElement,
-        "Previše zahtjeva za prijavu. Pokušaj ponovno za 15 minuta.",
+        "Previše zahtjeva za prijavu. Pokušaj ponovno za 15 minuta."
       );
       return;
     }
@@ -51,8 +52,7 @@ function displayError(element, message) {
   console.error(message);
 }
 
-function saveUserInfo({ token, id, username, role }) {
-  localStorage.setItem("token", token);
+function saveUserInfo({ id, username, role }) {
   localStorage.setItem("id", id);
   localStorage.setItem("username", username);
   localStorage.setItem("role", role);
@@ -70,6 +70,6 @@ function credentialsCheck(username, password) {
   }
   return false;
 }
-if (loggedIn()) {
-  window.location.href = "../";
-}
+// if (loggedIn()) {
+//  window.location.href = "../";
+// }

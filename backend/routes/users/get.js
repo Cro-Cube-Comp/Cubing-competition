@@ -1,9 +1,9 @@
 const express = require("express");
-const verifyToken = require("../../middleware/verifyToken");
+const verifyUser = require("../../middleware/verifyUser");
 const { getUserById } = require("../../functions/getUserById");
 const isAdmin = require("../../utils/helpers/isAdmin");
 const router = express.Router();
-router.get("/:userId", verifyToken, isAdmin, async (req, res) => {
+router.get("/:userId", verifyUser, isAdmin, async (req, res) => {
   try {
     const userId = req.params.userId;
     if (!userId) {

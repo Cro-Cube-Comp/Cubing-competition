@@ -11,10 +11,10 @@ config();
 console.log(`Running ${import.meta.url}`);
 
 // List of required environment variables
-const requiredEnvVars = ["MONGO_URI", "JWT_SECRET"];
+const requiredEnvVars = ["MONGO_URI", "SESSION_SECRET"];
 
 // List of optional environment variables
-const optionalEnvVars = ["PORT"];
+const optionalEnvVars = ["PORT", "DEFAULT_CSRF_TOKEN_LENGTH", "SESSION_MAX_AGE"];
 
 // Function to check if all required env vars are defined
 const checkEnvVars = () => {
@@ -28,7 +28,7 @@ const checkEnvVars = () => {
   optionalEnvVars.forEach((varName) => {
     if (!process.env[varName]) {
       console.log(
-        `Environment variable ${varName} is undefined, but is optional so continuing.`,
+        `Environment variable ${varName} is undefined, but is optional so continuing.`
       );
     }
   });
@@ -51,7 +51,7 @@ const precheck = async () => {
   console.time("Precheck");
   if (!checkEnvVars()) {
     console.warn(
-      "Some environment variables are missing. Please check your .env file.",
+      "Some environment variables are missing. Please check your .env file."
     );
     process.exit(1); // Exit the process with failure
   }

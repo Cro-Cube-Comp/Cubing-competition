@@ -1,10 +1,10 @@
 const express = require("express");
 const Post = require("../../Models/post");
-const verifyToken = require("../../middleware/verifyToken");
+const verifyUser = require("../../middleware/verifyUser");
 const isAdmin = require("../../utils/helpers/isAdmin");
 const findUser = require("../../utils/helpers/findUser");
 const router = express.Router();
-router.post("/new", verifyToken, isAdmin, findUser, async (req, res) => {
+router.post("/new", verifyUser, isAdmin, findUser, async (req, res) => {
   const user = req.user;
   const userId = req.userId;
   const username = user.username;
