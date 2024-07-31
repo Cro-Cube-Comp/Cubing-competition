@@ -13,21 +13,20 @@ import {
 } from "../Scripts/credentials.js";
 import { url, loadingHTML } from "../Scripts/variables.js";
 const usersDiv = document.querySelector(".users");
-window.setWinner = async function (winnerId) {
-  const winnerButton = document.querySelector(`.set-winner-${winnerId}`);
+async function setWinner(winnerId, winnerButton) {
   const originalHTML = winnerButton.innerHTML;
-
   try {
     toggleButtonState(winnerButton, true, loadingHTML);
-    const response = await announceWinner(winnerId);
-    alert(response.message);
+    alert(
+      "Postavljanje pobjednika još nije implementirano. Molimo strpljenje."
+    );
   } catch (error) {
     console.error("Error announcing the winner:", error);
     alert("Nije uspjelo postavljanje pobjednika. Molim te pokušaj ponovno.");
   } finally {
     toggleButtonState(winnerButton, false, originalHTML);
   }
-};
+}
 function toggleButtonState(button, isDisabled, htmlContent) {
   button.disabled = isDisabled;
   button.innerHTML = htmlContent;
@@ -270,7 +269,7 @@ async function createCompetitionElement(comp, user) {
   });
   return competitionElement;
 }
-window.showCompetition = async function (userId, compId = undefined) {
+async function showCompetition(userId, compId = undefined) {
   enableAllSolveButtons();
   const userDiv = document.getElementById(`user-${userId}`);
   const showCompBtn = userDiv.querySelector(".showComp-btn");
@@ -303,7 +302,7 @@ window.showCompetition = async function (userId, compId = undefined) {
     showCompBtn.disabled = false;
     showCompBtn.innerHTML = prevHTML;
   }
-}; // Make showCompetition() global by using window.showCompetition = ...
+}
 
 async function addSolve(userId, roundIndex, solves, event, competitionId) {
   const roundNumber = roundIndex + 1;
@@ -342,7 +341,7 @@ async function addSolve(userId, roundIndex, solves, event, competitionId) {
   alert("Greška prilikom dodavanja slaganja. Pokušaj ponovno.");
   return response.status;
 }
-window.getUsers = async function () {
+async function getUsers() {
   const body = {
     method: "GET",
     headers: addToken({}),
@@ -355,9 +354,9 @@ window.getUsers = async function () {
     console.error(error);
     alert("Greška prilikom povezivanja.");
   }
-};
+}
 
-window.deleteUser = async function (id) {
+async function deleteUser(id) {
   if (id === getId()) {
     alert("Nedopušteno brisanje vlastitog računa.");
     return;
@@ -379,9 +378,9 @@ window.deleteUser = async function (id) {
     console.error(error);
     alert(error);
   }
-};
+}
 
-window.assignAdmin = async function (id, username) {
+async function assignAdmin(id, username) {
   const body = {
     method: "POST",
     headers: addToken({}),
@@ -398,7 +397,7 @@ window.assignAdmin = async function (id, username) {
     console.error(error);
     alert(error);
   }
-};
+}
 
 function displayUsers(users) {
   const allUsersElement = document.createElement("div");
@@ -459,7 +458,9 @@ function displayUsers(users) {
     const setWinnerButton = document.createElement("button");
     setWinnerButton.classList.add(`set-winner-${id}`);
     setWinnerButton.textContent = "Pobjednik";
-    setWinnerButton.addEventListener("click", () => setWinner(id));
+    setWinnerButton.addEventListener("click", () =>
+      setWinner(id, setWinnerButton)
+    );
     userElement.appendChild(setWinnerButton);
     // Competition element
     const compElement = document.createElement("div");
@@ -470,13 +471,7 @@ function displayUsers(users) {
   usersDiv.innerHTML = "";
   usersDiv.appendChild(allUsersElement);
 }
-window.deleteSolve = async function (
-  userId,
-  solveIndex,
-  roundIndex,
-  eventName,
-  compId
-) {
+async function deleteSolve(userId, solveIndex, roundIndex, eventName, compId) {
   const roundNumber = roundIndex + 1;
   const solveNumber = solveIndex + 1;
   // Call the backend to delete the solve
@@ -502,7 +497,7 @@ window.deleteSolve = async function (
   const error = await response.json();
   alert(error.message);
   enableAllSolveButtons();
-};
+}
 function disableAllSolveButtons() {
   const solveButtons = document.querySelectorAll(".solve-add-btn");
   solveButtons.forEach((button) => {
