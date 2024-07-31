@@ -82,6 +82,7 @@ app.use("/users", require("./routes/users/all"));
 app.use("/users", require("./routes/users/get"));
 app.use("/users", require("./routes/users/delete"));
 app.use("/users", require("./routes/users/change-password"));
+app.use("/users", require("./routes/users/logout"));
 // Posts
 app.use("/posts", require("./routes/posts/new"));
 app.use("/posts", require("./routes/posts/get"));

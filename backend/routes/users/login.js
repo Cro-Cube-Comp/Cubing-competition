@@ -35,8 +35,6 @@ router.post("/", loginLimiter, async (req, res) => {
       username: username,
       role: user.role,
     };
-    console.log("User logged in and session.user is");
-    console.log(req.session.user);
     res.status(200).json({
       message: "Korisnik se uspješno prijavio.",
       info: { id: user._id, username: username, role: user.role },
