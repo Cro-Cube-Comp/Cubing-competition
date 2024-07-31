@@ -114,6 +114,10 @@ function createSelectCompetitionTag(allComps, userId, selectedCompId) {
   const select = document.createElement("select");
   select.classList.add("select-comp");
   select.id = `select-comp-${userId}`;
+  select.addEventListener("change", (e) => {
+    const compId = e.target.value;
+    showCompetition(userId, compId);
+  });
   allComps.forEach((comp) => {
     const compId = comp._id;
     const compName = comp.name;
@@ -143,70 +147,128 @@ function addSwitchCompetitionListeners() {
 }
 async function createCompetitionsHtml(user, compId = undefined) {
   // Inner html of .comp div will be html this function returns
-  let compHtml = "";
+  const competitionsElement = document.createElement("div");
   if (!user.competitions) user.competitions = [];
   const allComps = await getCompetitions(true);
-  const selectCompHtml = createSelectCompetitionTag(
+  const selectCompElement = createSelectCompetitionTag(
     allComps,
     user._id,
     compId
-  ).outerHTML;
-  compHtml += selectCompHtml;
-  if (compId) {
-    const comp = allComps.find((comp) => comp._id === compId);
-    if (comp) {
-      const competitionHtml = await createCompetitionHtml(comp, user);
-      compHtml += competitionHtml;
-    }
-  } else {
-    const competitionHtml = await createCompetitionHtml(allComps[0], user);
-    compHtml += competitionHtml;
-  }
-  return compHtml;
+  );
+  competitionsElement.appendChild(selectCompElement);
+
+  const comp = allComps.find((comp) => comp._id === compId);
+  const competition = comp ? comp : allComps[0]; // Default to first comp
+  const competitionElement = await createCompetitionElement(competition, user);
+  competitionsElement.appendChild(competitionElement);
+
+  return competitionsElement;
 }
-async function createCompetitionHtml(comp, user) {
+async function createCompetitionElement(comp, user) {
   const compDate = new Date(comp.date).toLocaleString();
   const compId = comp._id;
   const userId = user._id;
   const userComp =
     user.competitions.find((comp) => comp.competitionId === compId) || null;
-  let html = "";
-  html += `<div class="competition">`;
-  html += `<h2>${comp.name}</h2>`;
-  html += `<p>Datum: ${compDate}</p>`;
+  const competitionElement = document.createElement("div");
+  competitionElement.classList.add("competition");
+  // Competition title
+  const compTitleElement = document.createElement("h2");
+  compTitleElement.textContent = comp.name;
+  competitionElement.appendChild(compTitleElement);
+  // Competition date
+  const compDateElement = document.createElement("p");
+  compDateElement.textContent = `Datum: ${compDate}`;
+  competitionElement.appendChild(compDateElement);
   comp.events.forEach((event) => {
+    // Event element
+    const eventElement = document.createElement("div");
+    competitionElement.appendChild(eventElement);
+
+    eventElement.classList.add("event");
+
     const eventName = event.name; // 3x3,4x4,3x3oh...
     const userEvent = userComp
       ? userComp.events.find((event) => event.event === eventName) || null
       : null;
-    html += `<div class="event">`;
-    html += `<h3>${eventName}</h3>`;
+    const eventNameElement = document.createElement("h3");
+    eventNameElement.textContent = eventName;
+    eventElement.appendChild(eventNameElement);
     for (let i = 0; i < event.rounds; i++) {
       const roundNumber = i + 1;
-      const solves = userEvent ? userEvent.rounds[i] || [] : [];
-      html += `<div class="round round-${roundNumber}">`;
-      html += `<h4>Runda ${roundNumber}</h4>`;
-      html += `<p>Ao5: ${getAverage(solves)}</p>`;
-      html += `<ol class="solves-list">`;
-      html += solves
-        .map((solve, j) => {
-          const solveNumber = j + 1;
-          const time = solve === 0 ? "DNF/DNS" : formatTime(solve);
-          return `<li class="solve-li solve-li-${solveNumber}">${time}</li> <button type="button" onclick="deleteSolve('${userId}', ${j}, ${i}, '${eventName}', '${compId}')">Izbriši</button>`;
-        })
-        .join("");
-      html += `</ol>`;
-      if (solves.length < 5) {
-        html += `<input inputmode="numeric" pattern="[0-9 ]*" placeholder="Dodaj slaganje" type="text" class="solve-input" id="solve-input-${userId}-${compId}-${eventName}-${roundNumber}" data-userid=""/>
-      <button class="solve-add-btn" id="solve-add-btn-${userId}-${eventName}-${roundNumber}">Dodaj</button>`;
-      }
-      html += `</div>`; // close .round
-    }
-    html += `</div>`; // close .event
-  });
-  html += `</div>`; // close .competition
+      const roundElement = document.createElement("div");
+      eventElement.appendChild(roundElement);
+      roundElement.classList.add("round");
+      roundElement.classList.add(`round-${roundNumber}`);
 
-  return html;
+      const solves = userEvent ? userEvent.rounds[i] || [] : [];
+      // Round title
+      const roundTitleElement = document.createElement("h4");
+      roundTitleElement.textContent = `Runda ${roundNumber}`;
+      roundElement.appendChild(roundTitleElement);
+      // Round average time
+      const roundAverageTimeElement = document.createElement("p");
+      roundAverageTimeElement.textContent = `Ao5: ${getAverage(solves)}`;
+      roundElement.appendChild(roundAverageTimeElement);
+      // Round solves list
+      const solvesListElement = document.createElement("ol");
+      solvesListElement.classList.add("solves-list");
+
+      // Round solves
+      solves.forEach((solve, j) => {
+        const solveNumber = j + 1;
+        // Solve element
+        const solveElement = document.createElement("li");
+        solveElement.classList.add("solve-li");
+        solveElement.classList.add(`solve-li-${solveNumber}`);
+        const time = solve === 0 ? "DNF/DNS" : formatTime(solve);
+        solveElement.textContent = time;
+        // Delete solve button
+        const deleteSolveButton = document.createElement("button");
+        deleteSolveButton.textContent = "Izbriši";
+        deleteSolveButton.addEventListener("click", () =>
+          deleteSolve(userId, j, i, eventName, compId)
+        );
+        // Add elements
+        solvesListElement.appendChild(solveElement);
+        solvesListElement.appendChild(deleteSolveButton);
+      });
+      roundElement.appendChild(solvesListElement);
+      if (solves.length < 5) {
+        // Add solve input
+        const addSolveInput = document.createElement("input");
+        addSolveInput.inputMode = "numeric";
+        addSolveInput.pattern = "[0-9 ]*";
+        addSolveInput.placeholder = "Dodaj slaganje";
+        addSolveInput.type = "text";
+        addSolveInput.classList.add("solve-input");
+        // addSolveInput.id = `solve-input-${userId}-${compId}-${eventName}-${roundNumber}`;
+        addSolveInput.addEventListener("keydown", (e) => {
+          if (e.key !== "Enter") return;
+          const solves = createSolvesArrayFromInput(addSolveInput);
+          if (solves.length === 0) {
+            return;
+          }
+          addSolve(userId, roundNumber - 1, solves, eventName, compId);
+        });
+        // Add solve button
+        const addSolveButton = document.createElement("button");
+        addSolveButton.classList.add("solve-add-btn");
+        addSolveButton.textContent = "Dodaj";
+        addSolveButton.addEventListener("click", () => {
+          const solves = createSolvesArrayFromInput(addSolveInput);
+          if (solves.length === 0) {
+            return;
+          }
+          addSolve(userId, roundNumber - 1, solves, eventName, compId);
+        });
+        // Append elements
+        solvesListElement.appendChild(addSolveInput);
+        solvesListElement.appendChild(addSolveButton);
+      }
+    }
+  });
+  return competitionElement;
 }
 window.showCompetition = async function (userId, compId = undefined) {
   enableAllSolveButtons();
@@ -222,15 +284,16 @@ window.showCompetition = async function (userId, compId = undefined) {
     }).then((response) => response.json());
 
     if (!user) {
-      userDiv.querySelector(
-        ".comp"
-      ).innerHTML = `<p>Korisnik nije pronađen.</p>`;
+      const notFoundElement = document.createElement("p");
+      notFoundElement.textContent = "Korisnik nije pronađen.";
+      userDiv.querySelector(".comp").innerHTML = "";
+      userDiv.querySelector(".comp").appendChild(notFoundElement);
       return;
     }
-    const compHtml = await createCompetitionsHtml(user, compId);
-    userDiv.querySelector(".comp").innerHTML = compHtml;
-    addAddSolveListenerToInputs();
-    addSwitchCompetitionListeners();
+    const competitionsElement = await createCompetitionsHtml(user, compId);
+    const userCompElement = userDiv.querySelector(".comp");
+    userCompElement.innerHTML = "";
+    userCompElement.appendChild(competitionsElement);
   } catch (error) {
     console.error("Error fetching user data:", error);
     userDiv.querySelector(
