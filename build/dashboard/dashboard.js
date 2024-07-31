@@ -263,8 +263,8 @@ async function createCompetitionElement(comp, user) {
           addSolve(userId, roundNumber - 1, solves, eventName, compId);
         });
         // Append elements
-        solvesListElement.appendChild(addSolveInput);
-        solvesListElement.appendChild(addSolveButton);
+        roundElement.appendChild(addSolveInput);
+        roundElement.appendChild(addSolveButton);
       }
     }
   });
