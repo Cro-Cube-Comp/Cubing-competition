@@ -61,7 +61,7 @@ async function getCompetitionById(id) {
   try {
     const allCompetitions = await getCompetitions(true);
     const competition = allCompetitions.find(
-      (competition) => competition.id === id,
+      (competition) => competition.id === id
     );
     return competition;
   } catch (error) {
@@ -99,7 +99,7 @@ function addAddSolveListenerToInputs() {
       addSolve(userId, round - 1, solves, event, competitionId);
     });
     const button = document.getElementById(
-      `solve-add-btn-${userId}-${event}-${round}`,
+      `solve-add-btn-${userId}-${event}-${round}`
     );
     button.addEventListener("click", () => {
       const solves = createSolvesArrayFromInput(input);
@@ -149,7 +149,7 @@ async function createCompetitionsHtml(user, compId = undefined) {
   const selectCompHtml = createSelectCompetitionTag(
     allComps,
     user._id,
-    compId,
+    compId
   ).outerHTML;
   compHtml += selectCompHtml;
   if (compId) {
@@ -222,8 +222,9 @@ window.showCompetition = async function (userId, compId = undefined) {
     }).then((response) => response.json());
 
     if (!user) {
-      userDiv.querySelector(".comp").innerHTML =
-        `<p>Korisnik nije pronađen.</p>`;
+      userDiv.querySelector(
+        ".comp"
+      ).innerHTML = `<p>Korisnik nije pronađen.</p>`;
       return;
     }
     const compHtml = await createCompetitionsHtml(user, compId);
@@ -232,8 +233,9 @@ window.showCompetition = async function (userId, compId = undefined) {
     addSwitchCompetitionListeners();
   } catch (error) {
     console.error("Error fetching user data:", error);
-    userDiv.querySelector(".comp").innerHTML =
-      `<p>Error loading competition data.</p>`;
+    userDiv.querySelector(
+      ".comp"
+    ).innerHTML = `<p>Error loading competition data.</p>`;
   } finally {
     showCompBtn.disabled = false;
     showCompBtn.innerHTML = prevHTML;
@@ -335,39 +337,82 @@ window.assignAdmin = async function (id, username) {
   }
 };
 
-window.displayUsers = function (users) {
-  let html = "";
-  usersDiv.innerHTML = "";
+function displayUsers(users) {
+  const allUsersElement = document.createElement("div");
+  allUsersElement.classList.add("all-users");
   users.forEach((user, index) => {
     const username = user.username;
     const id = user.id;
     const role = user.role;
     const group = user.group;
-    html += `<div class="user" id="user-${id}">`;
-    html += `<div class="username-div">`;
-    html += `<p class="username">${username}</p>`;
-    html += `<img class="manage-accounts" src="../Images/manage_accounts.svg"/>`;
-    html += `</div>`; // close .username-div
-    html += `<p class="role">Uloga: ${role}</p>`;
-    html += `<p class="group">Grupa ${group}</p>`;
-    // Add a delete button for each user
-    html += `<button onclick="deleteUser('${id}')">Izbriši</button>`;
-    html += `<button onclick="assignAdmin('${id}', '${username}')">Postavi za admina</button>`;
-    html += `<button class="showComp-btn" onclick="showCompetition('${id}')">Natjecanje</button>`;
-    html += `<button class="set-winner-${id}" onclick="setWinner('${id}')">Pobjednik</button>`;
-    html += `<div class="comp">`;
-    html += `</div>`;
-    html += `</div>`; // end user div
-  });
-  usersDiv.innerHTML = html;
-};
+    const userElement = document.createElement("div");
+    userElement.classList.add("user");
+    userElement.id = `user-${id}`;
+    // Username div
+    const usernameDiv = document.createElement("div");
+    usernameDiv.classList.add("username-div");
+    // Username element
+    const usernameP = document.createElement("p");
+    usernameP.classList.add("username");
+    usernameP.textContent = username;
+    // Manage accounts image
+    const manageAccountsImg = document.createElement("img");
+    manageAccountsImg.classList.add("manage-accounts");
+    manageAccountsImg.src = "../Images/manage_accounts.svg";
+    // Add elements to the user element
+    usernameDiv.appendChild(usernameP);
+    usernameDiv.appendChild(manageAccountsImg);
+    userElement.appendChild(usernameDiv);
+    // Role element
+    const roleP = document.createElement("p");
+    roleP.classList.add("role");
+    roleP.textContent = `Uloga: ${role}`;
+    userElement.appendChild(roleP);
+    // Group element
+    const groupP = document.createElement("p");
+    groupP.classList.add("group");
+    groupP.textContent = `Grupa ${group}`;
+    userElement.appendChild(groupP);
 
+    // Delete user button
+    const deleteUserButton = document.createElement("button");
+    deleteUserButton.textContent = "Izbriši";
+    deleteUserButton.addEventListener("click", () => deleteUser(id));
+    userElement.appendChild(deleteUserButton);
+    // Assign admin button
+    const assignAdminButton = document.createElement("button");
+    assignAdminButton.textContent = "Postavi za admina";
+    assignAdminButton.addEventListener("click", () =>
+      assignAdmin(id, username)
+    );
+    userElement.appendChild(assignAdminButton);
+    // Show competition button
+    const showCompetitionButton = document.createElement("button");
+    showCompetitionButton.classList.add("showComp-btn");
+    showCompetitionButton.textContent = "Natjecanje";
+    showCompetitionButton.addEventListener("click", () => showCompetition(id));
+    userElement.appendChild(showCompetitionButton);
+    // Set winner button
+    const setWinnerButton = document.createElement("button");
+    setWinnerButton.classList.add(`set-winner-${id}`);
+    setWinnerButton.textContent = "Pobjednik";
+    setWinnerButton.addEventListener("click", () => setWinner(id));
+    userElement.appendChild(setWinnerButton);
+    // Competition element
+    const compElement = document.createElement("div");
+    compElement.classList.add("comp");
+    userElement.appendChild(compElement);
+    allUsersElement.appendChild(userElement);
+  });
+  usersDiv.innerHTML = "";
+  usersDiv.appendChild(allUsersElement);
+}
 window.deleteSolve = async function (
   userId,
   solveIndex,
   roundIndex,
   eventName,
-  compId,
+  compId
 ) {
   const roundNumber = roundIndex + 1;
   const solveNumber = solveIndex + 1;
