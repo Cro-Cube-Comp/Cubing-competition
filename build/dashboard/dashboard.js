@@ -81,34 +81,6 @@ function createSolvesArrayFromInput(input) {
     .filter((solve) => Boolean(solve))
     .slice(0, 5);
 }
-function addAddSolveListenerToInputs() {
-  const solveInputs = document.querySelectorAll(".solve-input");
-  solveInputs.forEach((input) => {
-    const elementValues = input.id.slice("solve-input-".length).split("-");
-    const userId = elementValues[0];
-    const competitionId = elementValues[1];
-    const event = elementValues[2];
-    const round = parseInt(elementValues[3]);
-    input.addEventListener("keydown", (e) => {
-      if (e.key !== "Enter") return;
-      const solves = createSolvesArrayFromInput(input);
-      if (solves.length === 0) {
-        return;
-      }
-      addSolve(userId, round - 1, solves, event, competitionId);
-    });
-    const button = document.getElementById(
-      `solve-add-btn-${userId}-${event}-${round}`
-    );
-    button.addEventListener("click", () => {
-      const solves = createSolvesArrayFromInput(input);
-      if (solves.length === 0) {
-        return;
-      }
-      addSolve(userId, round - 1, solves, event, competitionId);
-    });
-  });
-}
 function createSelectCompetitionTag(allComps, userId, selectedCompId) {
   const select = document.createElement("select");
   select.classList.add("select-comp");
@@ -133,16 +105,6 @@ function createSelectCompetitionTag(allComps, userId, selectedCompId) {
     }
   });
   return select;
-}
-function addSwitchCompetitionListeners() {
-  const selectComps = document.querySelectorAll(".select-comp");
-  selectComps.forEach((select) => {
-    select.addEventListener("change", (e) => {
-      const compId = e.target.value;
-      const userId = e.target.id.slice("select-comp-".length);
-      showCompetition(userId, compId);
-    });
-  });
 }
 async function createCompetitionsHtml(user, compId = undefined) {
   // Inner html of .comp div will be html this function returns
