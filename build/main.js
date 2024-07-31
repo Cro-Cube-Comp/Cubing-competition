@@ -1,6 +1,6 @@
 import { url } from "./Scripts/variables.js";
 import {
-  tokenValid,
+  sessionValid,
   isAdmin,
   getUsername,
   getRole,
@@ -17,7 +17,7 @@ async function getPosts() {
 function createCard(
   title = undefined,
   description = undefined,
-  authorUsername = undefined,
+  authorUsername = undefined
 ) {
   if (!title || !description) {
     throw new Error("Title and description are required.");
@@ -49,7 +49,7 @@ function addDashboardCard() {
   let html = "";
   html += createCard(
     "Radna ploča",
-    `<p> Ti si admin. Oni imaju pristup <a href="./dashboard">radnoj ploči!</a></p>`,
+    `<p> Ti si admin. Oni imaju pristup <a href="./dashboard">radnoj ploči!</a></p>`
   );
   cardsDiv.insertAdjacentHTML("beforeEnd", html);
 }
@@ -59,7 +59,7 @@ function addCreatePostCard() {
     `<p>
       Ti si admin! Oni mogu objaviti bilo što!
       Klikni <a href="./posts">ovdje</a> da objaviš nešto.
-    </p>`,
+    </p>`
   );
   cardsDiv.insertAdjacentHTML("beforeend", html);
 }
@@ -67,7 +67,7 @@ function generateLogOutCard(username = getUsername()) {
   if (!username) return;
   let html = createCard(
     "Odjavi se",
-    `<p>Ako se želiš odjaviti iz korisničkog računa "${username}" klikni <span class="logout-span">ovdje</span>.</p>`,
+    `<p>Ako se želiš odjaviti iz korisničkog računa "${username}" klikni <span class="logout-span">ovdje</span>.</p>`
   );
   return html;
 }
@@ -92,7 +92,7 @@ document.querySelector(".share").addEventListener("click", async () => {
     console.log("Successfully shared");
   } else {
     alert(
-      "Ovaj uređaj ne može dijeliti. Preporučuje se najnovija verzija Google Chrome-a.",
+      "Ovaj uređaj ne može dijeliti. Preporučuje se najnovija verzija Google Chrome-a."
     );
   }
 });
@@ -102,12 +102,12 @@ function createPostHtml(post) {
   const html = createCard(
     title,
     `<p class="post-description">${description}</p>`,
-    authorUsername,
+    authorUsername
   );
   return html;
 }
-async function checkIfLoggedInAndTokenValid() {
-  if (loggedIn() && !(await tokenValid())) {
+async function checkIfLoggedInAndSessionValid() {
+  if (loggedIn() && !(await sessionValid())) {
     logOut();
     window.location.href = "./Login";
   }
@@ -115,12 +115,12 @@ async function checkIfLoggedInAndTokenValid() {
 function addCompDashboardCard() {
   const html = createCard(
     "Natjecanja",
-    `<p>Ti si admin! Možeš kreirati i uređivati natjecanje. Klikni <a href="./competitions-dashboard">ovdje</a>.</p>`,
+    `<p>Ti si admin! Možeš kreirati i uređivati natjecanje. Klikni <a href="./competitions-dashboard">ovdje</a>.</p>`
   );
   cardsDiv.insertAdjacentHTML("beforeend", html);
 }
 async function main() {
-  checkIfLoggedInAndTokenValid();
+  checkIfLoggedInAndSessionValid();
   const posts = await getPosts();
   posts.forEach((post) => {
     const html = createPostHtml(post);

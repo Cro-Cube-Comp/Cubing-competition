@@ -3,7 +3,12 @@ import {
   formatTime,
   getAverage,
 } from "../Scripts/solveTime.js";
-import { getRole, getId, tokenValid, isUser } from "../Scripts/credentials.js";
+import {
+  getRole,
+  getId,
+  sessionValid,
+  isUser,
+} from "../Scripts/credentials.js";
 import { url, loadingHTML } from "../Scripts/variables.js";
 const usersDiv = document.querySelector(".users");
 window.setWinner = async function (winnerId) {
@@ -408,6 +413,7 @@ function enableAllSolveButtons() {
 }
 
 async function main() {
+  sessionValid(true);
   if (isUser(getRole())) {
     alert("Samo administratori");
     location.href = "../";
@@ -418,4 +424,4 @@ async function main() {
 }
 main();
 
-setInterval(() => tokenValid(true), 1000 * 60 * 10); // Every 10 minutes
+setInterval(() => sessionValid(true), 1000 * 60 * 10); // Every 10 minutes

@@ -2,7 +2,7 @@ import { url, loadingHTML } from "../Scripts/variables.js";
 import {
   getRole,
   isUser,
-  tokenValid,
+  sessionValid,
   loggedIn,
 } from "../Scripts/credentials.js";
 import {
@@ -406,7 +406,7 @@ async function main() {
   if (!loggedIn()) {
     window.location.href = "../Login";
   }
-  tokenValid(true);
+  sessionValid(true);
   if (isUser(getRole(true))) {
     window.location.href = "../";
   }

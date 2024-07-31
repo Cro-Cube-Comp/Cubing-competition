@@ -91,7 +91,6 @@ changePasswordSubmitBtn.addEventListener("click", async () => {
   changePasswordSubmitBtn.disabled = false;
   document.querySelector(".message").innerText = changePasswordOutput.message;
 });
-tokenValid(true);
 async function getCompetitions(parseAsJson = false) {
   try {
     const allCompetitionsResponse = await fetch(`${url}/competitions`, {
@@ -114,3 +113,4 @@ competitions.forEach((competition) => {
   option.innerText = competition.name;
   compResultsSelect.appendChild(option);
 });
+sessionValid(true);

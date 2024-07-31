@@ -100,7 +100,7 @@ app.use("/competitions", require("./routes/competitions/delete"));
 app.use("/competitions", require("./routes/competitions/edit"));
 app.use("/competitions", require("./routes/competitions/lock"));
 // Token validation
-app.use("/token", require("./routes/token/validate"));
+app.use("/session", require("./routes/session/validate"));
 // Health check
 app.use("/health-check", require("./routes/health_check/health_check"));
 // Backup

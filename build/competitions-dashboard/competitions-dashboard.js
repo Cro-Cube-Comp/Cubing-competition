@@ -1,5 +1,5 @@
 import { url, loadingHTML } from "../Scripts/variables.js";
-import { tokenValid, isAdmin, getRole } from "../Scripts/credentials.js";
+import { sessionValid, isAdmin, getRole } from "../Scripts/credentials.js";
 const createCompBtn = document.querySelector(".create-comp-btn");
 function getEvents(competition) {
   return competition.events;
@@ -278,6 +278,6 @@ async function main() {
   if (!isAdmin(getRole())) {
     window.location.href = "../";
   }
-  tokenValid(true);
+  sessionValid(true);
   await makeAndInsertCompetitions();
 }

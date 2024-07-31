@@ -1,5 +1,5 @@
 import { url, loadingHTML } from "../Scripts/variables.js";
-import { getRole, isUser, tokenValid } from "../Scripts/credentials.js";
+import { getRole, isUser, sessionValid } from "../Scripts/credentials.js";
 const group1Checkbox = document.querySelector(".group-1");
 const submitBtn = document.querySelector(".submit-btn");
 const messageElement = document.getElementById("message");
@@ -91,7 +91,7 @@ function credentialsCheck(username, password, group) {
   }
   return false;
 }
-tokenValid(true);
+sessionValid(true);
 if (isUser(getRole(true))) {
   window.location.href = "../";
 }
