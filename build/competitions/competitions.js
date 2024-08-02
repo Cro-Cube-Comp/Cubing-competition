@@ -26,11 +26,11 @@ function createUsersHtml(usersInGroup, compId, compEvent, roundIndex) {
   usersInGroup.forEach((user) => {
     if (!user.competitions) return;
     const comp = user.competitions.find(
-      (comp) => comp.competitionId === compId,
+      (comp) => comp.competitionId === compId
     );
     if (!comp) return;
     const event = comp.events.find(
-      (userEvent) => userEvent.event === compEvent,
+      (userEvent) => userEvent.event === compEvent
     );
     if (!event) return;
     const round = event.rounds[roundIndex];
@@ -53,8 +53,8 @@ function createUserHtml(user, round) {
     const solve = !round[i]
       ? "X"
       : round[i] !== 0
-        ? formatTime(round[i])
-        : "DNF/DNS";
+      ? formatTime(round[i])
+      : "DNF/DNS";
     html += `<li>${solve}</li>`;
   }
   html += `</ol>`; // Close .solves ol
@@ -62,22 +62,30 @@ function createUserHtml(user, round) {
   return html;
 }
 function createGroupHtml(usersInGroup, groupIndex, competition) {
+  const groupNumber = groupIndex + 1;
   let html = "";
   html += `<div class="group">`;
-  html += `<h2>Grupa ${groupIndex + 1}</h2>`;
+  html += `<div class="group-number-container">`;
+  html += `<h2 class="group-number">Grupa ${groupNumber}</h2>`;
+  html += `</div>`; // .group-number-container div
   competition.events.forEach((event) => {
+    html += `<div class="event-name-container">`;
+    html += `<h3 class="event-name">${event.name}</h3>`;
+    html += `</div>`; // .event-name-container div
     html += `<div class="event">`;
-    html += `<h3>${event.name}</h3>`;
     for (let i = 0; i < event.rounds; i++) {
       const roundNumber = i + 1;
       const roundIndex = i;
-      html += `<div class="round">`;
+      html += `<div class="round-number-container">`;
       html += `<h4 class="round-number">Runda ${roundNumber}</h4>`;
+      html += `</div>`; // .round-number-container div
+      html += `<div class="round">`;
+
       html += createUsersHtml(
         usersInGroup,
         competition._id,
         event.name,
-        roundIndex,
+        roundIndex
       );
       html += `</div>`; // Close .round div
     }
