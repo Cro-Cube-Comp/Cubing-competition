@@ -19,7 +19,7 @@ router.post("/", loginLimiter, async (req, res) => {
 
     // Find the user by username
     const user = await User.findOne({ username: { $eq: username } }).select(
-      "+password"
+      "+password",
     ); // Select the password field only
 
     // Check if the user exists and the password matches
@@ -35,7 +35,7 @@ router.post("/", loginLimiter, async (req, res) => {
       process.env.JWT_SECRET,
       {
         expiresIn: process.env.TOKEN_EXPIRATION || "1d",
-      }
+      },
     );
 
     res.status(200).json({

@@ -17,12 +17,19 @@ getResultsBtn.addEventListener("click", getResults);
 function getResults() {
   getResultsBtn.disabled = true;
   const resultsUrl = addToken(
-    `${url}/results?competitionId=${compResultsSelect.value}`
+    `${url}/results?competitionId=${compResultsSelect.value}`,
   );
   downloadFile(resultsUrl, "results"); // You can specify the desired file name
   getResultsBtn.disabled = false;
 }
-
+const backupsBtn = document.querySelector(".backups");
+backupsBtn.addEventListener("click", getBackups);
+function getBackups() {
+  backupsBtn.disabled = true;
+  const backupsUrl = addToken(`${url}/backup`);
+  downloadFile(backupsUrl, "backups"); // You can specify the desired file name
+  backupsBtn.disabled = false;
+}
 async function changePassword(username, newPassword) {
   const body = {
     username,
@@ -40,7 +47,7 @@ async function changePassword(username, newPassword) {
   return response;
 }
 const changePasswordSubmitBtn = document.querySelector(
-  ".change-password-submit-btn"
+  ".change-password-submit-btn",
 );
 const newPasswordInput = document.querySelector(".new-password");
 const usernameInput = document.querySelector(".username");
@@ -58,7 +65,7 @@ changePasswordSubmitBtn.addEventListener("click", async () => {
 tokenValid(true);
 async function getCompetitions(parseAsJson = false) {
   try {
-    const allCompetitionsResponse = await fetch(`${url}/competitions/get`);
+    const allCompetitionsResponse = await fetch(`${url}/competitions`);
     if (parseAsJson) {
       return await allCompetitionsResponse.json();
     }

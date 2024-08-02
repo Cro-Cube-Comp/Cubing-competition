@@ -16,8 +16,8 @@ describe("Text functions", () => {
       expect(boldedPart).toBe(
         `<span class="bolded">${text.substring(0, 5)}</span>${text.substring(
           end,
-          text.length
-        )}`
+          text.length,
+        )}`,
       );
     });
     it("should return whole text bolded if start and end are not specified", () => {
@@ -32,8 +32,8 @@ describe("Text functions", () => {
       expect(boldedPart).toBe(
         `${text.substring(0, start)}<span class="bolded">${text.substring(
           start,
-          text.length
-        )}</span>`
+          text.length,
+        )}</span>`,
       );
     });
     it("should handle new lines", () => {
@@ -44,8 +44,8 @@ describe("Text functions", () => {
       expect(boldedPart).toBe(
         `<span class="bolded">${text.substring(
           start,
-          end
-        )}</span>${text.substring(end, text.length)}`
+          end,
+        )}</span>${text.substring(end, text.length)}`,
       );
     });
   });
@@ -58,8 +58,8 @@ describe("Text functions", () => {
       expect(italicizedPart).toBe(
         `<span class="italicized">${text.substring(
           start,
-          end
-        )}</span>${text.substring(end, text.length)}`
+          end,
+        )}</span>${text.substring(end, text.length)}`,
       );
     });
     it("should return whole text italicized if start and end are not specified", () => {
@@ -74,8 +74,8 @@ describe("Text functions", () => {
       expect(italicizedPart).toBe(
         `${text.substring(0, start)}<span class="italicized">${text.substring(
           start,
-          text.length
-        )}</span>`
+          text.length,
+        )}</span>`,
       );
     });
   });
@@ -88,8 +88,8 @@ describe("Text functions", () => {
       expect(underlinedPart).toBe(
         `<span class="underlined">${text.substring(
           start,
-          end
-        )}</span>${text.substring(end, text.length)}`
+          end,
+        )}</span>${text.substring(end, text.length)}`,
       );
     });
     it("should return whole text underlined if start and end are not specified", () => {
@@ -104,8 +104,8 @@ describe("Text functions", () => {
       expect(underlinedPart).toBe(
         `${text.substring(0, start)}<span class="underlined">${text.substring(
           start,
-          text.length
-        )}</span>`
+          text.length,
+        )}</span>`,
       );
     });
     it("should handle new lines", () => {
@@ -116,8 +116,8 @@ describe("Text functions", () => {
       expect(underlinedPart).toBe(
         `<span class="underlined">${text.substring(
           start,
-          end
-        )}</span>${text.substring(end, text.length)}`
+          end,
+        )}</span>${text.substring(end, text.length)}`,
       );
     });
     it("should handle new lines in the middle of the text", () => {
@@ -128,8 +128,8 @@ describe("Text functions", () => {
       expect(underlinedPart).toBe(
         `${text.substring(0, start)}<span class="underlined">${text.substring(
           start,
-          end
-        )}</span>${text.substring(end, text.length)}`
+          end,
+        )}</span>${text.substring(end, text.length)}`,
       );
     });
     it("should return underlined text in the middle of the text", () => {
@@ -140,33 +140,33 @@ describe("Text functions", () => {
       expect(underlinedPart).toBe(
         `${text.substring(0, start)}<span class="underlined">${text.substring(
           start,
-          end
-        )}</span>${text.substring(end, text.length)}`
+          end,
+        )}</span>${text.substring(end, text.length)}`,
       );
     });
   });
   describe("test suite: hyperlinkText", function () {
     it("should hyperlink the entire text when start and end are default", function () {
       expect(
-        hyperlinkText("Click here", undefined, undefined, "http://example.com")
+        hyperlinkText("Click here", undefined, undefined, "http://example.com"),
       ).toBe('<a href="http://example.com" target="_blank">Click here</a>');
     });
 
     it("should hyperlink part of the text when start and end are provided", function () {
       expect(hyperlinkText("Click here", 6, 10, "http://example.com")).toBe(
-        'Click <a href="http://example.com" target="_blank">here</a>'
+        'Click <a href="http://example.com" target="_blank">here</a>',
       );
     });
 
     it('should hyperlink without target="_blank" when newTab is false', function () {
       expect(
-        hyperlinkText("Click here", 6, 10, "http://example.com", false)
+        hyperlinkText("Click here", 6, 10, "http://example.com", false),
       ).toBe('Click <a href="http://example.com" >here</a>'); // I dont know why there is a space before ">"
     });
 
     it("should return original text when url is not provided", function () {
       expect(hyperlinkText("Click here")).toBe(
-        `<a href="URL" target="_blank">Click here</a>`
+        `<a href="URL" target="_blank">Click here</a>`,
       );
     });
 

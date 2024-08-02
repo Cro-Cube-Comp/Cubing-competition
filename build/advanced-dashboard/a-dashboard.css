@@ -1,10 +1,8 @@
 body {
   background: var(--background);
-  box-shadow: 2px 2px 5px rgba(255, 255, 255, 1); /* 10px to the right, 10px down, and 5px blur */
 }
 .options {
   padding: 20px;
-  background: var(--background);
   color: white;
   height: 90vh;
   display: grid;
@@ -35,7 +33,7 @@ body {
 }
 button {
   padding: 5px 7px;
-  width: 25%;
+  width: max(25%, fit-content);
   min-width: 80px;
   max-width: 150px;
   font-size: 16px;

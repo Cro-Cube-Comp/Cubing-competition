@@ -180,7 +180,7 @@ var _i = class {
                 this.model.timestampRequest.set("end"),
                 { move: null, amount: 0 })
               : ((this.pendingFrame = !1), { move: i.move, amount: r });
-          })()
+          })(),
         );
     }
   },
@@ -202,11 +202,11 @@ var _i = class {
           (this.model = e),
           (this.lastTimestampPromise = j(this, Ae, wt).call(this)),
           this.model.playingInfo.addFreshListener(
-            this.onPlayingProp.bind(this)
+            this.onPlayingProp.bind(this),
           ),
           (this.catchUpHelper = new _i(this.model)),
           this.model.catchUpMove.addFreshListener(
-            this.onCatchUpMoveProp.bind(this)
+            this.onCatchUpMoveProp.bind(this),
           );
       }
       async onPlayingProp(e) {
@@ -270,7 +270,7 @@ var _i = class {
               this.model.timeRange.get(),
               this.model.tempoScale.get(),
               this.model.currentMoveInfo.get(),
-            ])
+            ]),
           ),
           [r, s, n, o, l] = i;
         if (!r.playing) {
@@ -490,52 +490,52 @@ var Ki = {
               z = this.elementID(
                 n,
                 l.permutation[h],
-                (o.numOrientations - l.orientation[h] + v) % o.numOrientations
+                (o.numOrientations - l.orientation[h] + v) % o.numOrientations,
               ),
               L = !1;
             if (m) {
               let I = this.elementID(
                 n,
                 m.permutation[h],
-                (o.numOrientations - m.orientation[h] + v) % o.numOrientations
+                (o.numOrientations - m.orientation[h] + v) % o.numOrientations,
               );
               z === I && (L = !0), (i = i || 0);
               let W = 100 * (1 - i * i * (2 - i * i));
               this.gradients[p].children[0].setAttribute(
                 "stop-color",
-                this.originalColors[z]
+                this.originalColors[z],
               ),
                 this.gradients[p].children[1].setAttribute(
                   "stop-color",
-                  this.originalColors[z]
+                  this.originalColors[z],
                 ),
                 this.gradients[p].children[1].setAttribute(
                   "offset",
-                  `${Math.max(W - 5, 0)}%`
+                  `${Math.max(W - 5, 0)}%`,
                 ),
                 this.gradients[p].children[2].setAttribute(
                   "offset",
-                  `${Math.max(W - 5, 0)}%`
+                  `${Math.max(W - 5, 0)}%`,
                 ),
                 this.gradients[p].children[3].setAttribute("offset", `${W}%`),
                 this.gradients[p].children[4].setAttribute("offset", `${W}%`),
                 this.gradients[p].children[4].setAttribute(
                   "stop-color",
-                  this.originalColors[I]
+                  this.originalColors[I],
                 ),
                 this.gradients[p].children[5].setAttribute(
                   "stop-color",
-                  this.originalColors[I]
+                  this.originalColors[I],
                 );
             } else L = !0;
             L &&
               (this.gradients[p].children[0].setAttribute(
                 "stop-color",
-                this.originalColors[z]
+                this.originalColors[z],
               ),
               this.gradients[p].children[1].setAttribute(
                 "stop-color",
-                this.originalColors[z]
+                this.originalColors[z],
               ),
               this.gradients[p].children[1].setAttribute("offset", "100%"),
               this.gradients[p].children[2].setAttribute("offset", "100%"),
@@ -628,11 +628,11 @@ svg {
           }),
           a(this, K).addListener(
             this.model.legacyPosition,
-            this.onPositionChange.bind(this)
+            this.onPositionChange.bind(this),
           ),
           this.options?.experimentalStickeringMask &&
             this.experimentalSetStickeringMask(
-              this.options.experimentalStickeringMask
+              this.options.experimentalStickeringMask,
             );
       }
       disconnect() {
@@ -651,7 +651,7 @@ svg {
           console.warn(
             "Bad position (this doesn't necessarily mean something is wrong). Pre-emptively disconnecting:",
             this.puzzleLoader?.id,
-            i
+            i,
           ),
             this.disconnect();
         }
@@ -692,7 +692,7 @@ var Te,
             this.model.twistySceneModel.stickeringMask,
             async (s) => {
               (await this.twisty2DPuzzle()).experimentalSetStickeringMask(s);
-            }
+            },
           );
       }
       disconnect() {
@@ -715,9 +715,9 @@ var Te,
                 await this.puzzleLoader.kpuzzle(),
                 await e,
                 {},
-                this.puzzleLoader
+                this.puzzleLoader,
               );
-            })()
+            })(),
           )
         );
       }
@@ -746,7 +746,7 @@ var Te,
           this.model &&
             a(this, Se).addListener(
               this.model.twistyPlayerModel.puzzleLoader,
-              this.onPuzzleLoader.bind(this)
+              this.onPuzzleLoader.bind(this),
             );
       }
       async scene() {
@@ -772,7 +772,7 @@ var Te,
           this.model.twistyPlayerModel,
           this,
           t,
-          this.effectiveVisualization
+          this.effectiveVisualization,
         );
         this.setCurrentTwisty2DPuzzleWrapper(i);
       }
@@ -858,7 +858,7 @@ var Q,
                 hintFacelets: n === "auto" ? "floating" : n,
               }),
                 this.scheduleRender();
-            }
+            },
           ),
           a(this, b).addListener(
             this.model.twistySceneModel.foundationDisplay,
@@ -867,14 +867,14 @@ var Q,
                 showFoundation: n !== "none",
               }),
                 this.scheduleRender();
-            }
+            },
           ),
           a(this, b).addListener(
             this.model.twistySceneModel.stickeringMask,
             async (n) => {
               (await this.twisty3DPuzzle()).setStickeringMask(n),
                 this.scheduleRender();
-            }
+            },
           ),
           a(this, b).addListener(
             this.model.twistySceneModel.faceletScale,
@@ -883,7 +883,7 @@ var Q,
                 faceletScale: n,
               }),
                 this.scheduleRender();
-            }
+            },
           ),
           a(this, b).addMultiListener3(
             [
@@ -896,10 +896,10 @@ var Q,
                 ((await this.twisty3DPuzzle()).experimentalUpdateTexture(
                   n[0].specialBehaviour === "picture",
                   n[1],
-                  n[2]
+                  n[2],
                 ),
                 this.scheduleRender());
-            }
+            },
           );
       }
       disconnect() {
@@ -934,7 +934,7 @@ var Q,
                     hintSprite: r,
                     experimentalStickeringMask: s,
                     initialHintFaceletsAnimation: n,
-                  }
+                  },
                 );
               } else {
                 let [i, r, s, n] = await Promise.all([
@@ -947,16 +947,16 @@ var Q,
                     () => this.schedulable.scheduleRender(),
                     this.puzzleLoader,
                     i === "auto" ? "floating" : i,
-                    n
+                    n,
                   );
                 return (
                   o.then((l) =>
-                    l.experimentalUpdateTexture(!0, r ?? void 0, s ?? void 0)
+                    l.experimentalUpdateTexture(!0, r ?? void 0, s ?? void 0),
                   ),
                   o
                 );
               }
-            })()
+            })(),
           )
         );
       }
@@ -1004,7 +1004,7 @@ var Q,
             "none",
             "side-by-side",
             "top-right",
-          ])
+          ]),
         );
         c(this, le, new ne());
         c(this, V, null);
@@ -1025,11 +1025,11 @@ var Q,
           this.model &&
             (a(this, le).addMultiListener(
               [this.model.puzzleLoader, this.model.visualizationStrategy],
-              this.onPuzzle.bind(this)
+              this.onPuzzle.bind(this),
             ),
             a(this, le).addListener(
               this.model.backView,
-              this.onBackView.bind(this)
+              this.onBackView.bind(this),
             )),
           this.scheduleRender();
       }
@@ -1058,7 +1058,7 @@ var Q,
             o = new n.Raycaster(),
             l = new (await Z).Vector2(
               t.detail.pressInfo.normalizedX,
-              t.detail.pressInfo.normalizedY
+              t.detail.pressInfo.normalizedY,
             );
           return o.setFromCamera(l, s), o;
         })();
@@ -1067,8 +1067,8 @@ var Q,
           depth: t.detail.pressInfo.keys.ctrlOrMetaKey
             ? "rotation"
             : t.detail.pressInfo.keys.shiftKey
-            ? "secondSlice"
-            : "none",
+              ? "secondSlice"
+              : "none",
         });
       }
       async scene() {
@@ -1109,7 +1109,7 @@ var Q,
         if (t[1] === "2D") return;
         a(this, U)?.disconnect();
         let [i, r] = await a(this, $e).queue(
-          Promise.all([this.scene(), new Li(this.model, this, t[0], t[1])])
+          Promise.all([this.scene(), new Li(this.model, this, t[0], t[1])]),
         );
         this.setCurrentTwisty3DPuzzleWrapper(i, r);
       }
@@ -1253,7 +1253,7 @@ function ar() {
 function Ut() {
   return document.fullscreenElement
     ? document.fullscreenElement
-    : document.webkitFullscreenElement ?? null;
+    : (document.webkitFullscreenElement ?? null);
 }
 function or(e) {
   return e.requestFullscreen
@@ -1347,7 +1347,7 @@ var lr = [
           let r = new Si();
           (t[i] = r),
             r.htmlButton.addEventListener("click", () =>
-              j(this, Je, Ii).call(this, i)
+              j(this, Je, Ii).call(this, i),
             ),
             this.addElement(r);
         }
@@ -1471,14 +1471,14 @@ ie?.addEventListener(
   function (e) {
     e.which && (Ge = !0);
   },
-  !0
+  !0,
 );
 ie?.addEventListener(
   "mouseup",
   function (e) {
     e.which && (Ge = !1);
   },
-  !0
+  !0,
 );
 var yt = 0,
   Ye = 0;
@@ -1487,7 +1487,7 @@ ie?.addEventListener(
   () => {
     Ye++;
   },
-  !1
+  !1,
 );
 ie?.addEventListener("mousemove", ki, !1);
 ie?.addEventListener("mouseenter", ki, !1);
@@ -1529,13 +1529,13 @@ var Bt = 0,
                 (t.type = "range"),
                 (t.disabled = !0),
                 this.model?.detailedTimelineInfo.addFreshListener(
-                  this.onDetailedTimelineInfo.bind(this)
+                  this.onDetailedTimelineInfo.bind(this),
                 ),
                 t.addEventListener("input", this.onInput.bind(this)),
                 t.addEventListener("keydown", this.onKeypress.bind(this)),
                 t
               );
-            })()
+            })(),
           )
         );
       }
@@ -1731,8 +1731,8 @@ twisty-scrubber {
       this.errors.length > 0
         ? console.error(`\u{1F6A8} ${this.errors[0]}`)
         : this.warnings.length > 0
-        ? console.warn(`\u26A0\uFE0F ${this.warnings[0]}`)
-        : console.info("\u{1F60E} No issues!");
+          ? console.warn(`\u26A0\uFE0F ${this.warnings[0]}`)
+          : console.info("\u{1F60E} No issues!");
     }
   };
 function Ei(e) {
@@ -1860,10 +1860,10 @@ var Yt = class extends q {
           l === 0
             ? r.movesStarting.push(h)
             : l === 1
-            ? r.movesFinishing.push(h)
-            : (r.currentMoves.push(h),
-              (r.latestStart = Math.max(r.latestStart, n)),
-              (r.earliestEnd = Math.min(r.earliestEnd, m)));
+              ? r.movesFinishing.push(h)
+              : (r.currentMoves.push(h),
+                (r.latestStart = Math.max(r.latestStart, n)),
+                (r.earliestEnd = Math.min(r.earliestEnd, m)));
         }
         return t(r);
       }
@@ -1872,7 +1872,7 @@ var Yt = class extends q {
   yr = class extends f {
     derive(e) {
       let t = e.indexer.transformationAtIndex(
-        e.currentLeavesSimplified.stateIndex
+        e.currentLeavesSimplified.stateIndex,
       );
       t = e.anchoredStart.applyTransformation(t);
       for (let i of e.currentLeavesSimplified.movesFinishing)
@@ -2276,7 +2276,7 @@ var Tr = {
           2 * (t.duration + i.duration),
           n,
           n.invert(),
-          [t, i]
+          [t, i],
         );
       return this.mult(o, 1, [o, t, i]);
     }
@@ -2291,7 +2291,7 @@ var Tr = {
           2 * t.duration + i.duration,
           s,
           s.invert(),
-          [t, i]
+          [t, i],
         );
       return this.mult(n, 1, [n, t, i]);
     }
@@ -2302,7 +2302,7 @@ var Tr = {
             1,
             this.durationFn.traverseAlgNode(e),
             this.identity,
-            this.identity
+            this.identity,
           );
     }
     traverseNewline(e) {
@@ -2437,7 +2437,7 @@ var Tr = {
       let r = e.apd.children[0],
         s = Math.min(
           Math.floor((this.goali - this.i) / r.moveCount),
-          Math.ceil((this.goaldur - this.dur) / r.duration - 1)
+          Math.ceil((this.goaldur - this.dur) / r.duration - 1),
         );
       return s > 0 && this.keepgoing(new x(r, i), s), i;
     }
@@ -2448,14 +2448,14 @@ var Tr = {
         t !== 1
           ? e.back
             ? (this.st = this.st.applyTransformation(
-                e.apd.backward.selfMultiply(t)
+                e.apd.backward.selfMultiply(t),
               ))
             : (this.st = this.st.applyTransformation(
-                e.apd.forward.selfMultiply(t)
+                e.apd.forward.selfMultiply(t),
               ))
           : e.back
-          ? (this.st = this.st.applyTransformation(e.apd.backward))
-          : (this.st = this.st.applyTransformation(e.apd.forward)),
+            ? (this.st = this.st.applyTransformation(e.apd.backward))
+            : (this.st = this.st.applyTransformation(e.apd.forward)),
         !1
       );
     }
@@ -2861,9 +2861,9 @@ var os = class extends f {
       return e.stickeringMaskRequest
         ? e.stickeringMaskRequest
         : e.stickeringRequest === "picture"
-        ? { specialBehaviour: "picture", orbits: {} }
-        : e.puzzleLoader.stickeringMask?.(e.stickeringRequest ?? "full") ??
-          as(e.puzzleLoader);
+          ? { specialBehaviour: "picture", orbits: {} }
+          : (e.puzzleLoader.stickeringMask?.(e.stickeringRequest ?? "full") ??
+            as(e.puzzleLoader));
     }
   },
   ls = {
@@ -2884,7 +2884,7 @@ function cs(e) {
     let [s, n, ...o] = r.split(":");
     if (o.length > 0)
       throw new Error(
-        `Invalid serialized orbit stickering mask (too many colons): \`${r}\``
+        `Invalid serialized orbit stickering mask (too many colons): \`${r}\``,
       );
     let l = [];
     t.orbits[s] = { pieces: l };
@@ -2975,7 +2975,11 @@ var ys = class extends q {
       if (e.orbitCoordinatesRequest === "auto")
         return ei(e.puzzleID, e.strategy);
       let t = Object.assign(
-        Object.assign({}, ei(e.puzzleID, e.strategy), e.orbitCoordinatesRequest)
+        Object.assign(
+          {},
+          ei(e.puzzleID, e.strategy),
+          e.orbitCoordinatesRequest,
+        ),
       );
       if (Math.abs(t.latitude) <= e.latitudeLimit) return t;
       {
@@ -3086,7 +3090,7 @@ var Ts = class {
             puzzleIDRequest: this.puzzleIDRequest,
             puzzleDescriptionRequest: this.puzzleDescriptionRequest,
           },
-          this.userVisibleErrorTracker
+          this.userVisibleErrorTracker,
         )),
         (this.kpuzzle = new Fr({ puzzleLoader: this.puzzleLoader })),
         (this.puzzleID = new Wr({ puzzleLoader: this.puzzleLoader })),
@@ -3192,7 +3196,7 @@ var Ts = class {
             (async () => {
               let s = (await this.alg.get()).alg.concat(new A([e]));
               return this.timestampRequest.set("end"), s;
-            })()
+            })(),
           );
     }
     experimentalAddMove(e, t) {
@@ -3209,7 +3213,7 @@ var Ts = class {
             this.catchUpMove.set({ move: i, amount: 0 }),
             n
           );
-        })()
+        })(),
       );
     }
     experimentalRemoveFinalChild() {
@@ -3224,7 +3228,7 @@ var Ts = class {
           return (
             r && this.catchUpMove.set({ move: r.invert(), amount: 0 }), new A(t)
           );
-        })()
+        })(),
       );
     }
   };
@@ -3413,7 +3417,7 @@ var bs = class extends k {
     }
     set experimentalInitialHintFaceletsAnimation(e) {
       this.experimentalModel.twistySceneModel.initialHintFaceletsAnimation.set(
-        e
+        e,
       );
     }
     get experimentalInitialHintFaceletsAnimation() {
@@ -3504,7 +3508,7 @@ var bs = class extends k {
           u(
             this,
             Re,
-            new it(this, "controls-", ["auto"].concat(Object.keys(Xi)))
+            new it(this, "controls-", ["auto"].concat(Object.keys(Xi))),
           ),
           u(this, ce, document.createElement("div")),
           u(this, te, document.createElement("div")),
@@ -3533,29 +3537,29 @@ var bs = class extends k {
               let r = i.errors[0] ?? null;
               this.contentWrapper.classList.toggle("error", !!r),
                 r && (a(this, te).textContent = r);
-            }
+            },
           );
         let t = new bi(this.experimentalModel, this.controller);
         this.contentWrapper.appendChild(t),
           (this.buttons = new Ti(
             this.experimentalModel,
             this.controller,
-            this
+            this,
           )),
           this.contentWrapper.appendChild(this.buttons),
           this.experimentalModel.twistySceneModel.background.addFreshListener(
             (i) => {
               this.contentWrapper.classList.toggle("checkered", i !== "none");
-            }
+            },
           ),
           this.experimentalModel.controlPanel.addFreshListener((i) => {
             a(this, Re).setValue(i);
           }),
           this.experimentalModel.visualizationStrategy.addFreshListener(
-            j(this, et, ji).bind(this)
+            j(this, et, ji).bind(this),
           ),
           this.experimentalModel.puzzleID.addFreshListener(
-            this.flash.bind(this)
+            this.flash.bind(this),
           );
       }
       experimentalSetFlashLevel(t) {
@@ -3636,7 +3640,7 @@ var bs = class extends k {
       async experimentalDownloadScreenshot(t) {
         if (
           ["2D", "experimental-2D-LL"].includes(
-            await this.experimentalModel.visualizationStrategy.get()
+            await this.experimentalModel.visualizationStrategy.get(),
           )
         ) {
           let r = await a(this, E)
@@ -3726,7 +3730,7 @@ twisty-alg-leaf-elem.twisty-alg-comment {
           });
       } else
         this.contentWrapper.appendChild(
-          document.createElement("span")
+          document.createElement("span"),
         ).textContent = t;
     }
     pathToIndex(e) {
@@ -3782,7 +3786,7 @@ var Os = class extends xe {
                 earliestMoveIndex: t.earliestMoveIndex + i,
                 twistyAlgViewer: t.twistyAlgViewer,
                 direction: t.direction,
-              })
+              }),
             )),
           n.as(We)?.experimentalNISSGrouping && r.addString(")");
       return r.flushQueue(t.direction), { moveCount: i, element: r };
@@ -3803,7 +3807,7 @@ var Os = class extends xe {
                 t,
                 i[0],
                 !0,
-                !0
+                !0,
               ),
             })),
             n.addString(", "),
@@ -3815,7 +3819,7 @@ var Os = class extends xe {
                 t,
                 i[1],
                 !0,
-                !0
+                !0,
               ),
             })))
           : (s += n.addElem(
@@ -3823,7 +3827,7 @@ var Os = class extends xe {
                 earliestMoveIndex: t.earliestMoveIndex + s,
                 twistyAlgViewer: t.twistyAlgViewer,
                 direction: r,
-              })
+              }),
             )),
         n.addString(`)${e.experimentalRepetitionSuffix}`),
         n.flushQueue(),
@@ -3848,7 +3852,7 @@ var Os = class extends xe {
             earliestMoveIndex: t.earliestMoveIndex + i,
             twistyAlgViewer: t.twistyAlgViewer,
             direction: t.direction,
-          })
+          }),
         )),
         r.addString(", "),
         (i += r.addElem(
@@ -3856,7 +3860,7 @@ var Os = class extends xe {
             earliestMoveIndex: t.earliestMoveIndex + i,
             twistyAlgViewer: t.twistyAlgViewer,
             direction: t.direction,
-          })
+          }),
         )),
         r.flushQueue(t.direction),
         r.addString("]"),
@@ -3873,7 +3877,7 @@ var Os = class extends xe {
           earliestMoveIndex: t.earliestMoveIndex + i,
           twistyAlgViewer: t.twistyAlgViewer,
           direction: t.direction,
-        })
+        }),
       );
       return (
         (i += s),
@@ -3883,7 +3887,7 @@ var Os = class extends xe {
             earliestMoveIndex: t.earliestMoveIndex + i,
             twistyAlgViewer: t.twistyAlgViewer,
             direction: t.direction,
-          })
+          }),
         )),
         r.addString("]"),
         r.flushQueue(),
@@ -3920,7 +3924,7 @@ var Os = class extends xe {
       this.moveCharIndexMap.set(e, t);
     }
     set(e) {
-      let t = e ? this.moveCharIndexMap.get(e.startCharIndex) ?? null : null;
+      let t = e ? (this.moveCharIndexMap.get(e.startCharIndex) ?? null) : null;
       this.currentElem !== t &&
         (this.currentElem?.classList.remove("twisty-alg-current-move"),
         this.currentElem?.setCurrentMove(!1),
@@ -3952,7 +3956,7 @@ var Os = class extends xe {
           this,
           je,
           Vs(t, { earliestMoveIndex: 0, twistyAlgViewer: this, direction: 1 })
-            .element
+            .element,
         ),
           (this.textContent = ""),
           this.appendChild(a(this, je));
@@ -4134,12 +4138,12 @@ var Fs = class extends xe {
           e.targetChar < r.leaf.startCharIndex
             ? (s = "before")
             : e.targetChar === r.leaf.startCharIndex
-            ? (s = "start")
-            : e.targetChar < r.leaf.endCharIndex
-            ? (s = "inside")
-            : e.targetChar === r.leaf.endCharIndex
-            ? (s = "end")
-            : (s = "after"),
+              ? (s = "start")
+              : e.targetChar < r.leaf.endCharIndex
+                ? (s = "inside")
+                : e.targetChar === r.leaf.endCharIndex
+                  ? (s = "end")
+                  : (s = "after"),
           { leafInfo: r, where: s }
         );
       }
@@ -4280,7 +4284,7 @@ textarea {
           u(
             this,
             Oe,
-            new it(this, "valid-for-puzzle-", ["none", "warning", "error"])
+            new it(this, "valid-for-puzzle-", ["none", "warning", "error"]),
           ),
           u(this, D, null),
           (this.debugNeverRequestTimestamp = !1),
@@ -4304,7 +4308,7 @@ textarea {
           }),
           a(this, y).addEventListener("blur", () => this.onBlur()),
           document.addEventListener("selectionchange", () =>
-            this.onSelectionChange()
+            this.onSelectionChange(),
           ),
           t?.twistyPlayer && (this.twistyPlayer = t.twistyPlayer),
           u(this, B, t?.twistyPlayerProp ?? "alg"),
@@ -4348,7 +4352,7 @@ textarea {
               (a(this, P).textContent = ""),
               (a(this, _).textContent = j(this, Ve, xt).call(
                 this,
-                a(this, y).value
+                a(this, y).value,
               ));
             return;
           }
@@ -4356,15 +4360,15 @@ textarea {
             (u(this, fe, t),
             (a(this, Y).textContent = a(this, y).value.slice(
               0,
-              t.startCharIndex
+              t.startCharIndex,
             )),
             (a(this, P).textContent = a(this, y).value.slice(
               t.startCharIndex,
-              t.endCharIndex
+              t.endCharIndex,
             )),
             (a(this, _).textContent = j(this, Ve, xt).call(
               this,
-              a(this, y).value.slice(t.endCharIndex)
+              a(this, y).value.slice(t.endCharIndex),
             )),
             (a(this, P).hidden = !1));
         }
@@ -4387,7 +4391,7 @@ textarea {
               (a(this, D)?.experimentalModel.puzzleAlg.addFreshListener((i) => {
                 if (i.issues.errors.length === 0) {
                   this.setAlgIssueClassForPuzzle(
-                    i.issues.warnings.length === 0 ? "none" : "warning"
+                    i.issues.warnings.length === 0 ? "none" : "warning",
                   );
                   let r = i.alg,
                     s = A.fromString(this.algString);
@@ -4432,10 +4436,10 @@ textarea {
               t.experimentalModel.currentLeavesSimplified.addFreshListener(
                 async (i) => {
                   let s = (await t.experimentalModel.indexer.get()).getAnimLeaf(
-                    i.stateIndex
+                    i.stateIndex,
                   );
                   this.highlightLeaf(s);
-                }
+                },
               )));
       }
       attributeChangedCallback(t, i, r) {
@@ -4572,7 +4576,7 @@ var we,
       fallback() {
         if (((this.contentWrapper.textContent = ""), this.a)) {
           let t = this.contentWrapper.appendChild(
-            document.createElement("span")
+            document.createElement("span"),
           );
           (t.textContent = "\u2757\uFE0F"),
             (t.title = "Could not show a player for link"),
@@ -4607,7 +4611,7 @@ var we,
               new ye({
                 ...t,
                 viewerLink: n ? "experimental-twizzle-explorer" : "auto",
-              })
+              }),
             )),
             t.experimentalTitle &&
               this.addHeading(t.experimentalTitle).classList.add("title"),
@@ -4618,7 +4622,7 @@ var we,
               async () =>
                 (
                   await this.twistyPlayer?.experimentalModel.setupAlg.get()
-                )?.alg.toString() ?? null
+                )?.alg.toString() ?? null,
             );
             let l = this.addElement(document.createElement("div"));
             l.classList.add("setup-alg"),
@@ -4629,10 +4633,10 @@ var we,
             async () =>
               (
                 await this.twistyPlayer?.experimentalModel.alg.get()
-              )?.alg.toString() ?? null
+              )?.alg.toString() ?? null,
           ),
             this.addElement(
-              new Vi({ twistyPlayer: this.twistyPlayer })
+              new Vi({ twistyPlayer: this.twistyPlayer }),
             ).part.add("twisty-alg-viewer");
         } else this.fallback();
       }
@@ -4734,7 +4738,7 @@ twisty-player {
             hintFacelets: "none",
             visualization: "2D",
             background: "none",
-          })
+          }),
         ),
         en(this, Ue, this.attachShadow({ mode: "closed" })),
         M(this, Me).classList.add("wrapper"),

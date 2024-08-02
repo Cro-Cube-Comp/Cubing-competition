@@ -28,7 +28,7 @@ const checkEnvVars = () => {
   optionalEnvVars.forEach((varName) => {
     if (!process.env[varName]) {
       console.log(
-        `Environment variable ${varName} is undefined, but is optional so continuing.`
+        `Environment variable ${varName} is undefined, but is optional so continuing.`,
       );
     }
   });
@@ -51,7 +51,7 @@ const precheck = async () => {
   console.time("Precheck");
   if (!checkEnvVars()) {
     console.warn(
-      "Some environment variables are missing. Please check your .env file."
+      "Some environment variables are missing. Please check your .env file.",
     );
     process.exit(1); // Exit the process with failure
   }

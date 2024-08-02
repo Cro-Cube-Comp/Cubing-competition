@@ -10,7 +10,7 @@ function getEvents(competition) {
   return competition.events;
 }
 async function getCompetitions() {
-  const response = await fetch(`${url}/competitions/get`);
+  const response = await fetch(`${url}/competitions`);
   const data = await response.json();
 
   return data;
@@ -28,6 +28,7 @@ async function createCompetitionHtml(competition) {
   const eventsHtml = events
     .map((event) => `<li class="event">${event.name}</li>`)
     .join("\n");
+  const lockedClass = competition.isLocked ? "locked" : "";
   const html = `<div class="competition">
     <h2>${competition.name}</h2>
     <p>Datum: ${compDate.toLocaleString()}</p>
@@ -35,15 +36,22 @@ async function createCompetitionHtml(competition) {
     <ul class="events-list">
     ${eventsHtml}
     </ul>
-    <button id="edit-btn-${competition._id}" class="edit-button">Uredi</button>
+    <button id="edit-btn-${
+      competition._id
+    }" class="edit-button ${lockedClass}"><img src="../Images/edit.svg"></button>
     <button id="delete-btn-${
       competition._id
-    }" class="delete-button ">Obriši</button>
+    }" class="delete-button ${lockedClass}"><img src="../Images/delete.svg"></button>
+    <button id="lock-btn-${
+      competition._id
+    }" class="lock-button ${lockedClass}"><img src="${
+      competition.isLocked ? "../Images/unlocked.svg" : "../Images/locked.svg"
+    }"></button>
   </div>`;
   return html;
 }
 async function deleteCompetition(id) {
-  const response = await fetch(`${url}/competitions/delete/${id}`, {
+  const response = await fetch(`${url}/competitions/${id}`, {
     method: "DELETE",
     headers: addToken({
       "Content-Type": "application/json",
@@ -56,8 +64,7 @@ async function deleteCompetition(id) {
   };
 }
 async function editCompetition(id, name, date, events) {
-  console.log(id, name, date);
-  const response = await fetch(`${url}/competitions/edit/${id}`, {
+  const response = await fetch(`${url}/competitions/${id}`, {
     method: "PUT",
     headers: addToken({
       "Content-Type": "application/json",
@@ -79,7 +86,6 @@ function createEditCompModal(id, comp) {
   // Offset it by 2 hours since Croatia is GMT+2
   const compDate = new Date(comp.date).toISOString().split(".")[0];
   const events = comp.events.map((event) => event.name).join(" ");
-  console.log();
   const modal = document.createElement("dialog");
   modal.classList.add("edit-comp-modal");
   modal.innerHTML = `<form class="edit-comp-form">
@@ -118,7 +124,7 @@ function createEditCompModal(id, comp) {
         .map((event) => {
           return { name: event.trim(), rounds: 3 };
         })
-        .filter((event) => event.name) // Remove empty strings which show up after using 2 spaces
+        .filter((event) => event.name), // Remove empty strings which show up after using 2 spaces
     );
     modal.close();
     if (result.success) {
@@ -140,15 +146,36 @@ async function makeAndInsertCompetitions() {
       .insertAdjacentHTML("beforeend", competitionHtml);
     const editButton = document.getElementById(`edit-btn-${compId}`);
     editButton.addEventListener("click", async () => {
+      if (competition.isLocked) {
+        alert("Natjecanje je zaključano. Ne možete ga urediti.");
+        return;
+      }
       createEditCompModal(compId, competition);
     });
     const deleteButton = document.getElementById(`delete-btn-${compId}`);
     deleteButton.addEventListener("click", async () => {
+      if (competition.isLocked) {
+        alert("Natjecanje je zaključano. Ne možete ga obrisati.");
+        return;
+      }
       await deleteCompetition(compId);
       main();
     });
+    const lockButton = document.getElementById(`lock-btn-${compId}`);
+    lockButton.addEventListener("click", async () => {
+      const result = await lockCompetition(compId);
+      if (result.success) {
+        main();
+        return;
+      }
+      console.error(
+        `Error locking competition: ${result.parsed.message}
+        
+        Status: ${result.status}`,
+      );
+      alert("Greška prilikom zaključavanja natjecanja");
+    });
   });
-  console.log(competitions);
 }
 async function createCompetition(name, date, events) {
   if (typeof name !== "string" || typeof date !== "string") {
@@ -212,7 +239,7 @@ function addListenerToCreateComp(modal) {
         .map((event) => {
           return { name: event.trim(), rounds: 3 };
         })
-        .filter((event) => event.name) // Remove empty strings which show up after using 2 spaces
+        .filter((event) => event.name), // Remove empty strings which show up after using 2 spaces
     );
     modal.close();
     if (result.success) {
@@ -227,6 +254,19 @@ function createMakeCompModal() {
   const modal = createMakeCompModalAndAppendToBody();
   addListenerToCreateComp(modal);
   modal.showModal();
+}
+async function lockCompetition(id) {
+  const response = await fetch(`${url}/competitions/${id}/lock`, {
+    method: "POST",
+    headers: addToken({
+      "Content-Type": "application/json",
+    }),
+  });
+  return {
+    status: response.status,
+    success: response.ok,
+    parsed: await response.json(),
+  };
 }
 createCompBtn.addEventListener("click", () => {
   createMakeCompModal();

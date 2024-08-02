@@ -26,14 +26,14 @@ if (isRateLimitingEnabled) {
   app.use(generalLimiter);
 } else {
   console.warn(
-    "Rate limiting is disabled. It's recommended to enable it. Use only for development purposes."
+    "Rate limiting is disabled. It's recommended to enable it. Use only for development purposes.",
   );
 }
 if (isCorsEnabled) {
   app.use(cors(corsOptions));
 } else {
   console.warn(
-    "CORS is disabled. It's recommended to enable it. Use only for development purposes."
+    "CORS is disabled. It's recommended to enable it. Use only for development purposes.",
   );
 }
 const compressionOptions = {
@@ -84,6 +84,7 @@ app.use("/competitions", require("./routes/competitions/create"));
 app.use("/competitions", require("./routes/competitions/get"));
 app.use("/competitions", require("./routes/competitions/delete"));
 app.use("/competitions", require("./routes/competitions/edit"));
+app.use("/competitions", require("./routes/competitions/lock"));
 // Backup
 app.use("/backup", require("./routes/backup/get"));
 console.timeEnd("Routes");

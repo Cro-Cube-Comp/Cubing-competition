@@ -96,6 +96,10 @@ body {
 .post-author {
   font-weight: 700;
 }
+.post-btns-container {
+  display: flex;
+  column-gap: 10px;
+}
 .delete-post-btn,
 .edit-post-btn {
   background-color: white;

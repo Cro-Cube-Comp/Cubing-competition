@@ -1,9 +1,10 @@
 const express = require("express");
-const competitions = require("../../Models/competitions");
+const Competition = require("../../Models/competition");
 const isAdmin = require("../../utils/helpers/isAdmin");
 const verifyToken = require("../../middleware/verifyToken");
 const router = express.Router();
-router.put("/edit/:id", verifyToken, isAdmin, async (req, res) => {
+
+router.put("/:id", verifyToken, isAdmin, async (req, res) => {
   const { id } = req.params;
   const { name, date, events } = req.body;
   const requesValidation = validateRequest(id, name, date, events);
@@ -11,21 +12,20 @@ router.put("/edit/:id", verifyToken, isAdmin, async (req, res) => {
     return res.status(400).json({ message: requesValidation.message });
   }
   try {
-    const competition = await competitions.findOneAndUpdate(
-      { _id: { $eq: id } },
-      {
-        name,
-        date,
-        events,
-      },
-      {
-        new: true,
-      }
-    );
-    if (competition) {
-      return res.status(200).json({ message: "Natjecanje je izmenjeno." });
+    const competition = await Competition.findById(id);
+    if (!competition) {
+      return res.status(404).json({ message: "Natjecanje ne postoji." });
     }
-    return res.status(404).json({ message: "Natjecanje ne postoji." });
+    if (competition.isLocked) {
+      return res
+        .status(403)
+        .json({ message: "Natjecanje je zaključano i ne može se izmijeniti." });
+    }
+    competition.name = name;
+    competition.date = date;
+    competition.events = events;
+    await competition.save();
+    return res.status(200).json({ message: "Natjecanje je izmenjeno." });
   } catch (err) {
     console.error(err);
     return res
@@ -33,6 +33,7 @@ router.put("/edit/:id", verifyToken, isAdmin, async (req, res) => {
       .json({ message: "Greška prilikom izmenu natjecanja" });
   }
 });
+
 function validateRequest(id, name, date, events) {
   if (!id || typeof id !== "string") {
     return { isValid: false, message: "ID je krivo unesen ili nedostaje." };
@@ -51,4 +52,5 @@ function validateRequest(id, name, date, events) {
   }
   return { isValid: true };
 }
+
 module.exports = router;

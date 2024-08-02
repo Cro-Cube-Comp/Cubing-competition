@@ -15,7 +15,7 @@ async function getPosts() {
   const posts = await data.json();
   return posts;
 }
-function createCard(
+function createCardElement(
   title = undefined,
   description = undefined,
   authorUsername = undefined
@@ -23,54 +23,66 @@ function createCard(
   if (!title || !description) {
     throw new Error("Title and description are required.");
   }
-  return `
-  <div class="card">
-        <div class="card-inside-container">
-          <div class="post-title-container">
-            <h2 class="post-title">${title}</h2>
-          </div>
-          <div class="post-description-container">
-            <p>
-              ${description}
-            </p>
-          </div>
-          ${
-            authorUsername
-              ? `<div class="post-author-container">
-        <p class="post-author-p">Objavio <span class="post-author">${authorUsername}</span>
-        </p>
-      </div>`
-              : ""
-          }
-        </div>
-      </div>
-  `;
+  const cardElement = document.createElement("div");
+  cardElement.classList.add("card");
+  const cardInsideContainer = document.createElement("div");
+  cardInsideContainer.classList.add("card-inside-container");
+  cardElement.appendChild(cardInsideContainer);
+  const postTitleContainer = document.createElement("div");
+  postTitleContainer.classList.add("post-title-container");
+  const postTitle = document.createElement("h2");
+  postTitle.classList.add("post-title");
+  postTitle.textContent = title;
+  postTitleContainer.appendChild(postTitle);
+  cardInsideContainer.appendChild(postTitleContainer);
+  const postDescriptionContainer = document.createElement("div");
+  postDescriptionContainer.classList.add("post-description-container");
+  const postDescription = document.createElement("p");
+  postDescription.classList.add("post-description");
+  postDescription.innerHTML = description;
+  postDescriptionContainer.appendChild(postDescription);
+  cardInsideContainer.appendChild(postDescriptionContainer);
+  if (authorUsername) {
+    const postAuthorContainer = document.createElement("div");
+    postAuthorContainer.classList.add("post-author-container");
+    const postAuthorP = document.createElement("p");
+    postAuthorP.classList.add("post-author-p");
+    const postAuthor = document.createElement("span");
+    postAuthor.classList.add("post-author");
+    postAuthor.textContent = authorUsername;
+    postAuthorP.appendChild(postAuthor);
+    postAuthorContainer.appendChild(postAuthorP);
+    cardInsideContainer.appendChild(postAuthorContainer);
+  }
+  return cardElement;
 }
 function addDashboardCard() {
-  let html = "";
-  html += createCard(
+  const dashboardCard = createCardElement(
     "Radna ploča",
     `<p> Ti si admin. Oni imaju pristup <a href="./dashboard">radnoj ploči!</a></p>`
   );
-  cardsDiv.insertAdjacentHTML("beforeEnd", html);
+  cardsDiv.appendChild(dashboardCard);
 }
 function addCreatePostCard() {
-  const html = createCard(
+  const createPostCard = createCardElement(
     "Objava",
-    `<p>
-      Ti si admin! Oni mogu objaviti bilo što!
-      Klikni <a href="./posts">ovdje</a> da objaviš nešto.
-    </p>`
+    `<p>Ti si admin! Oni mogu objaviti bilo što! Klikni <a href="./posts">ovdje</a> da objaviš nešto.</p>`
   );
-  cardsDiv.insertAdjacentHTML("beforeend", html);
+  cardsDiv.appendChild(createPostCard);
 }
 function generateLogOutCard(username = getUsername()) {
   if (!username) return;
-  let html = createCard(
+  // Generate and insert log out card
+  const logOutCard = createCardElement(
     "Odjavi se",
     `<p>Ako se želiš odjaviti iz korisničkog računa "${username}" klikni <span class="logout-span">ovdje</span>.</p>`
   );
-  return html;
+  cardsDiv.appendChild(logOutCard);
+  // Add event listener to log out span
+  const logOutSpan = document.querySelector(".logout-span");
+  logOutSpan.addEventListener("click", async () => {
+    logOut(true);
+  });
 }
 
 document.querySelector(".share").addEventListener("click", async () => {
@@ -97,15 +109,15 @@ document.querySelector(".share").addEventListener("click", async () => {
     );
   }
 });
-function createPostHtml(post) {
+function createPostCardElement(post) {
   const { title, description } = post;
   const authorUsername = post.author.username;
-  const html = createCard(
+  const postCard = createCardElement(
     title,
     `<p class="post-description">${description}</p>`,
     authorUsername
   );
-  return html;
+  return postCard;
 }
 async function checkIfLoggedInAndTokenValid() {
   if (loggedIn() && !(await tokenValid())) {
@@ -114,18 +126,18 @@ async function checkIfLoggedInAndTokenValid() {
   }
 }
 function addCompDashboardCard() {
-  const html = createCard(
+  const compDashboardCard = createCardElement(
     "Natjecanja",
     `<p>Ti si admin! Možeš kreirati i uređivati natjecanje. Klikni <a href="./competitions-dashboard">ovdje</a>.</p>`
   );
-  cardsDiv.insertAdjacentHTML("beforeend", html);
+  cardsDiv.appendChild(compDashboardCard);
 }
 async function main() {
   checkIfLoggedInAndTokenValid();
   const posts = await getPosts();
   posts.forEach((post) => {
-    const html = createPostHtml(post);
-    cardsDiv.insertAdjacentHTML("beforeend", html);
+    const postCardElement = createPostCardElement(post);
+    cardsDiv.appendChild(postCardElement);
   });
 }
 const logInElement = document.querySelector(".js-log-in");
@@ -138,15 +150,6 @@ if (role && isAdmin(role)) {
 }
 if (username) {
   logInElement.innerHTML = username;
-}
-if (username) {
-  const html = generateLogOutCard(username);
-
-  cardsDiv.insertAdjacentHTML("beforeEnd", html);
-  const logOutSpan = document.querySelector(".logout-span");
-  logOutSpan.addEventListener("click", async () => {
-    logOut(true);
-  });
 }
 const accountCircle = document.querySelector(".account-circle");
 

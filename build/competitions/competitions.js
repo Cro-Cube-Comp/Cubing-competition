@@ -5,7 +5,7 @@ import {
   getAverageNoFormat,
 } from "../Scripts/solveTime.js";
 async function getCompetitions() {
-  const data = await fetch(`${url}/competitions/get`);
+  const data = await fetch(`${url}/competitions`);
   const parsedJSON = await data.json();
   return {
     parsed: parsedJSON,
@@ -26,11 +26,11 @@ function createUsersHtml(usersInGroup, compId, compEvent, roundIndex) {
   usersInGroup.forEach((user) => {
     if (!user.competitions) return;
     const comp = user.competitions.find(
-      (comp) => comp.competitionId === compId
+      (comp) => comp.competitionId === compId,
     );
     if (!comp) return;
     const event = comp.events.find(
-      (userEvent) => userEvent.event === compEvent
+      (userEvent) => userEvent.event === compEvent,
     );
     if (!event) return;
     const round = event.rounds[roundIndex];
@@ -53,8 +53,8 @@ function createUserHtml(user, round) {
     const solve = !round[i]
       ? "X"
       : round[i] !== 0
-      ? formatTime(round[i])
-      : "DNF/DNS";
+        ? formatTime(round[i])
+        : "DNF/DNS";
     html += `<li>${solve}</li>`;
   }
   html += `</ol>`; // Close .solves ol
@@ -77,7 +77,7 @@ function createGroupHtml(usersInGroup, groupIndex, competition) {
         usersInGroup,
         competition._id,
         event.name,
-        roundIndex
+        roundIndex,
       );
       html += `</div>`; // Close .round div
     }

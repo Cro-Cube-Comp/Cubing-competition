@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
         },
         createdAt: post.createdAt,
         id: post._id,
-      }))
+      })),
     );
     res.status(200).json(response); // Sending the constructed response
   } catch (err) {

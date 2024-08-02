@@ -27,7 +27,7 @@ loginForm.addEventListener("submit", async (event) => {
     if (response.status === 429) {
       displayError(
         messageElement,
-        "Previše zahtjeva za prijavu. Pokušaj ponovno za 15 minuta."
+        "Previše zahtjeva za prijavu. Pokušaj ponovno za 15 minuta.",
       );
       return;
     }
