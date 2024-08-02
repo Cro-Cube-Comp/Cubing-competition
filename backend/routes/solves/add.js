@@ -33,6 +33,13 @@ router.post("/:solverId", verifyToken, isAdmin, async (req, res) => {
         .status(400)
         .json({ message: `Natjecanje ne postoji. (Id: ${competitionId})` });
     }
+    if (competition.isLocked) {
+      return res
+        .status(403)
+        .json({
+          message: "Natjecanje je zavrešeno i ne mogu se dodati slaganja.",
+        });
+    }
     const response = await updateSolves(solver, solves, round, competition);
     if (response > 0) {
       return res
