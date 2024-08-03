@@ -44,6 +44,7 @@ function getWinnersFromRound(users, competitionId, eventName, roundIndex) {
       userId: user._id,
       average: average,
       username: username,
+      solves: solves,
     });
   });
 
@@ -54,13 +55,16 @@ function getWinnersFromRound(users, competitionId, eventName, roundIndex) {
   return usersWithAverages;
 }
 
-async function getWinners(competitions, users) {
+async function getWinners(competitions, users, format = false) {
   const results = {};
   for (const competition of competitions) {
-    const competitionId = competition._id;
+    // const competitionId = competition._id;
     const competitionName = competition.name;
     // Initialize competition result
-    results[competitionName] = {};
+    results[competitionName] = {
+      date: competition.date,
+      isLocked: competition.isLocked,
+    };
     for (const event of competition.events) {
       // Initialize event result
       results[competitionName][event.name] = [];
@@ -81,16 +85,19 @@ async function getWinners(competitions, users) {
   }
 
   // Convert the results to JSON format
-  const jsonResults = JSON.stringify(results, null, 2);
+  const jsonResults = JSON.stringify(results, null, format ? 2 : 0);
 
   // Write the JSON results to a file
   await writeFile("competition_results.json", jsonResults);
+  return results;
 }
-
-// Get competitions from "competitions" collection
-const competitions = await Competition.find();
-const users = await User.find();
-const result = await getWinners(competitions, users);
+async function getWinnersForAllCompetitions() {
+  const competitions = await Competition.find();
+  const users = await User.find();
+  const result = await getWinners(competitions, users);
+  return result;
+}
+await getWinnersForAllCompetitions();
 process.exit(0);
 function getAverageNoFormat(solves) {
   if (solves.length !== 5) {
