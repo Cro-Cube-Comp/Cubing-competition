@@ -18,7 +18,7 @@ const db = mongoose.connection;
 // This function sorts users by their average for the given round and returns their ids in ranking order
 function getWinnersFromRound(users, competitionId, eventName, roundIndex) {
   // Initialize an array to store users with their average
-  let usersWithAverages = [];
+  const usersWithAverages = [];
 
   users.forEach((user) => {
     // Find the specific competition for this user
@@ -45,6 +45,7 @@ function getWinnersFromRound(users, competitionId, eventName, roundIndex) {
       average: average,
       username: username,
       solves: solves,
+      group: user.group,
     });
   });
 
