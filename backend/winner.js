@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import { config } from "dotenv";
 import { writeFile } from "fs/promises";
-const { getUsernameById } = require("./functions/getUsernameById");
 config();
 // Connect to the MongoDB database using mongoose
 try {
@@ -37,11 +36,12 @@ function getWinnersFromRound(users, competitionId, eventName, roundIndex) {
     // Calculate the average using the getAverageNoFormat function
     const average = getAverageNoFormat(solves);
     if (average === -1 || average === 0) return; // Skip users with invalid averages
-
+    const username = user.username;
     // Push the user with their average to the array
     usersWithAverages.push({
       userId: user._id,
       average: average,
+      username: username,
     });
   });
 
@@ -49,7 +49,7 @@ function getWinnersFromRound(users, competitionId, eventName, roundIndex) {
   usersWithAverages.sort((a, b) => a.average - b.average);
 
   // Extract userIds in the sorted order
-  return usersWithAverages.map((user) => user.userId);
+  return usersWithAverages;
 }
 
 async function getWinners(competitions, users) {
@@ -118,5 +118,5 @@ function getAverageNoFormat(solves) {
   }
 
   // Return average rounded to 2 decimal places
-  return average.toFixed(2);
+  return Math.round(average * 100) / 100;
 }
