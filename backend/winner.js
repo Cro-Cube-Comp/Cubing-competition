@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { config } from "dotenv";
 import { writeFile } from "fs/promises";
+import User from "./Models/user.js";
+import Competition from "./Models/competition.js";
 config();
 // Connect to the MongoDB database using mongoose
 try {
@@ -53,7 +55,6 @@ function getWinnersFromRound(users, competitionId, eventName, roundIndex) {
 }
 
 async function getWinners(competitions, users) {
-  console.time("Get winners for all competitions");
   const results = {};
   for (const competition of competitions) {
     const competitionId = competition._id;
@@ -84,12 +85,11 @@ async function getWinners(competitions, users) {
 
   // Write the JSON results to a file
   await writeFile("competition_results.json", jsonResults);
-  console.timeEnd("Get winners for all competitions");
 }
 
 // Get competitions from "competitions" collection
-const competitions = await db.collection("competitions").find().toArray();
-const users = await db.collection("users").find().toArray();
+const competitions = await Competition.find();
+const users = await User.find();
 const result = await getWinners(competitions, users);
 process.exit(0);
 function getAverageNoFormat(solves) {
