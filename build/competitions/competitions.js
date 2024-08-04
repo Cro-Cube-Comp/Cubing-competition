@@ -78,6 +78,7 @@ function createRoundResultsElement(round, roundNumber) {
   roundTitleElement.textContent = `Runda ${roundNumber}`;
   const showHideButton = document.createElement("button");
   showHideButton.classList.add("show-hide-round-button");
+  showHideButton.classList.add("show-hide");
   const showHideImage = document.createElement("img");
   showHideImage.src = "../Images/show.svg";
   showHideButton.appendChild(showHideImage);
@@ -119,6 +120,7 @@ function createRoundResultsElement(round, roundNumber) {
     // Append show/hide button to the container
     const showHideButton = document.createElement("button");
     showHideButton.classList.add("show-hide-group-button");
+    showHideButton.classList.add("show-hide");
     showHideButton.classList.add("hidden");
     const hideImage = document.createElement("img");
     hideImage.src = "../Images/hide.svg";
