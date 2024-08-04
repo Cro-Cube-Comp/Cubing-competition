@@ -87,11 +87,26 @@ function createRoundResultsElement(round, roundNumber) {
     const groupDiv = document.createElement("div");
     groupDiv.classList.add("group");
     groupDiv.id = `group-${index + 1}`;
+    // Create container for the group title
+    const groupTitleContainerElement = document.createElement("div");
+    groupTitleContainerElement.classList.add("group-title-container");
+    // Create the group title
     const groupTitleElement = document.createElement("h4");
     groupTitleElement.classList.add("group-title");
     groupTitleElement.textContent = `Grupa ${index + 1}`;
-    groupDiv.appendChild(groupTitleElement);
+    // Append the group title to the container
+    groupTitleContainerElement.appendChild(groupTitleElement);
+    // Append show/hide button to the container
+    const showHideButton = document.createElement("button");
+    showHideButton.classList.add("show-hide-button");
+    showHideButton.textContent = "Prikaži/sakrij";
+    groupTitleContainerElement.appendChild(showHideButton);
+    // Append the container to the group element
+    groupDiv.appendChild(groupTitleContainerElement);
     const groupResultsElement = document.createElement("div");
+    showHideButton.addEventListener("click", () => {
+      groupResultsElement.classList.toggle("hidden");
+    })
     groupResultsElement.classList.add("group-results");
     groupResultsElement.id = `group-results-${index + 1}`;
     groupDiv.appendChild(groupResultsElement);

@@ -11,10 +11,14 @@
 body {
   background: var(--background);
   color: var(--font-color);
+  background-attachment: fixed; /* Gradient covering whole page */
 }
 .event-results {
-  display:grid;
+  display: grid;
   grid-template-columns: 1fr;
+}
+.round {
+  margin: 0.5rem 0;
 }
 .round-title {
   margin: 0.2rem 0;
@@ -28,4 +32,7 @@ body {
   .round-results {
     grid-template-columns: 1fr 1fr;
   }
+}
+.group-results.hidden {
+  display: none;
 }
