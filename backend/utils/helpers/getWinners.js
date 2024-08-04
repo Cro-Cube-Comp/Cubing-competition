@@ -1,20 +1,7 @@
-import mongoose from "mongoose";
-import { config } from "dotenv";
-import { writeFile } from "fs/promises";
-import User from "./Models/user.js";
-import Competition from "./Models/competition.js";
-config();
-// Connect to the MongoDB database using mongoose
-try {
-  console.log("Connecting to mongodb...");
-  console.time("Connect to mongodb");
-  await mongoose.connect(process.env.MONGO_URI);
-  console.timeEnd("Connect to mongodb");
-} catch (error) {
-  console.error("Database connection failed:", error.message);
-  process.exitCode = 1; // Exit with failure status while still letting console output
-}
-// This function sorts users by their average for the given round and returns their ids in ranking order
+const { writeFile } = require("fs/promises");
+const User = require("../../Models/user.js");
+const Competition = require("../../Models/competition.js");
+const path = require("path");
 function getWinnersFromRound(users, competitionId, eventName, roundIndex) {
   // Initialize an array to store users with their average
   const usersWithAverages = [];
@@ -87,7 +74,10 @@ async function getWinners(competitions, users, format = false) {
   const jsonResults = JSON.stringify(results, null, format ? 2 : 0);
 
   // Write the JSON results to a file
-  await writeFile("competition_results.json", jsonResults);
+  await writeFile(
+    path.join(__dirname, "competition_results.json"),
+    jsonResults
+  );
   return results;
 }
 async function getWinnersForAllLockedCompetitions() {
@@ -131,5 +121,4 @@ function getAverageNoFormat(solves) {
   // Return average rounded to 2 decimal places
   return Math.round(average * 100) / 100;
 }
-await getWinnersForAllLockedCompetitions();
-process.exit(0);
+module.exports = { getWinnersForAllLockedCompetitions };
