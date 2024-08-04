@@ -100,7 +100,7 @@ function createRoundResultsElement(round, roundNumber) {
       resultP.classList.add("event-result");
       resultP.textContent = `${index + 1}. ${result.username}: ${result.solves
         .map((solve) => formatTime(solve))
-        .join(", ")} (Prosjek: ${result.average})`;
+        .join(", ")} (Prosjek: ${formatTime(result.average)})`;
       groupResultsElement.appendChild(resultP);
     });
     roundResultsElement.appendChild(groupDiv);
