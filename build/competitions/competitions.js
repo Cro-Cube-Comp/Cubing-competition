@@ -111,6 +111,7 @@ function createRoundResultsElement(round, roundNumber) {
     // Append the container to the group element
     groupDiv.appendChild(groupTitleContainerElement);
     const groupResultsElement = document.createElement("div");
+    groupResultsElement.classList.add("hidden");
     showHideButton.addEventListener("click", (e) => {
       groupResultsElement.classList.toggle("hidden");
       showHideButton.classList.toggle("hidden");
