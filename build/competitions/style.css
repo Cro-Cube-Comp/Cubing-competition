@@ -40,6 +40,18 @@ body {
     grid-template-columns: 1fr 1fr;
   }
 }
+.group-title-container {
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+}
+.show-hide-group-button {
+  height: 30px;
+  cursor: pointer;
+}
+.group-title {
+  display: inline-block;
+}
 .group-results.hidden {
   display: none;
 }

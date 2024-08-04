@@ -102,15 +102,25 @@ function createRoundResultsElement(round, roundNumber) {
     groupTitleContainerElement.appendChild(groupTitleElement);
     // Append show/hide button to the container
     const showHideButton = document.createElement("button");
-    showHideButton.classList.add("show-hide-button");
-    showHideButton.textContent = "Prikaži/sakrij";
+    showHideButton.classList.add("show-hide-group-button");
+    showHideButton.classList.add("hidden");
+    const hideImage = document.createElement("img");
+    hideImage.src = "../Images/hide.svg";
+    showHideButton.appendChild(hideImage);
     groupTitleContainerElement.appendChild(showHideButton);
     // Append the container to the group element
     groupDiv.appendChild(groupTitleContainerElement);
     const groupResultsElement = document.createElement("div");
-    showHideButton.addEventListener("click", () => {
+    showHideButton.addEventListener("click", (e) => {
       groupResultsElement.classList.toggle("hidden");
-    })
+      showHideButton.classList.toggle("hidden");
+      // Update the image
+      if (groupResultsElement.classList.contains("hidden")) {
+        showHideButton.querySelector("img").src = "../Images/hide.svg";
+      } else {
+        showHideButton.querySelector("img").src = "../Images/show.svg";
+      }
+    });
     groupResultsElement.classList.add("group-results");
     groupResultsElement.id = `group-results-${index + 1}`;
     groupDiv.appendChild(groupResultsElement);
