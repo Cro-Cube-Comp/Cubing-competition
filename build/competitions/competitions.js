@@ -89,12 +89,12 @@ function createRoundResultsElement(round, roundNumber) {
   showHideButton.addEventListener("click", (e) => {
     roundResultsElement.classList.toggle("hidden");
     showHideButton.classList.toggle("hidden");
-    // Update the image
+    // Update the image so it shows current state
     if (roundResultsElement.classList.contains("hidden")) {
-      showHideButton.querySelector("img").src = "../Images/show.svg";
+      showHideButton.querySelector("img").src = "../Images/hide.svg";
       return;
     }
-    showHideButton.querySelector("img").src = "../Images/hide.svg";
+    showHideButton.querySelector("img").src = "../Images/show.svg";
   });
   roundElement.appendChild(roundResultsElement);
   roundResultsElement.classList.add("round-results");
@@ -131,12 +131,12 @@ function createRoundResultsElement(round, roundNumber) {
     showHideButton.addEventListener("click", (e) => {
       groupResultsElement.classList.toggle("hidden");
       showHideButton.classList.toggle("hidden");
-      // Update the image
+      // Update the image so it shows current state
       if (groupResultsElement.classList.contains("hidden")) {
         showHideButton.querySelector("img").src = "../Images/hide.svg";
-      } else {
-        showHideButton.querySelector("img").src = "../Images/show.svg";
+        return;
       }
+      showHideButton.querySelector("img").src = "../Images/show.svg";
     });
     groupResultsElement.classList.add("group-results");
     groupResultsElement.id = `group-results-${index + 1}`;
