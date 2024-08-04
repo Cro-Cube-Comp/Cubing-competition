@@ -14,7 +14,6 @@ try {
   console.error("Database connection failed:", error.message);
   process.exitCode = 1; // Exit with failure status while still letting console output
 }
-const db = mongoose.connection;
 // This function sorts users by their average for the given round and returns their ids in ranking order
 function getWinnersFromRound(users, competitionId, eventName, roundIndex) {
   // Initialize an array to store users with their average
@@ -48,7 +47,6 @@ function getWinnersFromRound(users, competitionId, eventName, roundIndex) {
       group: user.group,
     });
   });
-
   // Sort users by average in ascending order (lower average is better)
   usersWithAverages.sort((a, b) => a.average - b.average);
 
