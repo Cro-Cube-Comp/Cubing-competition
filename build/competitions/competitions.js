@@ -4,125 +4,170 @@ import {
   formatTime,
   getAverageNoFormat,
 } from "../Scripts/solveTime.js";
-async function getCompetitions() {
-  const data = await fetch(`${url}/competitions`);
-  const parsedJSON = await data.json();
-  return {
-    parsed: parsedJSON,
-    success: data.ok,
-    status: data.status,
-  };
+const competitionsDiv = document.querySelector(".competitions");
+async function getResults() {
+  try {
+    const data = await fetch(`${url}/competitions/results`);
+    const parsedJSON = await data.json();
+    return {
+      parsed: parsedJSON,
+      success: data.ok,
+      status: data.status,
+    };
+  } catch (error) {
+    return {
+      success: false,
+    };
+  }
 }
-function seperateUsersByGroup(users) {
+function handleFail(retry) {
+  if (retry <= 0) {
+    alert("Greška prilikom dohvaćanja rezultata.");
+    console.error("Failed to get results.");
+    const retryBtn = document.createElement("button");
+    retryBtn.textContent = "Pokušaj ponovo";
+    retryBtn.addEventListener("click", () => {
+      main(5);
+    });
+    competitionsDiv.innerHTML = "";
+    competitionsDiv.appendChild(retryBtn);
+    return;
+  }
+  console.error(`Failed to get results. Retrying... (${retry} retries left)`);
+  const errorMsgP = document.createElement("p");
+  errorMsgP.textContent = `Greška prilikom dohvaćanja rezultata. ${retry} pokušaj/a preostalo.`;
+  competitionsDiv.innerHTML = "";
+  competitionsDiv.appendChild(errorMsgP);
+  main(retry - 1);
+}
+function createCompetitionDateElement(competition) {
+  const dateP = document.createElement("p");
+  dateP.classList.add("comp-date-p");
+  const compDate = new Date(competition.date);
+  dateP.textContent = `${compDate.toLocaleDateString()} ${compDate.toLocaleTimeString()}`;
+  return dateP;
+}
+function createEventNameElement(eventName) {
+  const nameH3 = document.createElement("h3");
+  nameH3.classList.add("event-name");
+  nameH3.textContent = eventName;
+  return nameH3;
+}
+function createEmptyRoundResultsElement(roundNumber) {
+  return document.createElement("div");
+}
+function seperateResultsByGroup(round) {
   const groups = [[], []];
-  users.forEach((user) => {
-    const groupIndex = user.group - 1;
-    groups[groupIndex].push(user);
+  round.forEach((result) => {
+    groups[result.group - 1].push(result);
   });
   return groups;
 }
-function createUsersHtml(usersInGroup, compId, compEvent, roundIndex) {
-  let html = "";
-  usersInGroup.forEach((user) => {
-    if (!user.competitions) return;
-    const comp = user.competitions.find(
-      (comp) => comp.competitionId === compId,
-    );
-    if (!comp) return;
-    const event = comp.events.find(
-      (userEvent) => userEvent.event === compEvent,
-    );
-    if (!event) return;
-    const round = event.rounds[roundIndex];
-    if (!round) return;
-    html += createUserHtml(user, round);
-  });
-  return html;
-}
-function createUserHtml(user, round) {
-  let html = "";
-  html += `<div class="user">`;
-  html += `<h4>${user.username}</h4>`;
-  html += `<p>Prosjek: ${getAverage(round)}</p>`;
-  html += `<ol class="solves">`;
-  for (
-    let i = 0;
-    i < 5; // 5 is the number of solves in a round
-    i++
-  ) {
-    const solve = !round[i]
-      ? "X"
-      : round[i] !== 0
-        ? formatTime(round[i])
-        : "DNF/DNS";
-    html += `<li>${solve}</li>`;
+function createRoundResultsElement(round, roundNumber) {
+  if (round.length === 0) {
+    return createEmptyRoundResultsElement(roundNumber);
   }
-  html += `</ol>`; // Close .solves ol
-  html += `</div>`; // Close .user div
-  return html;
-}
-function createGroupHtml(usersInGroup, groupIndex, competition) {
-  let html = "";
-  html += `<div class="group">`;
-  html += `<h2>Grupa ${groupIndex + 1}</h2>`;
-  competition.events.forEach((event) => {
-    html += `<div class="event">`;
-    html += `<h3>${event.name}</h3>`;
-    for (let i = 0; i < event.rounds; i++) {
-      const roundNumber = i + 1;
-      const roundIndex = i;
-      html += `<div class="round">`;
-      html += `<h4 class="round-number">Runda ${roundNumber}</h4>`;
-      html += createUsersHtml(
-        usersInGroup,
-        competition._id,
-        event.name,
-        roundIndex,
-      );
-      html += `</div>`; // Close .round div
+  const roundElement = document.createElement("div");
+  roundElement.classList.add("round");
+  roundElement.id = `round-${roundNumber}`;
+  const roundTitleElement = document.createElement("h4");
+  roundTitleElement.classList.add("round-title");
+  roundTitleElement.textContent = `Runda ${roundNumber}`;
+  roundElement.appendChild(roundTitleElement);
+  const groups = seperateResultsByGroup(round);
+  const roundResultsElement = document.createElement("div");
+  roundElement.appendChild(roundResultsElement);
+  roundResultsElement.classList.add("round-results");
+  roundResultsElement.id = `round-results-${roundNumber}`;
+  groups.forEach((group, index) => {
+    if (group.length === 0) {
+      // TODO: handle empty groups
+      return;
     }
-    html += `</div>`; // Close .event div
-  });
-  html += `</div>`; // Close .group div
-  return html;
-}
-function makeCompetitionHtml(response, competitions) {
-  let html = "";
-  html += `<p class="last-updated">Posljednja izmjena: ${response.lastUpdated}</p>`;
-  const groups = seperateUsersByGroup(response.users);
-  competitions.forEach((competition) => {
-    html += `<div class="competition">`;
-    html += `<h2 class="comp-name">${competition.name}</h2>`;
-    groups.forEach((group, groupIndex) => {
-      html += createGroupHtml(group, groupIndex, competition);
+    const groupDiv = document.createElement("div");
+    groupDiv.classList.add("group");
+    groupDiv.id = `group-${index + 1}`;
+    const groupTitleElement = document.createElement("h4");
+    groupTitleElement.classList.add("group-title");
+    groupTitleElement.textContent = `Grupa ${index + 1}`;
+    groupDiv.appendChild(groupTitleElement);
+    const groupResultsElement = document.createElement("div");
+    groupResultsElement.classList.add("group-results");
+    groupResultsElement.id = `group-results-${index + 1}`;
+    groupDiv.appendChild(groupResultsElement);
+    group.forEach((result, index) => {
+      const resultP = document.createElement("p");
+      resultP.classList.add("event-result");
+      resultP.textContent = `${index + 1}. ${result.username}: ${result.solves
+        .map((solve) => formatTime(solve))
+        .join(", ")} (Prosjek: ${result.average})`;
+      groupResultsElement.appendChild(resultP);
     });
-    html += `</div>`; // Close .competition div
+    roundResultsElement.appendChild(groupDiv);
   });
-  return html;
+
+  return roundElement;
 }
-async function getSolves() {
-  const data = await fetch(`${url}/solves/get`);
-  const parsedJSON = await data.json();
-  return {
-    parsed: parsedJSON,
-    success: data.ok,
-    status: data.status,
-  };
+function createEventResultsElement(event) {
+  const eventResults = document.createElement("div");
+  eventResults.classList.add("event-results");
+  event.forEach((round, index) => {
+    const roundNumber = index + 1;
+    eventResults.appendChild(createRoundResultsElement(round, roundNumber));
+  });
+  return eventResults;
 }
-async function main() {
-  const solves = await getSolves();
-  const competitions = await getCompetitions();
-  if (!solves.success) {
-    console.error(solves.parsed);
-    alert("Greška prilikom dohvaćanja slaganja.");
+function createEventsResultsElement(competition) {
+  const eventNames = Object.keys(competition);
+  const eventsDiv = document.createElement("div");
+  eventNames.forEach((eventName) => {
+    const event = competition[eventName];
+    const eventDiv = document.createElement("div");
+    eventDiv.classList.add("event");
+    eventDiv.appendChild(createEventNameElement(eventName));
+    eventDiv.appendChild(createEventResultsElement(event));
+    eventsDiv.appendChild(eventDiv);
+  });
+  return eventsDiv;
+}
+function createCompetitionResultsElement(competition) {
+  const resultsDiv = document.createElement("div");
+  resultsDiv.classList.add("comp-results");
+  resultsDiv.appendChild(createEventsResultsElement(competition.events));
+  return resultsDiv;
+}
+function createCompetitionNameElement(competitionName) {
+  const nameH2 = document.createElement("h2");
+  nameH2.classList.add("comp-name-p");
+  nameH2.textContent = competitionName;
+  return nameH2;
+}
+function createCompetitionElement(competition, competitionName) {
+  const competitionDiv = document.createElement("div");
+  competitionDiv.classList.add("competition");
+  competitionDiv.appendChild(createCompetitionNameElement(competitionName));
+  competitionDiv.appendChild(createCompetitionDateElement(competition));
+  competitionDiv.appendChild(createCompetitionResultsElement(competition));
+  competitionsDiv.appendChild(competitionDiv);
+}
+function displayResults(results) {
+  console.log("Displaying results...");
+  const competitionNames = Object.keys(results);
+  competitionNames.forEach((competitionName) => {
+    const competition = results[competitionName];
+    createCompetitionElement(competition, competitionName);
+  });
+}
+/**
+ * Main function that gets the results from the server and displays them
+ * @param {number} retry - Number of times to retry if the request fails
+ */
+async function main(retry = 5) {
+  const results = await getResults();
+  if (!results.success) {
+    handleFail(retry);
     return;
   }
-  if (!competitions.success) {
-    console.error(competitions.parsed);
-    alert("Greška prilikom dohvaćanja natjecanja.");
-    return;
-  }
-  const html = makeCompetitionHtml(solves.parsed, competitions.parsed);
-  document.querySelector(".competitions").innerHTML = html;
+  displayResults(results.parsed);
 }
 main();

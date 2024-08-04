@@ -12,15 +12,20 @@ body {
   background: var(--background);
   color: var(--font-color);
 }
-.event {
-  border-left: 2px solid black;
-  padding-left:  max(1vw, 10px);
+.event-results {
+  display:grid;
+  grid-template-columns: 1fr;
 }
-.round {
-  border-left: 2px solid rgb(35, 35, 35);
-  padding-left: max(2vw, 15px);
+.round-title {
+  margin: 0.2rem 0;
 }
-.user {
-  padding-left: max(3vw, 20px);
-  margin-bottom: 1vh;
+.round-results {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-left: 0.5rem;
+}
+@media screen and (min-width: 1100px) {
+  .round-results {
+    grid-template-columns: 1fr 1fr;
+  }
 }

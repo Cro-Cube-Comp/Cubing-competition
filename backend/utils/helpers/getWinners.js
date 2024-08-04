@@ -50,10 +50,11 @@ async function getWinners(competitions, users, format = false) {
     results[competitionName] = {
       date: competition.date,
       isLocked: competition.isLocked,
+      events: {},
     };
     for (const event of competition.events) {
       // Initialize event result
-      results[competitionName][event.name] = [];
+      results[competitionName].events[event.name] = [];
 
       for (let i = 0; i < event.rounds; i++) {
         // Get winner for each round
@@ -65,7 +66,7 @@ async function getWinners(competitions, users, format = false) {
         );
 
         // Append the winners of the round to the event results
-        results[competitionName][event.name].push(winners);
+        results[competitionName].events[event.name].push(winners);
       }
     }
   }
