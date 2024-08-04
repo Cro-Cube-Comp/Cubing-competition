@@ -90,14 +90,19 @@ async function getWinners(competitions, users, format = false) {
   await writeFile("competition_results.json", jsonResults);
   return results;
 }
-async function getWinnersForAllCompetitions() {
+async function getWinnersForAllLockedCompetitions() {
+  const competitions = await Competition.find({ isLocked: true });
+  const users = await User.find();
+  const result = await getWinners(competitions, users);
+  return result;
+}
+/*async function getWinnersForAllCompetitions() {
   const competitions = await Competition.find();
   const users = await User.find();
   const result = await getWinners(competitions, users);
   return result;
 }
-await getWinnersForAllCompetitions();
-process.exit(0);
+*/
 function getAverageNoFormat(solves) {
   if (solves.length !== 5) {
     return -1;
@@ -126,3 +131,5 @@ function getAverageNoFormat(solves) {
   // Return average rounded to 2 decimal places
   return Math.round(average * 100) / 100;
 }
+await getWinnersForAllLockedCompetitions();
+process.exit(0);
