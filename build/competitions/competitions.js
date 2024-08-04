@@ -70,10 +70,14 @@ function createRoundResultsElement(round, roundNumber) {
   const roundElement = document.createElement("div");
   roundElement.classList.add("round");
   roundElement.id = `round-${roundNumber}`;
+  const roundTitleContainerElement = document.createElement("div");
+  roundTitleContainerElement.classList.add("round-title-container");
+
   const roundTitleElement = document.createElement("h4");
   roundTitleElement.classList.add("round-title");
   roundTitleElement.textContent = `Runda ${roundNumber}`;
-  roundElement.appendChild(roundTitleElement);
+  roundTitleContainerElement.appendChild(roundTitleElement);
+  roundElement.appendChild(roundTitleContainerElement);
   const groups = seperateResultsByGroup(round);
   const roundResultsElement = document.createElement("div");
   roundElement.appendChild(roundResultsElement);

@@ -20,13 +20,20 @@ body {
 .round {
   margin: 0.5rem 0;
 }
+.round-title-container {
+  padding: 0.2rem;
+  border: 2px solid rgb(158, 154, 154);
+}
 .round-title {
   margin: 0.2rem 0;
 }
 .round-results {
   display: grid;
   grid-template-columns: 1fr;
-  margin-left: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.2rem;
+  border: 3px solid rgb(177, 175, 175);
+  border-radius: 0.5rem;
 }
 @media screen and (min-width: 1100px) {
   .round-results {
