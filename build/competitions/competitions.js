@@ -76,10 +76,26 @@ function createRoundResultsElement(round, roundNumber) {
   const roundTitleElement = document.createElement("h4");
   roundTitleElement.classList.add("round-title");
   roundTitleElement.textContent = `Runda ${roundNumber}`;
+  const showHideButton = document.createElement("button");
+  showHideButton.classList.add("show-hide-round-button");
+  const showHideImage = document.createElement("img");
+  showHideImage.src = "../Images/show.svg";
+  showHideButton.appendChild(showHideImage);
   roundTitleContainerElement.appendChild(roundTitleElement);
+  roundTitleContainerElement.appendChild(showHideButton);
   roundElement.appendChild(roundTitleContainerElement);
   const groups = seperateResultsByGroup(round);
   const roundResultsElement = document.createElement("div");
+  showHideButton.addEventListener("click", (e) => {
+    roundResultsElement.classList.toggle("hidden");
+    showHideButton.classList.toggle("hidden");
+    // Update the image
+    if (roundResultsElement.classList.contains("hidden")) {
+      showHideButton.querySelector("img").src = "../Images/show.svg";
+      return;
+    }
+    showHideButton.querySelector("img").src = "../Images/hide.svg";
+  });
   roundElement.appendChild(roundResultsElement);
   roundResultsElement.classList.add("round-results");
   roundResultsElement.id = `round-results-${roundNumber}`;
