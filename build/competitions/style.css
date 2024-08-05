@@ -13,9 +13,17 @@ body {
   color: var(--font-color);
   background-attachment: fixed; /* Gradient covering whole page */
 }
-.event-results {
+.event-name {
+  margin: 0;
+}
+.groups {
   display: grid;
   grid-template-columns: 1fr;
+}
+@media screen and (min-width: 1100px) {
+  .groups {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 .round {
   margin: 0.5rem 0;

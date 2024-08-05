@@ -53,9 +53,6 @@ function createEventNameElement(eventName) {
   nameH3.textContent = eventName;
   return nameH3;
 }
-function createEmptyRoundResultsElement(roundNumber) {
-  return document.createElement("div");
-}
 function seperateResultsByGroup(round) {
   const groups = [[], []];
   round.forEach((result) => {
@@ -63,30 +60,63 @@ function seperateResultsByGroup(round) {
   });
   return groups;
 }
-function createRoundResultsElement(round, roundNumber) {
+function createEmptyRoundResultsElement(roundIndex) {
+  const roundDiv = document.createElement("div");
+  roundDiv.classList.add("round-results");
+  roundDiv.classList.add("hidden");
+  roundDiv.id = `round-results-${roundIndex}`;
+  const msgP = document.createElement("p");
+  msgP.textContent = `Nema natjecatelja u ${roundIndex + 1}. rundi.`;
+  roundDiv.appendChild(msgP);
+  return roundDiv;
+}
+function createRoundResultsElement(round, roundIndex) {
   if (round.length === 0) {
-    return createEmptyRoundResultsElement(roundNumber);
+    return createEmptyRoundResultsElement(roundIndex);
   }
-  const roundElement = document.createElement("div");
-  roundElement.classList.add("round");
-  roundElement.id = `round-${roundNumber}`;
+  const roundDiv = document.createElement("div");
+  roundDiv.classList.add("round-results");
+  roundDiv.id = `round-results-${roundIndex}`;
+  roundDiv.classList.add("hidden");
+  round.forEach((solver, solveIndex) => {
+    const solveNumber = solveIndex + 1;
+    const solverDiv = document.createElement("div");
+    solverDiv.classList.add("solver");
+    const solvesP = document.createElement("p");
+    solvesP.classList.add("solve");
+    const solves = solver.solves.map((solve) => formatTime(solve)).join(", ");
+    const average = solver.average > 0 ? formatTime(solver.average) : "Nema";
+    solvesP.textContent = `${solveNumber}. ${solver.username}: ${solves} ( Ao5 ${average})`;
+    solverDiv.appendChild(solvesP);
+    roundDiv.appendChild(solverDiv);
+  });
+  return roundDiv;
+}
+function createRoundTitleContainer(roundIndex) {
   const roundTitleContainerElement = document.createElement("div");
   roundTitleContainerElement.classList.add("round-title-container");
 
   const roundTitleElement = document.createElement("h4");
   roundTitleElement.classList.add("round-title");
-  roundTitleElement.textContent = `Runda ${roundNumber}`;
+  roundTitleElement.textContent = `Runda ${roundIndex + 1}`;
   const showHideButton = document.createElement("button");
   showHideButton.classList.add("show-hide-round-button");
   showHideButton.classList.add("show-hide");
   const showHideImage = document.createElement("img");
-  showHideImage.src = "../Images/show.svg";
+  showHideImage.src = "../Images/hide.svg";
   showHideButton.appendChild(showHideImage);
   roundTitleContainerElement.appendChild(roundTitleElement);
   roundTitleContainerElement.appendChild(showHideButton);
-  roundElement.appendChild(roundTitleContainerElement);
-  const roundResultsElement = document.createElement("div");
   showHideButton.addEventListener("click", (e) => {
+    // Use 3 parent element because user might click on the show/hide image
+    const roundResultsElement =
+      e.target.parentElement.parentElement.parentElement.querySelector(
+        `#round-results-${roundIndex}`
+      );
+
+    showHideRound(roundResultsElement, e);
+  });
+  function showHideRound(roundResultsElement, e) {
     roundResultsElement.classList.toggle("hidden");
     showHideButton.classList.toggle("hidden");
     // Update the image so it shows current state
@@ -95,74 +125,59 @@ function createRoundResultsElement(round, roundNumber) {
       return;
     }
     showHideButton.querySelector("img").src = "../Images/show.svg";
-  });
-  roundElement.appendChild(roundResultsElement);
-  roundResultsElement.classList.add("round-results");
-  roundResultsElement.id = `round-results-${roundNumber}`;
-  const groups = seperateResultsByGroup(round);
-  groups.forEach((group, index) => {
-    if (group.length === 0) {
-      // TODO: handle empty groups
-      return;
-    }
-    const groupDiv = document.createElement("div");
-    groupDiv.classList.add("group");
-    groupDiv.id = `group-${index + 1}`;
-    // Create container for the group title
-    const groupTitleContainerElement = document.createElement("div");
-    groupTitleContainerElement.classList.add("group-title-container");
-    // Create the group title
-    const groupTitleElement = document.createElement("h4");
-    groupTitleElement.classList.add("group-title");
-    groupTitleElement.textContent = `Grupa ${index + 1}`;
-    // Append the group title to the container
-    groupTitleContainerElement.appendChild(groupTitleElement);
-    // Append show/hide button to the container
-    const showHideButton = document.createElement("button");
-    showHideButton.classList.add("show-hide-group-button");
-    showHideButton.classList.add("show-hide");
-    showHideButton.classList.add("hidden");
-    const hideImage = document.createElement("img");
-    hideImage.src = "../Images/hide.svg";
-    showHideButton.appendChild(hideImage);
-    groupTitleContainerElement.appendChild(showHideButton);
-    // Append the container to the group element
-    groupDiv.appendChild(groupTitleContainerElement);
-    const groupResultsElement = document.createElement("div");
-    groupResultsElement.classList.add("hidden");
-    showHideButton.addEventListener("click", (e) => {
-      groupResultsElement.classList.toggle("hidden");
-      showHideButton.classList.toggle("hidden");
-      // Update the image so it shows current state
-      if (groupResultsElement.classList.contains("hidden")) {
-        showHideButton.querySelector("img").src = "../Images/hide.svg";
-        return;
-      }
-      showHideButton.querySelector("img").src = "../Images/show.svg";
-    });
-    groupResultsElement.classList.add("group-results");
-    groupResultsElement.id = `group-results-${index + 1}`;
-    groupDiv.appendChild(groupResultsElement);
-    group.forEach((result, index) => {
-      const resultP = document.createElement("p");
-      resultP.classList.add("event-result");
-      resultP.textContent = `${index + 1}. ${result.username}: ${result.solves
-        .map((solve) => formatTime(solve))
-        .join(", ")} (Prosjek: ${formatTime(result.average)})`;
-      groupResultsElement.appendChild(resultP);
-    });
-    roundResultsElement.appendChild(groupDiv);
-  });
+  }
+  return roundTitleContainerElement;
+}
+function createGroupResultsElement(event, groupNumber) {
+  const groupDiv = document.createElement("div");
+  groupDiv.classList.add("group");
+  groupDiv.id = `group-${groupNumber}`;
+  // Group title container and group title
+  const groupTitleContainerElement = document.createElement("div");
+  groupTitleContainerElement.classList.add("group-title-container");
 
-  return roundElement;
+  const groupTitleElement = document.createElement("h4");
+  groupTitleElement.classList.add("group-title");
+  groupTitleElement.textContent = `Grupa ${groupNumber}`;
+  groupTitleContainerElement.appendChild(groupTitleElement);
+  // TODO: Add show/hide button
+  groupDiv.appendChild(groupTitleContainerElement);
+  // Rounds
+  const groupResultsDiv = document.createElement("div");
+  groupResultsDiv.classList.add("group-results");
+  groupDiv.appendChild(groupResultsDiv);
+  event.forEach((round, roundIndex) => {
+    const roundDiv = document.createElement("div");
+    roundDiv.classList.add("round");
+    roundDiv.classList.add(`round-${roundIndex + 1}`);
+    roundDiv.appendChild(createRoundTitleContainer(roundIndex));
+    roundDiv.appendChild(createRoundResultsElement(round, roundIndex));
+    groupResultsDiv.appendChild(roundDiv);
+  });
+  groupDiv.appendChild(groupResultsDiv);
+  return groupDiv;
+}
+function createGroupsResultsElement(event) {
+  const groupsDiv = document.createElement("div");
+  groupsDiv.classList.add("groups");
+  const numberOfGroups = 2;
+  const roundsSeperateByGroup = [[], []];
+  event.forEach((round) => {
+    const solversSeperatedByGroup = seperateResultsByGroup(round);
+    roundsSeperateByGroup[0].push(solversSeperatedByGroup[0]);
+    roundsSeperateByGroup[1].push(solversSeperatedByGroup[1]);
+  });
+  roundsSeperateByGroup.forEach((group, groupIndex) => {
+    const groupNumber = groupIndex + 1;
+    groupsDiv.appendChild(createGroupResultsElement(group, groupNumber));
+  });
+  return groupsDiv;
 }
 function createEventResultsElement(event) {
   const eventResults = document.createElement("div");
   eventResults.classList.add("event-results");
-  event.forEach((round, index) => {
-    const roundNumber = index + 1;
-    eventResults.appendChild(createRoundResultsElement(round, roundNumber));
-  });
+
+  eventResults.appendChild(createGroupsResultsElement(event));
   return eventResults;
 }
 function createEventsResultsElement(competition) {
@@ -200,11 +215,13 @@ function createCompetitionElement(competition, competitionName) {
 }
 function displayResults(results) {
   console.log("Displaying results...");
+  console.time("displayResults");
   const competitionNames = Object.keys(results);
   competitionNames.forEach((competitionName) => {
     const competition = results[competitionName];
     createCompetitionElement(competition, competitionName);
   });
+  console.timeEnd("displayResults");
 }
 /**
  * Main function that gets the results from the server and displays them
