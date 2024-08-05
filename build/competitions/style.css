@@ -54,13 +54,13 @@ body {
 .show-hide {
   height: 30px;
   cursor: pointer;
-  background-color: whitesmoke;
+  background-color: rgba(255, 255, 255, 0.203);
   border-radius: 15px;
   border: none;
   display: flex;
   justify-content: center;
-  align-items: center;
   transition: box-shadow 0.2s var(--exponential);
+  align-items: center;
 }
 .show-hide:active {
   outline: 2px solid black;
