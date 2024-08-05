@@ -85,7 +85,6 @@ function createRoundResultsElement(round, roundNumber) {
   roundTitleContainerElement.appendChild(roundTitleElement);
   roundTitleContainerElement.appendChild(showHideButton);
   roundElement.appendChild(roundTitleContainerElement);
-  const groups = seperateResultsByGroup(round);
   const roundResultsElement = document.createElement("div");
   showHideButton.addEventListener("click", (e) => {
     roundResultsElement.classList.toggle("hidden");
@@ -100,6 +99,7 @@ function createRoundResultsElement(round, roundNumber) {
   roundElement.appendChild(roundResultsElement);
   roundResultsElement.classList.add("round-results");
   roundResultsElement.id = `round-results-${roundNumber}`;
+  const groups = seperateResultsByGroup(round);
   groups.forEach((group, index) => {
     if (group.length === 0) {
       // TODO: handle empty groups
