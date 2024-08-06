@@ -47,6 +47,11 @@ function createCompetitionDateElement(competition) {
   dateP.textContent = `${compDate.toLocaleDateString()} ${compDate.toLocaleTimeString()}`;
   return dateP;
 }
+/**
+ * Creates a heading for an event
+ * @param {string} eventName
+ * @returns  {HTMLHeadingElement}
+ */
 function createEventNameElement(eventName) {
   const nameH3 = document.createElement("h3");
   nameH3.classList.add("event-name");
@@ -92,21 +97,34 @@ function createRoundResultsElement(round, roundIndex) {
   });
   return roundDiv;
 }
+/**
+ * Creates a round title container with a heading and a show/hide button
+ * @param {number} roundIndex - Index of the round for which title is being created
+ * @returns {HTMLDivElement} .round-title-container div element with heading and show/hide button
+ */
 function createRoundTitleContainer(roundIndex) {
+  // Define the image sources for show/hide button
+  const hideImgSrc = "../Images/hide.svg";
+  const showImgSrc = "../Images/show.svg";
+
   const roundTitleContainerElement = document.createElement("div");
   roundTitleContainerElement.classList.add("round-title-container");
-
+  // Create a round title heading with class .round-title
   const roundTitleElement = document.createElement("h4");
   roundTitleElement.classList.add("round-title");
   roundTitleElement.textContent = `Runda ${roundIndex + 1}`;
+  // Create show/hide button with class .show-hide-round-button and .show-hide
   const showHideButton = document.createElement("button");
   showHideButton.classList.add("show-hide-round-button");
   showHideButton.classList.add("show-hide");
+  // Create a show/hide image with class .show-hide-round-button-img and append it to the button
   const showHideImage = document.createElement("img");
-  showHideImage.src = "../Images/hide.svg";
+  showHideImage.src = hideImgSrc;
   showHideButton.appendChild(showHideImage);
+  // Append the title and the button to the round title container
   roundTitleContainerElement.appendChild(roundTitleElement);
   roundTitleContainerElement.appendChild(showHideButton);
+
   showHideButton.addEventListener("click", (e) => {
     // Use 3 parent element because user might click on the show/hide image
     const roundResultsElement =
@@ -116,19 +134,33 @@ function createRoundTitleContainer(roundIndex) {
 
     showHideRound(roundResultsElement, e);
   });
+  /**
+   * Shows/hides a round and updates the show/hide button
+   * @param {HTMLDivElement} roundResultsElement
+   * @param {MouseEvent} e
+   * @returns {void}
+   */
   function showHideRound(roundResultsElement, e) {
     roundResultsElement.classList.toggle("hidden");
     showHideButton.classList.toggle("hidden");
     // Update the image so it shows current state
+    const showHideImage = showHideButton.querySelector("img");
     if (roundResultsElement.classList.contains("hidden")) {
-      showHideButton.querySelector("img").src = "../Images/hide.svg";
+      showHideImage.src = hideImgSrc;
       return;
     }
-    showHideButton.querySelector("img").src = "../Images/show.svg";
+    showHideImage.src = showImgSrc;
   }
+  // Return the round title container
   return roundTitleContainerElement;
 }
-function createGroupResultsElement(event, groupNumber) {
+/**
+ * Returns a .group div element
+ * @param {any[]} rounds - An array of 3 rounds
+ * @param {1 | 2} groupNumber - The group number (1 or 2)
+ * @returns {HTMLDivElement}
+ */
+function createGroupResultsElement(rounds, groupNumber) {
   const groupDiv = document.createElement("div");
   groupDiv.classList.add("group");
   groupDiv.id = `group-${groupNumber}`;
@@ -142,14 +174,17 @@ function createGroupResultsElement(event, groupNumber) {
   groupTitleContainerElement.appendChild(groupTitleElement);
   // TODO: Add show/hide button
   groupDiv.appendChild(groupTitleContainerElement);
-  // Rounds
+  // Create results for all 3 rounds
   const groupResultsDiv = document.createElement("div");
   groupResultsDiv.classList.add("group-results");
   groupDiv.appendChild(groupResultsDiv);
-  event.forEach((round, roundIndex) => {
+  // Loop through all rounds and create a .round div for each
+  rounds.forEach((round, roundIndex) => {
+    const roundNumber = roundIndex + 1;
     const roundDiv = document.createElement("div");
     roundDiv.classList.add("round");
-    roundDiv.classList.add(`round-${roundIndex + 1}`);
+    roundDiv.classList.add(`round-${roundNumber}`);
+    // Title container, results container
     roundDiv.appendChild(createRoundTitleContainer(roundIndex));
     roundDiv.appendChild(createRoundResultsElement(round, roundIndex));
     groupResultsDiv.appendChild(roundDiv);
@@ -160,19 +195,25 @@ function createGroupResultsElement(event, groupNumber) {
 function createGroupsResultsElement(event) {
   const groupsDiv = document.createElement("div");
   groupsDiv.classList.add("groups");
-  const numberOfGroups = 2;
   const roundsSeperateByGroup = [[], []];
   event.forEach((round) => {
     const solversSeperatedByGroup = seperateResultsByGroup(round);
+    // We could use a for loop here but it would be less readable
     roundsSeperateByGroup[0].push(solversSeperatedByGroup[0]);
     roundsSeperateByGroup[1].push(solversSeperatedByGroup[1]);
   });
   roundsSeperateByGroup.forEach((group, groupIndex) => {
+    // group: an array of 3 rounds
     const groupNumber = groupIndex + 1;
     groupsDiv.appendChild(createGroupResultsElement(group, groupNumber));
   });
   return groupsDiv;
 }
+/**
+ * Returns a .event-results div element
+ * @param {*} event
+ * @returns {HTMLDivElement}
+ */
 function createEventResultsElement(event) {
   const eventResults = document.createElement("div");
   eventResults.classList.add("event-results");
@@ -180,6 +221,11 @@ function createEventResultsElement(event) {
   eventResults.appendChild(createGroupsResultsElement(event));
   return eventResults;
 }
+/**
+ * Creates results for all events in a competition
+ * @param {*} competition
+ * @returns {HTMLDivElement}
+ */
 function createEventsResultsElement(competition) {
   const eventNames = Object.keys(competition);
   const eventsDiv = document.createElement("div");
