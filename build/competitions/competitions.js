@@ -294,28 +294,37 @@ function createCompetitionNameElement(competitionName) {
 function createCompetitionInfoElement(competition, competitionName) {
   const infoDiv = document.createElement("div");
   infoDiv.classList.add("comp-info");
+
+  // Append the competition name to the info div
   infoDiv.appendChild(createCompetitionNameElement(competitionName));
+  // Append the competition date to the info div
   infoDiv.appendChild(createCompetitionDateElement(competition));
+
   return infoDiv;
 }
-function createCompetitionElement(competition, competitionName) {
+function createCompAndAppendToCompsDiv(competition, competitionName) {
+  // Create a competition div with class .competition
   const competitionDiv = document.createElement("div");
   competitionDiv.classList.add("competition");
+
+  // Append the competition info to the competition div
   competitionDiv.appendChild(
     createCompetitionInfoElement(competition, competitionName)
   );
+  // Append the competition results to the competition div
   competitionDiv.appendChild(createCompetitionResultsElement(competition));
+  // Append the competition div to the competitions div
   competitionsDiv.appendChild(competitionDiv);
 }
 function displayResults(results) {
   console.log("Displaying results...");
-  console.time("displayResults");
   const competitionNames = Object.keys(results);
+
   competitionNames.forEach((competitionName) => {
     const competition = results[competitionName];
-    createCompetitionElement(competition, competitionName);
+
+    createCompAndAppendToCompsDiv(competition, competitionName);
   });
-  console.timeEnd("displayResults");
 }
 /**
  * Main function that gets the results from the server and displays them
