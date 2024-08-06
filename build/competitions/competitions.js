@@ -205,11 +205,19 @@ function createCompetitionNameElement(competitionName) {
   nameH2.textContent = competitionName;
   return nameH2;
 }
+function createCompetitionInfoElement(competition, competitionName) {
+  const infoDiv = document.createElement("div");
+  infoDiv.classList.add("comp-info");
+  infoDiv.appendChild(createCompetitionNameElement(competitionName));
+  infoDiv.appendChild(createCompetitionDateElement(competition));
+  return infoDiv;
+}
 function createCompetitionElement(competition, competitionName) {
   const competitionDiv = document.createElement("div");
   competitionDiv.classList.add("competition");
-  competitionDiv.appendChild(createCompetitionNameElement(competitionName));
-  competitionDiv.appendChild(createCompetitionDateElement(competition));
+  competitionDiv.appendChild(
+    createCompetitionInfoElement(competition, competitionName)
+  );
   competitionDiv.appendChild(createCompetitionResultsElement(competition));
   competitionsDiv.appendChild(competitionDiv);
 }

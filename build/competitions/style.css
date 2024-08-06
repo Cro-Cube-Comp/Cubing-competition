@@ -13,7 +13,12 @@ body {
   color: var(--font-color);
   background-attachment: fixed; /* Gradient covering whole page */
 }
-
+.comp-info {
+  padding-left: 1rem;
+}
+.event-name {
+  padding-left: 1rem;
+}
 .group-title-container {
   display: flex;
   align-items: center;
@@ -27,12 +32,16 @@ body {
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 0.5rem;
 }
+.group-title-container,
+.group-results {
+  outline: 2px solid rgba(158, 154, 154, 0.294);
+}
 .groups {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   row-gap: 1rem;
 }
-@media screen and (min-width: 1350px) {
+@media screen and (min-width: 750px) {
   .groups {
     grid-template-columns: 1fr 1fr;
   }
@@ -60,6 +69,7 @@ body {
   display: flex;
   align-items: center;
   column-gap: 1rem;
+  border-radius: 0.25rem;
 }
 .round-title {
   margin: 0.2rem 0;
