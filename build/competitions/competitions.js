@@ -177,6 +177,10 @@ function createRoundTitleContainer(roundIndex) {
  * @returns {HTMLDivElement}
  */
 function createGroupResultsElement(rounds, groupNumber) {
+  // Define the image sources for show/hide button
+  const hideImgSrc = "../Images/hide.svg";
+  const showImgSrc = "../Images/show.svg";
+
   const groupIndex = groupNumber - 1;
   // Create a group div with class .group and id group-groupIndex
   const groupDiv = document.createElement("div");
@@ -192,13 +196,33 @@ function createGroupResultsElement(rounds, groupNumber) {
   groupTitleElement.textContent = `Grupa ${groupNumber}`;
   groupTitleContainerElement.appendChild(groupTitleElement);
 
-  // TODO: Add show/hide button
+  const showHideButton = document.createElement("button");
+  showHideButton.classList.add("show-hide-group-button");
+  showHideButton.classList.add("show-hide");
+  const showHideImage = document.createElement("img");
+  showHideImage.src = showImgSrc;
+
+  showHideButton.addEventListener("click", (e) => {
+    const groupResults =
+      e.target.parentElement.parentElement.parentElement.querySelector(`#group-results-${groupIndex}`);
+    groupResults.classList.toggle("hidden");
+    showHideButton.classList.toggle("hidden");
+    if (showHideButton.classList.contains("hidden")) {
+      showHideImage.src = hideImgSrc;
+      return;
+    }
+    showHideImage.src = showImgSrc;
+  });
+
+  showHideButton.appendChild(showHideImage);
+  groupTitleContainerElement.appendChild(showHideButton);
 
   // Append the group title container to the group div
   groupDiv.appendChild(groupTitleContainerElement);
   // Create results for all 3 rounds
   const groupResultsDiv = document.createElement("div");
   groupResultsDiv.classList.add("group-results");
+  groupResultsDiv.id = `group-results-${groupIndex}`;
   groupDiv.appendChild(groupResultsDiv);
 
   // Loop through all rounds and create a .round div for each
