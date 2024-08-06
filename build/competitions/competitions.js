@@ -120,22 +120,27 @@ function createRoundTitleContainer(roundIndex) {
 
   const roundTitleContainerElement = document.createElement("div");
   roundTitleContainerElement.classList.add("round-title-container");
+
   // Create a round title heading with class .round-title
   const roundTitleElement = document.createElement("h4");
   roundTitleElement.classList.add("round-title");
   roundTitleElement.textContent = `Runda ${roundIndex + 1}`;
+
   // Create show/hide button with class .show-hide-round-button and .show-hide
   const showHideButton = document.createElement("button");
   showHideButton.classList.add("show-hide-round-button");
   showHideButton.classList.add("show-hide");
+
   // Create a show/hide image with class .show-hide-round-button-img and append it to the button
   const showHideImage = document.createElement("img");
   showHideImage.src = hideImgSrc;
   showHideButton.appendChild(showHideImage);
+
   // Append the title and the button to the round title container
   roundTitleContainerElement.appendChild(roundTitleElement);
   roundTitleContainerElement.appendChild(showHideButton);
 
+  // Add a click event listener to the show/hide button to toggle the visibility of the round results
   showHideButton.addEventListener("click", (e) => {
     // Use 3 parent element because user might click on the show/hide image
     const roundResultsElement =
@@ -172,9 +177,12 @@ function createRoundTitleContainer(roundIndex) {
  * @returns {HTMLDivElement}
  */
 function createGroupResultsElement(rounds, groupNumber) {
+  const groupIndex = groupNumber - 1;
+  // Create a group div with class .group and id group-groupIndex
   const groupDiv = document.createElement("div");
   groupDiv.classList.add("group");
-  groupDiv.id = `group-${groupNumber}`;
+  groupDiv.id = `group-${groupIndex}`;
+
   // Group title container and group title
   const groupTitleContainerElement = document.createElement("div");
   groupTitleContainerElement.classList.add("group-title-container");
@@ -183,12 +191,16 @@ function createGroupResultsElement(rounds, groupNumber) {
   groupTitleElement.classList.add("group-title");
   groupTitleElement.textContent = `Grupa ${groupNumber}`;
   groupTitleContainerElement.appendChild(groupTitleElement);
+
   // TODO: Add show/hide button
+
+  // Append the group title container to the group div
   groupDiv.appendChild(groupTitleContainerElement);
   // Create results for all 3 rounds
   const groupResultsDiv = document.createElement("div");
   groupResultsDiv.classList.add("group-results");
   groupDiv.appendChild(groupResultsDiv);
+
   // Loop through all rounds and create a .round div for each
   rounds.forEach((round, roundIndex) => {
     const roundNumber = roundIndex + 1;
@@ -209,16 +221,19 @@ function createGroupResultsElement(rounds, groupNumber) {
 function createGroupsResultsElement(event) {
   const groupsDiv = document.createElement("div");
   groupsDiv.classList.add("groups");
+
   const roundsSeperateByGroup = [[], []];
   event.forEach((round) => {
     const solversSeperatedByGroup = seperateResultsByGroup(round);
+
     // We could use a for loop here but it would be less readable
     roundsSeperateByGroup[0].push(solversSeperatedByGroup[0]);
     roundsSeperateByGroup[1].push(solversSeperatedByGroup[1]);
   });
   roundsSeperateByGroup.forEach((group, groupIndex) => {
-    // group: an array of 3 rounds
     const groupNumber = groupIndex + 1;
+
+    // group: an array of 3 rounds
     groupsDiv.appendChild(createGroupResultsElement(group, groupNumber));
   });
   return groupsDiv;
@@ -243,20 +258,31 @@ function createEventResultsElement(event) {
 function createEventsResultsElement(competition) {
   const eventNames = Object.keys(competition);
   const eventsDiv = document.createElement("div");
+
   eventNames.forEach((eventName) => {
     const event = competition[eventName];
+    // Create an event div with class .event
     const eventDiv = document.createElement("div");
     eventDiv.classList.add("event");
+
+    // Append the event name to the event div
     eventDiv.appendChild(createEventNameElement(eventName));
+    // Append the event results to the event div
     eventDiv.appendChild(createEventResultsElement(event));
+    // Append the event div to the events div
     eventsDiv.appendChild(eventDiv);
   });
+
   return eventsDiv;
 }
+
 function createCompetitionResultsElement(competition) {
   const resultsDiv = document.createElement("div");
   resultsDiv.classList.add("comp-results");
+
+  // Append the events results to the results div
   resultsDiv.appendChild(createEventsResultsElement(competition.events));
+
   return resultsDiv;
 }
 function createCompetitionNameElement(competitionName) {
