@@ -65,6 +65,11 @@ function seperateResultsByGroup(round) {
   });
   return groups;
 }
+/**
+ * Creates a round results element for an empty round ( 0 contestants
+ * @param {number} roundIndex - Index of the round for which the element is being created
+ * @returns {HTMLDivElement} .round-results div
+ */
 function createEmptyRoundResultsElement(roundIndex) {
   const roundDiv = document.createElement("div");
   roundDiv.classList.add("round-results");
@@ -79,12 +84,15 @@ function createRoundResultsElement(round, roundIndex) {
   if (round.length === 0) {
     return createEmptyRoundResultsElement(roundIndex);
   }
+  // Create a round results element with class .round-results
   const roundDiv = document.createElement("div");
   roundDiv.classList.add("round-results");
   roundDiv.id = `round-results-${roundIndex}`;
-  roundDiv.classList.add("hidden");
+  roundDiv.classList.add("hidden"); // Hidden at first, user can show it with button
+
   round.forEach((solver, solveIndex) => {
     const solveNumber = solveIndex + 1;
+
     const solverDiv = document.createElement("div");
     solverDiv.classList.add("solver");
     const solvesP = document.createElement("p");
@@ -92,7 +100,10 @@ function createRoundResultsElement(round, roundIndex) {
     const solves = solver.solves.map((solve) => formatTime(solve)).join(", ");
     const average = solver.average > 0 ? formatTime(solver.average) : "Nema";
     solvesP.textContent = `${solveNumber}. ${solver.username}: ${solves} ( Ao5 ${average})`;
+
+    // Append the solves paragraph to the solver div
     solverDiv.appendChild(solvesP);
+    // Append the div to the round div
     roundDiv.appendChild(solverDiv);
   });
   return roundDiv;
@@ -181,12 +192,15 @@ function createGroupResultsElement(rounds, groupNumber) {
   // Loop through all rounds and create a .round div for each
   rounds.forEach((round, roundIndex) => {
     const roundNumber = roundIndex + 1;
+    // Create a round div with class .round and id round-roundIndex
     const roundDiv = document.createElement("div");
     roundDiv.classList.add("round");
     roundDiv.classList.add(`round-${roundNumber}`);
-    // Title container, results container
+
+    // Append title container and results container to the round div
     roundDiv.appendChild(createRoundTitleContainer(roundIndex));
     roundDiv.appendChild(createRoundResultsElement(round, roundIndex));
+    // Append the round div to the group results div
     groupResultsDiv.appendChild(roundDiv);
   });
   groupDiv.appendChild(groupResultsDiv);
