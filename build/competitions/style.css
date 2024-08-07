@@ -85,11 +85,6 @@ body {
   border: 3px solid rgb(181, 150, 150);
   border-radius: 0.5rem;
 }
-@media screen and (min-width: 1500px) {
-  .round-results {
-    grid-template-columns: 1fr 1fr;
-  }
-}
 .round-results.hidden {
   display: none;
 }
