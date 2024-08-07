@@ -44,7 +44,12 @@ function createCompetitionDateElement(competition) {
   const dateP = document.createElement("p");
   dateP.classList.add("comp-date-p");
   const compDate = new Date(competition.date);
-  dateP.textContent = `${compDate.toLocaleDateString()} ${compDate.toLocaleTimeString()}`;
+  // Make compTime only show hours and minutes
+  const compTime = compDate.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  dateP.textContent = `${compDate.toLocaleDateString()} ${compTime}`;
   return dateP;
 }
 /**
@@ -204,7 +209,9 @@ function createGroupResultsElement(rounds, groupNumber) {
 
   showHideButton.addEventListener("click", (e) => {
     const groupResults =
-      e.target.parentElement.parentElement.parentElement.querySelector(`#group-results-${groupIndex}`);
+      e.target.parentElement.parentElement.parentElement.querySelector(
+        `#group-results-${groupIndex}`
+      );
     groupResults.classList.toggle("hidden");
     showHideButton.classList.toggle("hidden");
     if (showHideButton.classList.contains("hidden")) {
