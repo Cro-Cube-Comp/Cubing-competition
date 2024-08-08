@@ -11,9 +11,8 @@
   }
 }
 .card {
-  animation: appear var(--exponential);
+  animation: animate-in-and-out linear;
   animation-timeline: view();
-  animation-range: entry 0% cover 10%;
   background-color: rgb(74, 74, 74);
   padding-top: 5px;
   padding-bottom: 10px;
@@ -52,16 +51,22 @@
   color: rgb(0, 102, 204);
   text-decoration: underline;
 }
-@keyframes appear {
-  from {
+@keyframes animate-in-and-out {
+  entry 0% {
     opacity: 0;
-
-    scale: 0.5;
+    transform: translateY(100%);
+  }
+  entry 50% {
+    opacity: 1;
+    transform: translateY(0);
   }
 
-  to {
+  exit 0% {
     opacity: 1;
-
-    scale: 1;
+    transform: translateY(0);
+  }
+  exit 50% {
+    opacity: 0;
+    transform: translateY(-100%);
   }
 }
