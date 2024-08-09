@@ -1,0 +1,42 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background: var(--background);
+  background-attachment: fixed; /* Covers whole page, even if body is smaller than viewport */
+  color: white;
+}
+body {
+  height: 100vh;
+}
+#main {
+  margin: 0 auto;
+  padding: 30px;
+  max-width: 792px;
+}
+#scramble {
+  font-size: 30px;
+  line-height: 60px;
+  margin-bottom: 30px;
+}
+#btn-refresh {
+  background-color: #428bca;
+  border: 1px solid #357ebd;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+
+  font-size: 26px;
+  line-height: 26px;
+  margin: 0;
+  outline: none;
+  padding: 20px 0;
+  max-width: 270px;
+  width: 50vw;
+}
+.scramble-text {
+  line-height: 1.5em; /* visina jedne linije */
+  white-space: pre-wrap;
+}
