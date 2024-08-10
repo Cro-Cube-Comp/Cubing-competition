@@ -70,6 +70,6 @@ function credentialsCheck(username, password) {
   }
   return false;
 }
-// if (loggedIn()) {
-//  window.location.href = "../";
-// }
+ if (loggedIn()) {
+ window.location.href = "../";
+ }
