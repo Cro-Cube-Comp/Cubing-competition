@@ -19,9 +19,9 @@ function underlineText(text, start = 0, end = text.length) {
   // Return the text with the underlined part
   return `${text.slice(0, start)}${underlinedPart}${text.slice(end)}`;
 }
-function hyperlinkText(text, start = 0, end = text.length, url, newTab = true) {
+function hyperlinkText(text, start = 0, end = text.length, url) {
   // Extract the part of the text that needs to be hyperlinked
-  const hyperlinkedPart = hyperlink(text.substring(start, end), url, newTab);
+  const hyperlinkedPart = hyperlink(text.substring(start, end), url);
 
   // Return the text with the hyperlinked part
   return `${text.slice(0, start)}${hyperlinkedPart}${text.slice(end)}`;
@@ -34,32 +34,51 @@ function emailToText(text, start = 0, end = text.length, email) {
   return `${text.slice(0, start)}${emailedPart}${text.slice(end)}`;
 }
 function headerText(text, start = 0, end = text.length, level) {
-  // Extract the part of the text that needs to be a header
-  const headerPart = header(text.substring(start, end), level);
+  // Split the text into lines
+  const lines = text.split("\n");
+
+  // Apply the header to each line if the entire line is within the range
+  const headerLines = lines.map((line, index) => {
+    const lineStart = text.indexOf(line);
+    const lineEnd = lineStart + line.length;
+    if (line[0] === "#") {
+      // Line is a header already, so remove hashtags from start
+      line = line.replace(/^#+\s*/, "");
+    }
+    if (lineStart >= start && lineEnd <= end) {
+      return header(line, level);
+    }
+    return header(line, level);
+  });
+
+  // Join the lines back together
+  const headerText = headerLines.join("\n");
 
   // Return the text with the header part
-  return `${text.slice(0, start)}${headerPart}${text.slice(end)}`;
+  return headerText;
 }
+
 function bolded(text) {
-  return `<span class="bolded">${text}</span>`;
+  return `**${text}**`;
 }
 function italicized(text) {
-  return `<span class="italicized">${text}</span>`;
+  return `_${text}_`;
 }
 function underlined(text) {
-  return `<span class="underlined">${text}</span>`;
+  return `-${text}-`;
 }
-function hyperlink(text, url = "URL", newTab = true) {
-  return `<a href="${url}" ${newTab ? 'target="_blank"' : ""}>${text}</a>`;
+function hyperlink(text, url = "URL") {
+  // Opens link in new tab by
+  return `[${text}](${url})`;
 }
 function emailTo(text, email) {
-  return `<a href="mailto:${email}">${text}</a>`;
+  return hyperlink(text, `mailto:${email}`);
 }
 function header(text, level) {
   if (level < 1 || level > 6) {
     throw new Error("Invalid header level.");
   }
-  return `<h${level}>${text}</h${level}>`;
+  return `${"#".repeat(level)} ${text}`;
 }
 
 export {

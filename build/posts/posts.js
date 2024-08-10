@@ -323,7 +323,7 @@ function boldSelectedTextFromInput(input = undefined) {
   input.value = newInputValue;
 
   // Calculate the difference in length
-  const lengthDifference = newInputValue.length - oldInputValue.length - 7; // 7 is the length of </span>
+  const lengthDifference = newInputValue.length - oldInputValue.length - 2; // 2 is the length of ** (ending of bolded text)
 
   // Adjust the selection range
   input.focus();
@@ -340,7 +340,7 @@ function italizeSelectedTextFromInput(input = undefined) {
   input.value = newInputValue;
 
   // Calculate the difference in length
-  const lengthDifference = newInputValue.length - oldInputValue.length - 7; // 7 is the length of </span>
+  const lengthDifference = newInputValue.length - oldInputValue.length - 1; // 1 is the length of _
 
   // Adjust the selection range
   input.focus();
@@ -357,7 +357,7 @@ function underlineSelectedTextFromInput(input = undefined) {
   input.value = newInputValue;
 
   // Calculate the difference in length
-  const lengthDifference = newInputValue.length - oldInputValue.length - 7; // 7 is the length of </span>
+  const lengthDifference = newInputValue.length - oldInputValue.length - 1; // 1 is the length of -
 
   // Adjust the selection range
   input.focus();
@@ -365,7 +365,7 @@ function underlineSelectedTextFromInput(input = undefined) {
 }
 function hyperlinkSelectedTextFromInput(
   input = undefined,
-  url = undefined,
+  url = "URL",
   newTab = true
 ) {
   if (!input) {
@@ -374,16 +374,17 @@ function hyperlinkSelectedTextFromInput(
   const start = input.selectionStart;
   const end = input.selectionEnd;
   const oldInputValue = input.value;
-  const newInputValue = hyperlinkText(oldInputValue, start, end, url, newTab);
+  const newInputValue = hyperlinkText(oldInputValue, start, end, url);
   input.value = newInputValue;
 
-  // Calculate the difference in length
-  const lengthDifference = newInputValue.length - oldInputValue.length - 4; // 4 is the length of </a>
-
-  // Adjust the selection range
+  // Calculate the new selection range for the "URL" part
+  const linkStart = start + 1 + oldInputValue.length + 1 + 1; // Position after the opening bracket '[' + old input value + length of closing bracket ']' + length of '('
+  const linkEnd = linkStart + url.length;
+  // Set the new selection range
   input.focus();
-  input.setSelectionRange(start + lengthDifference, end + lengthDifference);
+  input.setSelectionRange(linkStart, linkEnd);
 }
+
 function emailToSelectedTextFromInput(input = undefined, email = "email") {
   if (!input) {
     throw new Error("Param input missing.");
@@ -394,11 +395,11 @@ function emailToSelectedTextFromInput(input = undefined, email = "email") {
   const newInputValue = emailToText(oldInputValue, start, end, email);
   input.value = newInputValue;
 
-  // Calculate the difference in length
-  const lengthDifference = newInputValue.length - oldInputValue.length - 4; // 4 is the length of </a>
+  const mailStart = start + 1 + oldInputValue.length + 1 + 1 + "mailto:".length; // Position after the opening bracket '[' + old input value + length of closing bracket ']' + length of '(' + length of 'mailto:'
+  const mailEnd = mailStart + email.length;
 
   input.focus();
-  input.setSelectionRange(start + lengthDifference, end + lengthDifference);
+  input.setSelectionRange(mailStart, mailEnd);
 }
 function headerSelectedTextFromInput(input = undefined, level = 1) {
   if (!input) {
@@ -411,7 +412,7 @@ function headerSelectedTextFromInput(input = undefined, level = 1) {
   input.value = newInputValue;
 
   // Calculate the difference in length
-  const lengthDifference = newInputValue.length - oldInputValue.length - 5; // 5 is the length of </h1>, </h2>, etc.
+  const lengthDifference = newInputValue.length - oldInputValue.length;
 
   // Adjust the selection range
   input.focus();
