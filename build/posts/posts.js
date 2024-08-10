@@ -80,34 +80,117 @@ async function createPost(title, description) {
     main();
   }
 }
-
-function createPostHtml(post) {
+function createPostDeleteBtnDivElement(id) {
+  const postDeleteButtonDivElement = document.createElement("div");
+  postDeleteButtonDivElement.classList.add("post-delete-btn-container");
+  const postDeleteButtonElement = document.createElement("button");
+  postDeleteButtonDivElement.appendChild(postDeleteButtonElement);
+  postDeleteButtonElement.classList.add("delete-post-btn");
+  // Create deleteee img for post delete button
+  const deletePostImg = document.createElement("img");
+  deletePostImg.src = "../Images/delete.svg";
+  postDeleteButtonElement.appendChild(deletePostImg);
+  postDeleteButtonElement.addEventListener("click", async () => {
+    const prevHTML = postDeleteButtonElement.innerHTML;
+    postDeleteButtonElement.disabled = true;
+    postDeleteButtonElement.innerHTML = loadingHTML;
+    try {
+      await deletePost(id);
+      main();
+    } catch (error) {
+      console.error("Failed to delete post:", error);
+      alert("Greška u brisanju objave. Molimo pokušajte ponovno.");
+    }
+    postDeleteButtonElement.disabled = false;
+    postDeleteButtonElement.innerHTML = prevHTML;
+  });
+  return postDeleteButtonDivElement;
+}
+function createPostEditBtnDivElement(id) {
+  const postEditButtonDivElement = document.createElement("div");
+  postEditButtonDivElement.classList.add("post-edit-btn-container");
+  const postEditButtonElement = document.createElement("button");
+  postEditButtonDivElement.appendChild(postEditButtonElement);
+  postEditButtonElement.classList.add("edit-post-btn");
+  // Create edit img for post edit button
+  const editPostImg = document.createElement("img");
+  editPostImg.src = "../Images/edit.svg";
+  postEditButtonElement.appendChild(editPostImg);
+  postEditButtonElement.addEventListener("click", async () => {
+    const prevHTML = postEditButtonElement.innerHTML;
+    postEditButtonElement.disabled = true;
+    postEditButtonElement.innerHTML = loadingHTML;
+    try {
+      await openEditPostDialog(id);
+    } catch (error) {
+      console.error("Failed to open edit post dialog:", error);
+      alert(
+        "Greška u otvaranju dijaloga za uređivanje objave. Molimo pokušajte ponovno."
+      );
+    } finally {
+      postEditButtonElement.disabled = false;
+      postEditButtonElement.innerHTML = prevHTML;
+      main();
+    }
+  });
+  return postEditButtonDivElement;
+}
+function createPostAuthorDivElement(authorUsername) {
+  const postAuthorDivElement = document.createElement("div");
+  postAuthorDivElement.classList.add("post-author-container");
+  const postAuthorElement = document.createElement("p");
+  postAuthorElement.classList.add("post-author");
+  postAuthorElement.textContent = `Objavio ${authorUsername}`;
+  postAuthorDivElement.appendChild(postAuthorElement);
+  return postAuthorDivElement;
+}
+function createPostDescriptionDivElement(description) {
+  const postDescriptionDivElement = document.createElement("div");
+  postDescriptionDivElement.classList.add("post-description-container");
+  const postDescriptionElement = document.createElement("p");
+  postDescriptionDivElement.appendChild(postDescriptionElement);
+  postDescriptionElement.classList.add("post-description");
+  postDescriptionElement.textContent = description;
+  return postDescriptionDivElement;
+}
+function createPostTitleDivElement(title) {
+  const postTitleDivElement = document.createElement("div");
+  postTitleDivElement.classList.add("post-title-container");
+  const postTitleElement = document.createElement("h2");
+  postTitleDivElement.appendChild(postTitleElement);
+  postTitleElement.classList.add("post-title");
+  postTitleElement.textContent = title;
+  return postTitleDivElement;
+}
+function createPostElement(post) {
   const { title, description, id } = post;
   const authorUsername = post.author.username;
-  const html = `<div class="post">
-  <div> 
-    <h2 class="post-title">${title}</h2>
-  </div>
-    <div>
-      <p class="post-description">
-      ${description}
-      </p>
-    </div>
-    <div> 
-      <p class="post-author-p">
-        Objavio <span class="post-author">${authorUsername}
-        </span>
-      </p>
-    </div>
-    <div class="post-btns-container">
-      <button data-id="${id}"
-      class="delete-post-btn">
-        <img src="../Images/delete.svg"/>
-      </button>
-      <button class="edit-post-btn" data-id="${id}"><img src="../Images/edit.svg"/></button>
-    </div>
-</div>`;
-  return html;
+  // Post element
+  const postElement = document.createElement("div");
+  postElement.classList.add("post");
+  // Post title element
+  const postTitleDivElement = createPostTitleDivElement(title);
+  postElement.appendChild(postTitleDivElement);
+  // Post description element
+  const postDescriptionDivElement =
+    createPostDescriptionDivElement(description);
+  // Append post description div element to post element
+  postElement.appendChild(postDescriptionDivElement);
+  // Post author element
+  const postAuthorDivElement = createPostAuthorDivElement(authorUsername);
+  // Append post author div element to post element
+  postElement.appendChild(postAuthorDivElement);
+  const postButtonsContainerDivElement = document.createElement("div");
+  postButtonsContainerDivElement.classList.add("post-btns-container");
+  const postDeleteButtonDivElement = createPostDeleteBtnDivElement(id);
+  // Append post delete button div element to post buttons container div element
+  postButtonsContainerDivElement.appendChild(postDeleteButtonDivElement);
+  const postEditButtonDivElement = createPostEditBtnDivElement(id);
+  // Append post edit button div element to post buttons container div element
+  postButtonsContainerDivElement.appendChild(postEditButtonDivElement);
+  // Append post buttons container div element to post element
+  postElement.appendChild(postButtonsContainerDivElement);
+  return postElement;
 }
 async function getPosts() {
   try {
@@ -132,37 +215,6 @@ async function deletePost(id) {
     throw new Error("Failed to delete post.");
   }
 }
-function attachDeleteEvent(deleteBtn) {
-  deleteBtn.addEventListener("click", async () => {
-    const prevHTML = deleteBtn.innerHTML;
-    deleteBtn.disabled = true;
-    deleteBtn.innerHTML = loadingHTML;
-    const id = deleteBtn.dataset.id;
-    try {
-      await deletePost(id);
-    } catch (error) {
-      console.error("Failed to delete post:", error);
-    }
-    deleteBtn.disabled = false;
-    deleteBtn.innerHTML = prevHTML;
-    main();
-  });
-}
-function attachEditEvent(editBtn) {
-  editBtn.addEventListener("click", async () => {
-    const prevHTML = editBtn.innerHTML;
-    editBtn.disabled = true;
-    editBtn.innerHTML = loadingHTML;
-    const id = editBtn.dataset.id;
-    try {
-      await openEditPostDialog(id);
-    } catch (error) {
-      console.error("Failed to open edit post dialog:", error);
-    }
-    editBtn.disabled = false;
-    editBtn.innerHTML = prevHTML;
-  });
-}
 async function getPost(id) {
   try {
     const posts = await getPosts();
@@ -178,17 +230,12 @@ async function getPost(id) {
   return undefined;
 }
 async function loadPosts() {
+  const postsDiv = document.querySelector(".posts");
   const posts = await getPosts();
-  document.querySelector(".posts").innerHTML = "";
+  postsDiv.innerHTML = "";
   posts.forEach((post) => {
-    const html = createPostHtml(post);
-    document.querySelector(".posts").insertAdjacentHTML("beforeend", html);
-    attachDeleteEvent(
-      document.querySelector(`.delete-post-btn[data-id="${post.id}"]`)
-    );
-    attachEditEvent(
-      document.querySelector(`.edit-post-btn[data-id="${post.id}"]`)
-    );
+    const postElement = createPostElement(post);
+    postsDiv.appendChild(postElement);
   });
 }
 function clearEditPostDialogInputs() {

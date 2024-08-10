@@ -99,10 +99,12 @@ app.use("/competitions", require("./routes/competitions/get"));
 app.use("/competitions", require("./routes/competitions/delete"));
 app.use("/competitions", require("./routes/competitions/edit"));
 app.use("/competitions", require("./routes/competitions/lock"));
-// Token validation
+app.use("/competitions", require("./routes/competitions/results"));
+// Session validation
 app.use("/session", require("./routes/session/validate"));
 // Health check
 app.use("/health-check", require("./routes/health_check/health_check"));
+
 // Backup
 app.use("/backup", require("./routes/backup/get"));
 console.timeEnd("Routes");

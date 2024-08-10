@@ -4,15 +4,39 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="../Styles/loading.css" />
-    <link rel="stylesheet" href="../Styles/font.css" />
     <title>Natjecanja - upravljaj</title>
+
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../Styles/variables.css" />
+    <link rel="stylesheet" href="header.css" />
+    <link rel="stylesheet" href="../Styles/loading.css" />
+
+    <link
+      rel="preload"
+      href="../Styles/font.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript><link rel="stylesheet" href="../Styles/font.css" /></noscript>
+
     <link rel="preload" href="../Images/locked.svg" as="image" />
     <link rel="preload" href="../Images/unlocked.svg" as="image" />
   </head>
   <body>
-    <h1>Natjecanja</h1>
+    <div class="header-container">
+      <div class="header">
+        <div class="logo-title-container">
+          <div class="logo-container">
+            <a class="logo-anchor" href="../">
+              <img alt="logo" class="logo" src="../favicon.ico"
+            /></a>
+          </div>
+          <div class="header-title-container">
+            <h1 class="header-title">Natjecanja</h1>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="competitions"></div>
     <div class="create-comp">
       <h2>Napravi natjecanje</h2>

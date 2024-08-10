@@ -11,6 +11,8 @@
   }
 }
 .card {
+  animation: animate-in-and-out linear;
+  animation-timeline: view();
   background-color: rgb(74, 74, 74);
   padding-top: 5px;
   padding-bottom: 10px;
@@ -48,4 +50,23 @@
   cursor: pointer;
   color: rgb(0, 102, 204);
   text-decoration: underline;
+}
+@keyframes animate-in-and-out {
+  entry 0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  entry 50% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  exit 0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  exit 50% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
 }
