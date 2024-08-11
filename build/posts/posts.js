@@ -363,22 +363,19 @@ function underlineSelectedTextFromInput(input = undefined) {
   input.focus();
   input.setSelectionRange(start + lengthDifference, end + lengthDifference);
 }
-function hyperlinkSelectedTextFromInput(
-  input = undefined,
-  url = "URL",
-  newTab = true
-) {
+function hyperlinkSelectedTextFromInput(input = undefined, url = "URL") {
   if (!input) {
     throw new Error("Param input missing.");
   }
   const start = input.selectionStart;
   const end = input.selectionEnd;
+  const selectedWord = input.value.substring(start, end);
   const oldInputValue = input.value;
   const newInputValue = hyperlinkText(oldInputValue, start, end, url);
   input.value = newInputValue;
 
   // Calculate the new selection range for the "URL" part
-  const linkStart = start + 1 + oldInputValue.length + 1 + 1; // Position after the opening bracket '[' + old input value + length of closing bracket ']' + length of '('
+  const linkStart = start + 1 + selectedWord.length + 1 + 1;
   const linkEnd = linkStart + url.length;
   // Set the new selection range
   input.focus();
