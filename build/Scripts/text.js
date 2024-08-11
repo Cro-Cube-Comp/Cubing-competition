@@ -43,12 +43,12 @@ function headerText(text, start = 0, end = text.length, level) {
     const lineEnd = lineStart + line.length;
     if (line[0] === "#") {
       // Line is a header already, so remove hashtags from start
-      line = line.replace(/^#+\s*/, "");
+      return line.replace(/^#+\s*/, "");
     }
-    if (lineStart >= start && lineEnd <= end) {
+    if (lineStart <= start && lineEnd <= end) {
       return header(line, level);
     }
-    return header(line, level);
+    return line;
   });
 
   // Join the lines back together

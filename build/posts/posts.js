@@ -408,12 +408,25 @@ function headerSelectedTextFromInput(input = undefined, level = 1) {
   const newInputValue = headerText(oldInputValue, start, end, level);
   input.value = newInputValue;
 
-  // Calculate the difference in length
-  const lengthDifference = newInputValue.length - oldInputValue.length;
+  // Select the line that was headered
+  const lines = oldInputValue.split("\n");
 
-  // Adjust the selection range
-  input.focus();
-  input.setSelectionRange(start + lengthDifference, end + lengthDifference);
+  lines.forEach((line, index) => {
+    if (newInputValue.split("\n")[index][0] !== "#") {
+      // Line is not a header which means that header was removed, so select the text in that line
+      input.focus();
+      input.setSelectionRange(start - level - 1, end - level - 1);
+      return;
+    }
+    const lineStart = oldInputValue.indexOf(line);
+    const lineEnd = lineStart + line.length;
+    
+    if (lineStart <= start && lineEnd <= end) {
+      console.log("Selecting line:", line);
+      input.focus();
+      input.setSelectionRange(lineStart + level + 1, end + level + 1);
+    }
+  });
 }
 function addEventListenersToStyleTextButtons() {
   const descriptionInput = document.querySelector(".description");
