@@ -460,7 +460,7 @@ function addEventListenersToStyleTextButtons() {
     emailToSelectedTextFromInput(descriptionInput);
   });
   // Add event listeners to all header buttons
-  for (let i = 2; i <= 6; i++) {
+  for (let i = 3; i <= 5; i++) {
     const headerButton = document.querySelector(`.header${i}`);
     headerButton.addEventListener("click", () => {
       headerSelectedTextFromInput(descriptionInput, i);
