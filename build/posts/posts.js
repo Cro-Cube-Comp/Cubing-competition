@@ -396,7 +396,6 @@ function emailToSelectedTextFromInput(input = undefined, email = "email") {
   // Calculate the new selection range for the email part
   const mailStart = start + 1 + selectedWord.length + 1 + 1 + "mailto:".length;
   const mailEnd = mailStart + email.length;
-  console.log("mailStart:", mailStart, "mailEnd:", mailEnd);
   // Set the new selection range
   input.focus();
   input.setSelectionRange(mailStart, mailEnd);
@@ -429,10 +428,6 @@ function headerSelectedTextFromInput(input = undefined, level = 1) {
     }
 
     if (lineStart <= start && lineEnd >= end) {
-      console.log(
-        "Selecting",
-        input.value.substring(lineStart + level + 1, end + level + 1)
-      );
       // Wait for the next animation frame to select the text
       requestAnimationFrame(() => {
         input.focus();
