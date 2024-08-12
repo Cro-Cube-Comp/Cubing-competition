@@ -5,6 +5,7 @@
 body {
   /*background-color: var(--background-color);*/
   background: var(--background);
+  background-attachment: fixed;
   color: var(--text-color);
 }
 .form {

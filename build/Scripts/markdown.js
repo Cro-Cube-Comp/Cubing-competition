@@ -36,6 +36,17 @@ function headerMarkdown(content) {
     return match;
   });
 }
+function paragraphMarkdown(content) {
+  // Regular expression to match blocks of text separated by empty lines
+  return content.replace(
+    /(^|\n)([^\n]+(?:\n[^\n]+)*)(?=\n|$)/g,
+    function (match, p1, p2) {
+      // p1 is the preceding newline or start of the string
+      // p2 is the block of text
+      return `<p>${p2.trim()}</p>`;
+    }
+  );
+}
 
 export function markdownToHtml(markdown) {
   const boldedContent = boldedMarkdown(markdown);
@@ -43,5 +54,6 @@ export function markdownToHtml(markdown) {
   const underlinedContent = underlinedMarkdown(italicizedContent);
   const hyperlinkedContent = hyperlinkedMarkdown(underlinedContent);
   const headerContent = headerMarkdown(hyperlinkedContent);
-  return headerContent;
+  const paragraphContent = paragraphMarkdown(headerContent);
+  return paragraphContent;
 }

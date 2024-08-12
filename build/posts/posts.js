@@ -470,12 +470,62 @@ function addEventListenersToStyleTextButtons() {
     console.clear();
     requestAnimationFrame(() => {
       console.log(markdownToHtml(descriptionInput.value));
+      document.querySelector(".preview").innerHTML = "";
+      document
+        .querySelector(".preview")
+        .appendChild(
+          createCardElement(
+            titleInput.value,
+            markdownToHtml(descriptionInput.value),
+            localStorage.getItem("username")
+          )
+        );
     });
   }
   logHtml();
   descriptionInput.addEventListener("keyup", logHtml);
 }
-
+function createCardElement(
+  title = undefined,
+  description = undefined,
+  authorUsername = undefined
+) {
+  if (!title || !description) {
+    throw new Error("Title and description are required.");
+  }
+  const cardElement = document.createElement("div");
+  cardElement.classList.add("card");
+  const cardInsideContainer = document.createElement("div");
+  cardInsideContainer.classList.add("card-inside-container");
+  cardElement.appendChild(cardInsideContainer);
+  const postTitleContainer = document.createElement("div");
+  postTitleContainer.classList.add("post-title-container");
+  const postTitle = document.createElement("h2");
+  postTitle.classList.add("post-title");
+  postTitle.textContent = title;
+  postTitleContainer.appendChild(postTitle);
+  cardInsideContainer.appendChild(postTitleContainer);
+  const postDescriptionContainer = document.createElement("div");
+  postDescriptionContainer.classList.add("post-description-container");
+  const postDescription = document.createElement("p");
+  postDescription.classList.add("post-description");
+  postDescription.innerHTML = description;
+  postDescriptionContainer.appendChild(postDescription);
+  cardInsideContainer.appendChild(postDescriptionContainer);
+  if (authorUsername) {
+    const postAuthorContainer = document.createElement("div");
+    postAuthorContainer.classList.add("post-author-container");
+    const postAuthorP = document.createElement("p");
+    postAuthorP.classList.add("post-author-p");
+    const postAuthor = document.createElement("span");
+    postAuthor.classList.add("post-author");
+    postAuthor.textContent = `Objavio ${authorUsername}`;
+    postAuthorP.appendChild(postAuthor);
+    postAuthorContainer.appendChild(postAuthorP);
+    cardInsideContainer.appendChild(postAuthorContainer);
+  }
+  return cardElement;
+}
 async function main() {
   addEventListenersToStyleTextButtons();
   if (!loggedIn()) {
