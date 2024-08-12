@@ -388,13 +388,16 @@ function emailToSelectedTextFromInput(input = undefined, email = "email") {
   }
   const start = input.selectionStart;
   const end = input.selectionEnd;
+  const selectedWord = input.value.substring(start, end);
   const oldInputValue = input.value;
   const newInputValue = emailToText(oldInputValue, start, end, email);
   input.value = newInputValue;
 
-  const mailStart = start + 1 + oldInputValue.length + 1 + 1 + "mailto:".length; // Position after the opening bracket '[' + old input value + length of closing bracket ']' + length of '(' + length of 'mailto:'
+  // Calculate the new selection range for the email part
+  const mailStart = start + 1 + selectedWord.length + 1 + 1 + "mailto:".length;
   const mailEnd = mailStart + email.length;
-
+  console.log("mailStart:", mailStart, "mailEnd:", mailEnd);
+  // Set the new selection range
   input.focus();
   input.setSelectionRange(mailStart, mailEnd);
 }
@@ -420,7 +423,7 @@ function headerSelectedTextFromInput(input = undefined, level = 1) {
     }
     const lineStart = oldInputValue.indexOf(line);
     const lineEnd = lineStart + line.length;
-    
+
     if (lineStart <= start && lineEnd <= end) {
       console.log("Selecting line:", line);
       input.focus();
