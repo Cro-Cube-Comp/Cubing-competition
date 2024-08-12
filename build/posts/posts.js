@@ -413,21 +413,31 @@ function headerSelectedTextFromInput(input = undefined, level = 1) {
 
   // Select the line that was headered
   const lines = oldInputValue.split("\n");
-
+  let currentStart = 0;
   lines.forEach((line, index) => {
-    if (newInputValue.split("\n")[index][0] !== "#") {
-      // Line is not a header which means that header was removed, so select the text in that line
-      input.focus();
-      input.setSelectionRange(start - level - 1, end - level - 1);
+    const lineStart = currentStart;
+    const lineEnd = lineStart + line.length;
+    currentStart += line.length + 1;
+    if (!(lineStart <= start && lineEnd >= end)) {
       return;
     }
-    const lineStart = oldInputValue.indexOf(line);
-    const lineEnd = lineStart + line.length;
-
-    if (lineStart <= start && lineEnd <= end) {
-      console.log("Selecting line:", line);
+    if (newInputValue.split("\n")[index][0] !== "#") {
       input.focus();
-      input.setSelectionRange(lineStart + level + 1, end + level + 1);
+      input.setSelectionRange(start - level - 1, end - level - 1);
+
+      return;
+    }
+
+    if (lineStart <= start && lineEnd >= end) {
+      console.log(
+        "Selecting",
+        input.value.substring(lineStart + level + 1, end + level + 1)
+      );
+      // Wait for the next animation frame to select the text
+      requestAnimationFrame(() => {
+        input.focus();
+        input.setSelectionRange(lineStart + level + 1, end + level + 1);
+      });
     }
   });
 }

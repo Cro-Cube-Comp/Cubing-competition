@@ -44,7 +44,9 @@ function headerText(text, start = 0, end = text.length, level) {
     const lineStart = currentStart;
     const lineEnd = lineStart + line.length;
     currentStart += line.length + 1;
-
+    if (!(lineStart <= start && lineEnd >= end)) {
+      return line;
+    }
     if (line[0] === "#") {
       // Line is a header already
 
@@ -56,7 +58,7 @@ function headerText(text, start = 0, end = text.length, level) {
         // so remove hashtags from start
         return line.replace(/^#+\s*/, "");
       }
-      
+
       // Change the hashtags to the desired level
       return `${"#".repeat(level)} ${line.replace(/^#+\s*/, "")}`;
     }
