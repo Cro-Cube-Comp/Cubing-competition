@@ -49,7 +49,7 @@ function createCardElement(
     postAuthorP.classList.add("post-author-p");
     const postAuthor = document.createElement("span");
     postAuthor.classList.add("post-author");
-    postAuthor.textContent = authorUsername;
+    postAuthor.textContent = `Objavio ${authorUsername}`;
     postAuthorP.appendChild(postAuthor);
     postAuthorContainer.appendChild(postAuthorP);
     cardInsideContainer.appendChild(postAuthorContainer);
