@@ -14,6 +14,10 @@ function underlinedMarkdown(content) {
 function hyperlinkedMarkdown(content) {
   // Regular expression to find [text](url)
   return content.replace(/\[(.*?)\]\((.*?)\)/g, function (match, text, url) {
+    if (!text.trim()) {
+      // If the text is empty, return the original match without modification
+      return match;
+    }
     // Check if the URL is absolute and is HTTP protocol (starts with 'http://' or 'https://')
     if (url.startsWith("https://") || url.startsWith("http://")) {
       return `<a href="${url}" target="_blank" class="hyperlink-a">${text}</a>`;
