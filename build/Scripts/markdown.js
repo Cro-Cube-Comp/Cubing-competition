@@ -1,4 +1,12 @@
-// Example functions to convert markdown to HTML for posts
+function escapeCharacters(content) {
+  return content
+    .replace(/\\\*/g, "&#42;")
+    .replace(/\\\_/g, "&#95;")
+    .replace(/\\\-/g, "&#45;")
+    .replace(/\\\#/g, "&#35;")
+    .replace(/\\\[/g, "&#91;")
+    .replace(/\\\]/g, "&#93;");
+}
 function boldedMarkdown(content) {
   // Regular expression to find **text**
   return content.replace(/\*\*(.*?)\*\*/g, '<span class="bolded">$1</span>');
@@ -53,7 +61,8 @@ function paragraphMarkdown(content) {
 }
 
 export function markdownToHtml(markdown) {
-  const boldedContent = boldedMarkdown(markdown);
+  const escapedContent = escapeCharacters(markdown);
+  const boldedContent = boldedMarkdown(escapedContent);
   const italicizedContent = italicizedMarkdown(boldedContent);
   const underlinedContent = underlinedMarkdown(italicizedContent);
   const hyperlinkedContent = hyperlinkedMarkdown(underlinedContent);
