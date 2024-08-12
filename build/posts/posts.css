@@ -13,7 +13,7 @@ body {
   justify-items: center;
   align-items: center;
   padding-top: 5vh;
-  height: 70vh;
+  height: max(70vh, 100%);
   row-gap: 5vh;
 }
 .form > div {
