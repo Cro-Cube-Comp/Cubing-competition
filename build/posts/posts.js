@@ -525,10 +525,9 @@ function updatePreview() {
   if (!title || !description) {
     return;
   }
+  const card = createCardElement(title, description, authorUsername);
   previewElement.innerHTML = "";
-  previewElement.appendChild(
-    createCardElement(title, description, authorUsername || undefined)
-  );
+  previewElement.appendChild(card);
 }
 async function main() {
   addEventListenersToStyleTextButtons();
