@@ -24,7 +24,7 @@ const editPostTitleInput = editPostDialog.querySelector(".title");
 const editPostDescriptionInput = editPostDialog.querySelector(".description");
 postButton.addEventListener("click", () => {
   const title = titleInput.value;
-  const description = descriptionInput.value;
+  const description = markdownToHtml(descriptionInput.value);
   try {
     createPost(title, description);
   } catch (error) {
@@ -151,7 +151,7 @@ function createPostDescriptionDivElement(description) {
   const postDescriptionElement = document.createElement("p");
   postDescriptionDivElement.appendChild(postDescriptionElement);
   postDescriptionElement.classList.add("post-description");
-  postDescriptionElement.textContent = description;
+  postDescriptionElement.innerHTML = description;
   return postDescriptionDivElement;
 }
 function createPostTitleDivElement(title) {
@@ -442,32 +442,35 @@ function addEventListenersToStyleTextButtons() {
   const boldButton = document.querySelector(".bold-btn");
   boldButton.addEventListener("click", () => {
     boldSelectedTextFromInput(descriptionInput);
+    waitForPreview();
   });
   const italicButton = document.querySelector(".italic-btn");
   italicButton.addEventListener("click", () => {
     italizeSelectedTextFromInput(descriptionInput);
+    waitForPreview();
   });
   const underlineButton = document.querySelector(".underline-btn");
   underlineButton.addEventListener("click", () => {
     underlineSelectedTextFromInput(descriptionInput);
+    waitForPreview();
   });
   const hyperlinkButton = document.querySelector(".hyperlink-btn");
   hyperlinkButton.addEventListener("click", () => {
     hyperlinkSelectedTextFromInput(descriptionInput);
+    waitForPreview();
   });
   const emailButton = document.querySelector(".mail-btn");
   emailButton.addEventListener("click", () => {
     emailToSelectedTextFromInput(descriptionInput);
+    waitForPreview();
   });
   // Add event listeners to all header buttons
   for (let i = 3; i <= 5; i++) {
     const headerButton = document.querySelector(`.header${i}`);
     headerButton.addEventListener("click", () => {
       headerSelectedTextFromInput(descriptionInput, i);
+      waitForPreview();
     });
-  }
-  function waitForPreview() {
-    requestAnimationFrame(updatePreview);
   }
   waitForPreview();
   titleInput.addEventListener("keyup", waitForPreview);
@@ -514,6 +517,9 @@ function createCardElement(
   }
   return cardElement;
 }
+function waitForPreview() {
+  requestAnimationFrame(updatePreview);
+}
 function updatePreview() {
   const previewElement = document.querySelector(".preview");
   if (!previewElement) {
@@ -522,15 +528,26 @@ function updatePreview() {
   const title = titleInput.value;
   const description = markdownToHtml(descriptionInput.value);
   const authorUsername = localStorage.getItem("username");
-  if (!title || !description) {
+  if (!title && !description) {
+    const card = createCardElement(
+      "Pretpregled",
+      "Pretpregled će se prikazati kada nešto napišete."
+    );
+    previewElement.innerHTML = "";
+    previewElement.appendChild(card);
     return;
   }
-  const card = createCardElement(title, description, authorUsername);
+  const card = createCardElement(
+    title || "Pretpregled",
+    description || "Pretpregled",
+    authorUsername
+  );
   previewElement.innerHTML = "";
   previewElement.appendChild(card);
 }
 async function main() {
   addEventListenersToStyleTextButtons();
+  waitForPreview();
   if (!loggedIn()) {
     window.location.href = "../Login";
   }
