@@ -466,24 +466,12 @@ function addEventListenersToStyleTextButtons() {
       headerSelectedTextFromInput(descriptionInput, i);
     });
   }
-  function logHtml() {
-    console.clear();
-    requestAnimationFrame(() => {
-      console.log(markdownToHtml(descriptionInput.value));
-      document.querySelector(".preview").innerHTML = "";
-      document
-        .querySelector(".preview")
-        .appendChild(
-          createCardElement(
-            titleInput.value,
-            markdownToHtml(descriptionInput.value),
-            localStorage.getItem("username")
-          )
-        );
-    });
+  function waitForPreview() {
+    requestAnimationFrame(updatePreview);
   }
-  logHtml();
-  descriptionInput.addEventListener("keyup", logHtml);
+  waitForPreview();
+  titleInput.addEventListener("keyup", waitForPreview);
+  descriptionInput.addEventListener("keyup", waitForPreview);
 }
 function createCardElement(
   title = undefined,
@@ -525,6 +513,22 @@ function createCardElement(
     cardInsideContainer.appendChild(postAuthorContainer);
   }
   return cardElement;
+}
+function updatePreview() {
+  const previewElement = document.querySelector(".preview");
+  if (!previewElement) {
+    return;
+  }
+  const title = titleInput.value;
+  const description = markdownToHtml(descriptionInput.value);
+  const authorUsername = localStorage.getItem("username");
+  if (!title || !description) {
+    return;
+  }
+  previewElement.innerHTML = "";
+  previewElement.appendChild(
+    createCardElement(title, description, authorUsername || undefined)
+  );
 }
 async function main() {
   addEventListenersToStyleTextButtons();
