@@ -160,4 +160,5 @@ if (username) {
   const root = document.querySelector(":root");
   root.style.setProperty("--logged-in", "pointer");
 }
+if (loggedIn()) generateLogOutCard();
 main();
