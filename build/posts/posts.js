@@ -14,6 +14,7 @@ import {
   emailToText,
   headerText,
 } from "../Scripts/text.js";
+import { markdownToHtml } from "../Scripts/markdown.js";
 const postButton = document.querySelector(".post-btn");
 const postButtonPrevHTML = postButton.innerHTML;
 const titleInput = document.querySelector(".title");
@@ -465,6 +466,14 @@ function addEventListenersToStyleTextButtons() {
       headerSelectedTextFromInput(descriptionInput, i);
     });
   }
+  function logHtml() {
+    console.clear();
+    requestAnimationFrame(() => {
+      console.log(markdownToHtml(descriptionInput.value));
+    });
+  }
+  logHtml();
+  descriptionInput.addEventListener("keyup", logHtml);
 }
 
 async function main() {
