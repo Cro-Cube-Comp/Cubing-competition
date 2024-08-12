@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="posts.css" />
     <link rel="stylesheet" href="header.css" />
     <link rel="stylesheet" href="../Styles/text-styles.css" />
+    <link rel="stylesheet" href="./preview.css" />
+    <link rel="stylesheet" href="../Styles/text-styles.css" />
     <!-- Main page -->
     <link rel="preload" href="../main.js" as="script" />
     <link rel="preload" href="../index.html" as="fetch" />
@@ -40,7 +42,12 @@
     </div>
     <div class="form">
       <div>
-        <input class="title infoinputs" type="text" placeholder="Naslov" />
+        <input
+          autofocus
+          class="title infoinputs"
+          type="text"
+          placeholder="Naslov"
+        />
       </div>
       <div>
         <textarea
@@ -64,9 +71,7 @@
         <button class="mail-btn style-text-btn">
           <img src="../Images/mail.svg" alt="Email" />
         </button>
-        <button class="header-btn header2 style-text-btn">
-          <img src="../Images/header2.svg" alt="Header" />
-        </button>
+        <!--Headers -->
         <button class="header-btn header3 style-text-btn">
           <img src="../Images/header3.svg" alt="Header" />
         </button>
@@ -76,10 +81,11 @@
         <button class="header-btn header5 style-text-btn">
           <img src="../Images/header5.svg" alt="Header" />
         </button>
-        <button class="header-btn header6 style-text-btn">
-          <img src="../Images/header6.svg" alt="Header" />
-        </button>
       </div>
+      <div>
+        <h3>Pretpregled</h3>
+      </div>
+      <div class="preview"></div>
       <div><button class="post-btn">Objavi</button></div>
     </div>
     <div class="posts"></div>

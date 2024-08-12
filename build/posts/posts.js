@@ -14,6 +14,7 @@ import {
   emailToText,
   headerText,
 } from "../Scripts/text.js";
+import { markdownToHtml } from "../Scripts/markdown.js";
 const postButton = document.querySelector(".post-btn");
 const postButtonPrevHTML = postButton.innerHTML;
 const titleInput = document.querySelector(".title");
@@ -23,7 +24,7 @@ const editPostTitleInput = editPostDialog.querySelector(".title");
 const editPostDescriptionInput = editPostDialog.querySelector(".description");
 postButton.addEventListener("click", () => {
   const title = titleInput.value;
-  const description = descriptionInput.value;
+  const description = markdownToHtml(descriptionInput.value);
   try {
     createPost(title, description);
   } catch (error) {
@@ -150,7 +151,7 @@ function createPostDescriptionDivElement(description) {
   const postDescriptionElement = document.createElement("p");
   postDescriptionDivElement.appendChild(postDescriptionElement);
   postDescriptionElement.classList.add("post-description");
-  postDescriptionElement.textContent = description;
+  postDescriptionElement.innerHTML = description;
   return postDescriptionDivElement;
 }
 function createPostTitleDivElement(title) {
@@ -323,7 +324,7 @@ function boldSelectedTextFromInput(input = undefined) {
   input.value = newInputValue;
 
   // Calculate the difference in length
-  const lengthDifference = newInputValue.length - oldInputValue.length - 7; // 7 is the length of </span>
+  const lengthDifference = newInputValue.length - oldInputValue.length - 2; // 2 is the length of ** (ending of bolded text)
 
   // Adjust the selection range
   input.focus();
@@ -340,7 +341,7 @@ function italizeSelectedTextFromInput(input = undefined) {
   input.value = newInputValue;
 
   // Calculate the difference in length
-  const lengthDifference = newInputValue.length - oldInputValue.length - 7; // 7 is the length of </span>
+  const lengthDifference = newInputValue.length - oldInputValue.length - 1; // 1 is the length of _
 
   // Adjust the selection range
   input.focus();
@@ -357,48 +358,48 @@ function underlineSelectedTextFromInput(input = undefined) {
   input.value = newInputValue;
 
   // Calculate the difference in length
-  const lengthDifference = newInputValue.length - oldInputValue.length - 7; // 7 is the length of </span>
+  const lengthDifference = newInputValue.length - oldInputValue.length - 1; // 1 is the length of -
 
   // Adjust the selection range
   input.focus();
   input.setSelectionRange(start + lengthDifference, end + lengthDifference);
 }
-function hyperlinkSelectedTextFromInput(
-  input = undefined,
-  url = undefined,
-  newTab = true
-) {
+function hyperlinkSelectedTextFromInput(input = undefined, url = "URL") {
   if (!input) {
     throw new Error("Param input missing.");
   }
   const start = input.selectionStart;
   const end = input.selectionEnd;
+  const selectedWord = input.value.substring(start, end);
   const oldInputValue = input.value;
-  const newInputValue = hyperlinkText(oldInputValue, start, end, url, newTab);
+  const newInputValue = hyperlinkText(oldInputValue, start, end, url);
   input.value = newInputValue;
 
-  // Calculate the difference in length
-  const lengthDifference = newInputValue.length - oldInputValue.length - 4; // 4 is the length of </a>
-
-  // Adjust the selection range
+  // Calculate the new selection range for the "URL" part
+  const linkStart = start + 1 + selectedWord.length + 1 + 1;
+  const linkEnd = linkStart + url.length;
+  // Set the new selection range
   input.focus();
-  input.setSelectionRange(start + lengthDifference, end + lengthDifference);
+  input.setSelectionRange(linkStart, linkEnd);
 }
+
 function emailToSelectedTextFromInput(input = undefined, email = "email") {
   if (!input) {
     throw new Error("Param input missing.");
   }
   const start = input.selectionStart;
   const end = input.selectionEnd;
+  const selectedWord = input.value.substring(start, end);
   const oldInputValue = input.value;
   const newInputValue = emailToText(oldInputValue, start, end, email);
   input.value = newInputValue;
 
-  // Calculate the difference in length
-  const lengthDifference = newInputValue.length - oldInputValue.length - 4; // 4 is the length of </a>
-
+  // Calculate the new selection range for the email part
+  const mailStart = start + 1 + selectedWord.length + 1 + 1 + "mailto:".length;
+  const mailEnd = mailStart + email.length;
+  // Set the new selection range
   input.focus();
-  input.setSelectionRange(start + lengthDifference, end + lengthDifference);
+  input.setSelectionRange(mailStart, mailEnd);
 }
 function headerSelectedTextFromInput(input = undefined, level = 1) {
   if (!input) {
@@ -410,46 +411,143 @@ function headerSelectedTextFromInput(input = undefined, level = 1) {
   const newInputValue = headerText(oldInputValue, start, end, level);
   input.value = newInputValue;
 
-  // Calculate the difference in length
-  const lengthDifference = newInputValue.length - oldInputValue.length - 5; // 5 is the length of </h1>, </h2>, etc.
+  // Select the line that was headered
+  const lines = oldInputValue.split("\n");
+  let currentStart = 0;
+  lines.forEach((line, index) => {
+    const lineStart = currentStart;
+    const lineEnd = lineStart + line.length;
+    currentStart += line.length + 1;
+    if (!(lineStart <= start && lineEnd >= end)) {
+      return;
+    }
+    if (newInputValue.split("\n")[index][0] !== "#") {
+      input.focus();
+      input.setSelectionRange(start - level - 1, end - level - 1);
 
-  // Adjust the selection range
-  input.focus();
-  input.setSelectionRange(start + lengthDifference, end + lengthDifference);
+      return;
+    }
+
+    if (lineStart <= start && lineEnd >= end) {
+      // Wait for the next animation frame to select the text
+      requestAnimationFrame(() => {
+        input.focus();
+        input.setSelectionRange(lineStart + level + 1, end + level + 1);
+      });
+    }
+  });
 }
 function addEventListenersToStyleTextButtons() {
   const descriptionInput = document.querySelector(".description");
   const boldButton = document.querySelector(".bold-btn");
   boldButton.addEventListener("click", () => {
     boldSelectedTextFromInput(descriptionInput);
+    waitForPreview();
   });
   const italicButton = document.querySelector(".italic-btn");
   italicButton.addEventListener("click", () => {
     italizeSelectedTextFromInput(descriptionInput);
+    waitForPreview();
   });
   const underlineButton = document.querySelector(".underline-btn");
   underlineButton.addEventListener("click", () => {
     underlineSelectedTextFromInput(descriptionInput);
+    waitForPreview();
   });
   const hyperlinkButton = document.querySelector(".hyperlink-btn");
   hyperlinkButton.addEventListener("click", () => {
     hyperlinkSelectedTextFromInput(descriptionInput);
+    waitForPreview();
   });
   const emailButton = document.querySelector(".mail-btn");
   emailButton.addEventListener("click", () => {
     emailToSelectedTextFromInput(descriptionInput);
+    waitForPreview();
   });
   // Add event listeners to all header buttons
-  for (let i = 2; i <= 6; i++) {
+  for (let i = 3; i <= 5; i++) {
     const headerButton = document.querySelector(`.header${i}`);
     headerButton.addEventListener("click", () => {
       headerSelectedTextFromInput(descriptionInput, i);
+      waitForPreview();
     });
   }
+  waitForPreview();
+  titleInput.addEventListener("keyup", waitForPreview);
+  descriptionInput.addEventListener("keyup", waitForPreview);
 }
-
+function createCardElement(
+  title = undefined,
+  description = undefined,
+  authorUsername = undefined
+) {
+  if (!title || !description) {
+    throw new Error("Title and description are required.");
+  }
+  const cardElement = document.createElement("div");
+  cardElement.classList.add("card");
+  const cardInsideContainer = document.createElement("div");
+  cardInsideContainer.classList.add("card-inside-container");
+  cardElement.appendChild(cardInsideContainer);
+  const postTitleContainer = document.createElement("div");
+  postTitleContainer.classList.add("post-title-container");
+  const postTitle = document.createElement("h2");
+  postTitle.classList.add("post-title");
+  postTitle.textContent = title;
+  postTitleContainer.appendChild(postTitle);
+  cardInsideContainer.appendChild(postTitleContainer);
+  const postDescriptionContainer = document.createElement("div");
+  postDescriptionContainer.classList.add("post-description-container");
+  const postDescription = document.createElement("p");
+  postDescription.classList.add("post-description");
+  postDescription.innerHTML = description;
+  postDescriptionContainer.appendChild(postDescription);
+  cardInsideContainer.appendChild(postDescriptionContainer);
+  if (authorUsername) {
+    const postAuthorContainer = document.createElement("div");
+    postAuthorContainer.classList.add("post-author-container");
+    const postAuthorP = document.createElement("p");
+    postAuthorP.classList.add("post-author-p");
+    const postAuthor = document.createElement("span");
+    postAuthor.classList.add("post-author");
+    postAuthor.textContent = `Objavio ${authorUsername}`;
+    postAuthorP.appendChild(postAuthor);
+    postAuthorContainer.appendChild(postAuthorP);
+    cardInsideContainer.appendChild(postAuthorContainer);
+  }
+  return cardElement;
+}
+function waitForPreview() {
+  requestAnimationFrame(updatePreview);
+}
+function updatePreview() {
+  const previewElement = document.querySelector(".preview");
+  if (!previewElement) {
+    return;
+  }
+  const title = titleInput.value;
+  const description = markdownToHtml(descriptionInput.value);
+  const authorUsername = localStorage.getItem("username");
+  if (!title && !description) {
+    const card = createCardElement(
+      "Pretpregled",
+      "Pretpregled će se prikazati kada nešto napišete."
+    );
+    previewElement.innerHTML = "";
+    previewElement.appendChild(card);
+    return;
+  }
+  const card = createCardElement(
+    title || "Pretpregled",
+    description || "Pretpregled",
+    authorUsername
+  );
+  previewElement.innerHTML = "";
+  previewElement.appendChild(card);
+}
 async function main() {
   addEventListenersToStyleTextButtons();
+  waitForPreview();
   if (!loggedIn()) {
     window.location.href = "../Login";
   }

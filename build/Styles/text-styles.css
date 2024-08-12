@@ -1,10 +1,10 @@
-.posts .bolded {
+span.bolded {
   font-weight: 700;
 }
-.posts .italicized {
+span.italicized {
   font-style: italic;
 }
-.posts .underlined {
+span.underlined {
   text-decoration: underline;
 }
 /* Select all anchors */
