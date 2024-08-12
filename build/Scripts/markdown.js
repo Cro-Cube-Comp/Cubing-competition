@@ -1,4 +1,13 @@
-function escapeCharacters(content) {
+export function escapeHtmlCharacters(content) {
+  // Remove vulnerability to XSS attacks by replacing special characters with HTML entities
+  return content
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+function escapeMarkdownCharacters(content) {
   return content
     .replace(/\\\*/g, "&#42;")
     .replace(/\\\_/g, "&#95;")
@@ -61,8 +70,9 @@ function paragraphMarkdown(content) {
 }
 
 export function markdownToHtml(markdown) {
-  const escapedContent = escapeCharacters(markdown);
-  const boldedContent = boldedMarkdown(escapedContent);
+  const escapedHtmlContent = escapeHtmlCharacters(markdown);
+  const escapedMarkdownContent = escapeMarkdownCharacters(escapedHtmlContent);
+  const boldedContent = boldedMarkdown(escapedMarkdownContent);
   const italicizedContent = italicizedMarkdown(boldedContent);
   const underlinedContent = underlinedMarkdown(italicizedContent);
   const hyperlinkedContent = hyperlinkedMarkdown(underlinedContent);
