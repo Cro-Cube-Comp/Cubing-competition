@@ -88,6 +88,7 @@ app.use("/competitions", require("./routes/competitions/lock"));
 app.use("/competitions", require("./routes/competitions/results"));
 // Profile
 app.use("/profile/picture", require("./routes/profile/picture/upload"));
+app.use("/profile/picture", require("./routes/profile/picture/get"));
 // Backup
 app.use("/backup", require("./routes/backup/get"));
 console.timeEnd("Routes");

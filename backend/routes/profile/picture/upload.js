@@ -4,7 +4,10 @@ const path = require("path");
 const sharp = require("sharp");
 const verifyToken = require("../../../middleware/verifyToken");
 const router = express.Router();
-
+const {
+  allowedPfpExtensions,
+  allowedMimeTypes,
+} = require("../../../config/allowedPfpExtensions");
 // Set storage engine
 const storage = multer.memoryStorage();
 
@@ -19,10 +22,10 @@ const upload = multer({
 
 // Check file type
 function checkFileType(file, cb) {
-  const filetypes = /jpeg|jpg|png|gif/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
-
+  const extname = allowedPfpExtensions.includes(
+    path.extname(file.originalname).toLowerCase()
+  );
+  const mimetype = allowedMimeTypes.includes(file.mimetype);
   if (mimetype && extname) {
     return cb(null, true);
   } else {

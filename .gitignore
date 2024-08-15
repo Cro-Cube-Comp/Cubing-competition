@@ -3,3 +3,4 @@ node_modules
 /backend/*.xlsx
 backups*
 competition_results.json
+/backend/public
