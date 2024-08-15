@@ -5,7 +5,8 @@ File for checking if everything is configured correctly
 
 import mongoose from "mongoose";
 import { config } from "dotenv";
-
+import fs from "fs";
+import path from "path";
 config();
 
 console.log(`Running ${import.meta.url}`);
@@ -28,7 +29,7 @@ const checkEnvVars = () => {
   optionalEnvVars.forEach((varName) => {
     if (!process.env[varName]) {
       console.log(
-        `Environment variable ${varName} is undefined, but is optional so continuing.`,
+        `Environment variable ${varName} is undefined, but is optional so continuing.`
       );
     }
   });
@@ -49,9 +50,10 @@ const checkDbConnection = async () => {
 // Main function to perform prechecks
 const precheck = async () => {
   console.time("Precheck");
+  checkIfPublicDirExists();
   if (!checkEnvVars()) {
     console.warn(
-      "Some environment variables are missing. Please check your .env file.",
+      "Some environment variables are missing. Please check your .env file."
     );
     process.exit(1); // Exit the process with failure
   }
@@ -60,6 +62,15 @@ const precheck = async () => {
   console.timeEnd("Precheck");
   process.exit(0); // Exit the process with success
 };
-
+function checkIfPublicDirExists() {
+  const publicDir = path.join(__dirname, "public");
+  if (!fs.existsSync(publicDir)) {
+    console.log("Public directory does not exist. Creating...");
+    fs.mkdirSync(publicDir);
+    fs.mkdirSync(path.join(publicDir, "profile-pictures"));
+    console.log("Public directory created successfully.");
+  }
+  return;
+}
 // Execute precheck
 precheck();
