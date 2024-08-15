@@ -8,6 +8,7 @@ const {
   allowedPfpExtensions,
   allowedMimeTypes,
 } = require("../../../config/allowedPfpExtensions");
+const fs = require("fs");
 // Set storage engine
 const storage = multer.memoryStorage();
 
@@ -35,6 +36,7 @@ function checkFileType(file, cb) {
 
 // Upload route
 router.post("/", verifyToken, (req, res) => {
+  const userId = req.userId;
   upload(req, res, async (error) => {
     if (!req.file) {
       return res.status(400).json({ message: "No profile picture uploaded" });
@@ -45,6 +47,21 @@ router.post("/", verifyToken, (req, res) => {
         .status(500)
         .json({ message: "Error uploading profile picture" });
     }
+    // Delete any that are other extension
+    allowedPfpExtensions.forEach((ext) => {
+      const currentPfpPath = path.join(
+        __dirname,
+        "..",
+        "..",
+        "..",
+        "public",
+        "profile-pictures",
+        `${userId}${ext}`
+      );
+      if (fs.existsSync(currentPfpPath)) {
+        fs.unlinkSync(currentPfpPath);
+      }
+    });
     await storeProfilePicture(req, res);
   });
 });
