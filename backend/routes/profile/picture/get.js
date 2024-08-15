@@ -26,7 +26,7 @@ async function sendProfilePicture(req, res, id) {
   }
 }
 
-router.get("/:id", cache(30), async (req, res) => {
+router.get("/:id", async (req, res) => {
   sendProfilePicture(req, res, req.params.id);
 });
 
