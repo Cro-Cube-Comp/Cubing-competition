@@ -34,7 +34,11 @@ Exports: `getUsername`, `getRole`, `getId`, `getToken`, `logOut`, `tokenValid`, 
 
 ### Get username
 
-Syntax: `getUsername()`
+Syntax: `getUsername(action)`
+
+Param `action`: boolean, default is false
+
+If `action` is `true` and username is not set, redirect to login page
 
 Returns: Todo
 
