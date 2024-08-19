@@ -8,7 +8,7 @@ Exports: `markdownToHtml` and `escapeHtmlCharacters`
 
 ### Markdown to html
 
-Syntax: `markdownToHtml(text)`
+Syntax: `markdownToHtml(markdown)`
 
 First parameter is a `string`
 
@@ -16,7 +16,7 @@ It returns markdown converted to html. It also escapes html charscters for xss p
 
 ### Escape html characters
 
-Syntax: `escapeHtmlCharacters(text)`
+Syntax: `escapeHtmlCharacters(content)`
 
 First parameter is a `string`
 
