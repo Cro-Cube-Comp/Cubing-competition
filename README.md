@@ -56,3 +56,5 @@ You can fork this github repo and github pages will host the website for free if
 - `advanced-dashboard` Admin only page where advanced users ( developers) or delegates of a competition can do important things, such as exporting results in excel or changing passwords for users
 
 - `/Scripts` Folder containing scripts ( `.js`) which have functions that are used in lots of pages
+
+- `/Styles` Folder containing styles ( `.css`) which have styles that are used in lots of pages
