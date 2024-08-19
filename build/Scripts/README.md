@@ -4,6 +4,8 @@ This is folder containing scripts ( `.js`) which contain files which are used in
 
 ## Markdown.js
 
+This is a script which contains functions related to markdown to html conversion
+
 Exports: `markdownToHtml` and `escapeHtmlCharacters`
 
 How to import: 
@@ -29,6 +31,8 @@ First parameter is a `string`
 It returns text where some html characters such as `<` and `>` are escaped which means that it protects against xss attacks. 
 
 ## Credentials.js
+
+This is a script which contains functions related to authentication and credentials.
 
 Exports: `getUsername`, `getRole`, `getId`, `getToken`, `logOut`, `tokenValid`, `loggedIn`, `isUser`, `isAdmin` and `addToken`,
 
