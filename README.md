@@ -2,6 +2,11 @@
 
 Easiest way to host competitions in solving Rubiks cubes
 
+## Task list
+
+- [ ] Example 1
+- [ ] Example 2
+
 ## Server
 
 Path: `./backend`
@@ -24,10 +29,6 @@ Program will give you instructions if some environment variables are missing
 ## Frontend 
 
 Path: `/build` ( should change to `/frontend` soon)
-
-### Task list
-
-- [] Example
 
 ### How to run
 
