@@ -50,6 +50,26 @@ If `action` is `true` and id is not defined, alert user to login and redirect to
 
 Returns: `null` if `action` is `true` OR `id` of the user if `action` is `false`
 
+### Get role
+
+Syntax: `getRole(action)`
+
+Param `action`: boolean, default is false
+
+If `action` is `true` and role is not defined, alert user to login and redirect to `../Login` after alert is confirmed
+
+Returns: `null` if `action` is `true` OR `role` of the user if `action` is `false`
+
+### Get token
+
+Syntax: `getToken(action)`
+
+Param `action`: boolean, default is false
+
+If `action` is `true` and token is not defined, alert user to login and redirect to `../Login` after alert is confirmed
+
+Returns: `null` if `action` is `true` OR `token` of the user if `action` is `false`
+
 ## Solvetime.js
 
 Todo
