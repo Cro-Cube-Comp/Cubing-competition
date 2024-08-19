@@ -64,4 +64,4 @@ You can fork this github repo and github pages will host the website for free if
 
 - `sitemap.xml` File containing information about all pages available to anyone. Made for search engines.
 
-- `404.html` Page available to anyone when site they wanted to visit does not exist. This is already configured if you fork this repository. Styles for that page are in `404.css` file
+- `404.html` Page available to anyone when site they wanted to visit does not exist. This is already configured if you fork this repository. It also gives redirect to home page and to server status page. Styles for that page are in `404.css` file
