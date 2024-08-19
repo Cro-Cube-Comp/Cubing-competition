@@ -30,7 +30,13 @@ It returns text where some html characters such as `<` and `>` are escaped which
 
 ## Credentials.js
 
-Todo
+Exports: `getUsername`, `getRole`, `getId`, `getToken`, `logOut`, `tokenValid`, `loggedIn`, `isUser`, `isAdmin` and `addToken`,
+
+### Get username
+
+Syntax: `getUsername()`
+
+Returns: Todo
 
 ## Solvetime.js
 
