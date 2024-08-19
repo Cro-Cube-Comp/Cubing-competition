@@ -60,3 +60,5 @@ You can fork this github repo and github pages will host the website for free if
 - `/Styles` Folder containing styles ( `.css`) which have styles that are used in lots of pages
 
 - `/Images` Folder containing all images that are used in all pages except favicon. 
+
+- `sitemap.xml` File containing information about all pages available to anyone. Made for search engines.
