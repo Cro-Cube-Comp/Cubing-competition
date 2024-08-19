@@ -47,4 +47,6 @@ You can fork this github repo and github pages will host the website for free if
 
 - `/posts` Admin only page where posts can be made, deleted and edited. Posts are display in `/` ( home page)
 
-- `dashboard` Admin only page where you can delete users and submit solves to users
+- `/dashboard` Admin only page where you can delete users and submit solves to users
+
+- `/competitions` Page where anyone can check results of all locked ( done) competitions 
