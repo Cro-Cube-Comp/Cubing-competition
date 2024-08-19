@@ -40,3 +40,5 @@ You can fork this github repo and github pages will host the website for free if
 - `/Login`: Page for logging in, it redirects to `/dashboard` if user is admin and `/` otherwise
 
 - `/Register` Admin only page where admins create new users
+
+- `/Scramble` Page where anyone can make Rubiks cube scrambles. It uses [scramble-display](https://github.com/cubing/scramble-display) element to display it
