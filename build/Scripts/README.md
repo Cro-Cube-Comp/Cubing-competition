@@ -62,6 +62,8 @@ Returns: `null` if `action` is `true` OR `role` of the user if `action` is `fals
 
 ### Get token
 
+[Learn about JWT tokens](https://jwt.io/introduction)
+
 Syntax: `getToken(action)`
 
 Param `action`: boolean, default is false
