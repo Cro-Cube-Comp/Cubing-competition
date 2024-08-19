@@ -42,3 +42,5 @@ You can fork this github repo and github pages will host the website for free if
 - `/Register` Admin only page where admins create new users
 
 - `/Scramble` Page where anyone can make Rubiks cube scrambles. It uses [scramble-display](https://github.com/cubing/scramble-display) element to display it
+
+- `/rules` Page where anyone can check the rules of competitions
