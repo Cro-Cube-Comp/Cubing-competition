@@ -38,9 +38,17 @@ Syntax: `getUsername(action)`
 
 Param `action`: boolean, default is false
 
-If `action` is `true` and username is not set, redirect to login page
+If `action` is `true` and username is not defined, alert user to login and redirect to `../Login` after alert is confirmed
 
-Returns: Todo
+Returns: `null` if `action` is `true` OR `username` of the user if `action` is `false`
+
+### Get Id
+
+Syntax: `getId()`
+
+If `action` is `true` and id is not defined, alert user to login and redirect to `../Login` after alert is confirmed
+
+Returns: `null` if `action` is `true` OR `id` of the user if `action` is `false`
 
 ## Solvetime.js
 
