@@ -6,6 +6,8 @@ This is folder containing scripts ( `.js`) which contain files which are used in
 
 Exports: `markdownToHtml` and `escapeHtmlCharacters`
 
+How to import: `import { markdownToHtml, escapeHtmlCharacters } from "relative path to markdown.js" `
+
 ### Markdown to html
 
 Syntax: `markdownToHtml(markdown)`
