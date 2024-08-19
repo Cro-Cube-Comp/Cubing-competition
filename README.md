@@ -62,3 +62,5 @@ You can fork this github repo and github pages will host the website for free if
 - `/Images` Folder containing all images that are used in all pages except favicon. 
 
 - `sitemap.xml` File containing information about all pages available to anyone. Made for search engines.
+
+- `404.html` Page available to anyone when site they wanted to visit does not exist. This is already configured if you fork this repository. Styles for that page are in `404.css` file
