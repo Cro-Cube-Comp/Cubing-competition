@@ -58,3 +58,5 @@ You can fork this github repo and github pages will host the website for free if
 - `/Scripts` Folder containing scripts ( `.js`) which have functions that are used in lots of pages
 
 - `/Styles` Folder containing styles ( `.css`) which have styles that are used in lots of pages
+
+- `/Images` Folder containing all images that are used in all pages except favicon. 
