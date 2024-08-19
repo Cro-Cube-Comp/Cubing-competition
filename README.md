@@ -52,3 +52,5 @@ You can fork this github repo and github pages will host the website for free if
 - `/competitions` Page where anyone can check results of all locked ( done) competitions 
 
 - `/competitions-dashboard` Admin only page where you can create, delete, edit and lock ( mark them as done) competitions. They show in `/competitions` when they are locked
+
+- `advanced-dashboard` Admin only page where advanced users ( developers) or delegate of a competition can do important things, such as exporting results in excel or changing passwords for users
