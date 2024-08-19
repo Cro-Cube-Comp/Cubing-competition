@@ -38,3 +38,5 @@ You can fork this github repo and github pages will host the website for free if
 ### Routes
 
 - `/Login`: Page for logging in, it redirects to `/dashboard` if user is admin and `/` otherwise
+
+- `/Register` Admin only page where admins create new users
