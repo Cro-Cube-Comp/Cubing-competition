@@ -27,7 +27,7 @@ Path: `/build` ( should change to `/frontend` soon)
 
 ### Task list
 
-[] - Example
+- [] Example
 
 ### How to run
 
