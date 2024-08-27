@@ -1,8 +1,12 @@
 body {
+  margin: 0;
+  padding: 0;
   background: var(--background);
   background-attachment: fixed;
+  color: white;
 }
 .profile-container {
+  margin-top: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
