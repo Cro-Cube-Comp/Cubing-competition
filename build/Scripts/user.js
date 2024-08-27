@@ -1,4 +1,4 @@
-import { url } from "./variables";
+import { url } from "./variables.js";
 /**
  * Get all users (no authentication)
  * @returns {Promise<{parsed: any, success: boolean, response: Response, status: number}>}
