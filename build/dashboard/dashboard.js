@@ -309,7 +309,7 @@ async function getUsers() {
     headers: addToken({}),
   };
   try {
-    const data = await fetch(`${url}/users/all`, body);
+    const data = await fetch(`${url}/users`, body);
     const result = await data.json();
     return result;
   } catch (error) {
@@ -366,7 +366,7 @@ function displayUsers(users) {
   allUsersElement.classList.add("all-users");
   users.forEach((user, index) => {
     const username = user.username;
-    const id = user.id;
+    const id = user._id;
     const role = user.role;
     const group = user.group;
     const userElement = document.createElement("div");

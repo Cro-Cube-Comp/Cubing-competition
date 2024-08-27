@@ -1,9 +1,7 @@
 const express = require("express");
-const verifyToken = require("../../middleware/verifyToken");
 const { getUserById } = require("../../functions/getUserById");
-const isAdmin = require("../../utils/helpers/isAdmin");
 const router = express.Router();
-router.get("/:userId", verifyToken, isAdmin, async (req, res) => {
+router.get("/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
     if (!userId) {
@@ -12,7 +10,7 @@ router.get("/:userId", verifyToken, isAdmin, async (req, res) => {
       });
     }
     // Fetch all users from the database
-    const user = await getUserById(userId, "username role competitions");
+    const user = await getUserById(userId, "username competitions");
 
     // Send the response array
     res.status(200).json(user);
