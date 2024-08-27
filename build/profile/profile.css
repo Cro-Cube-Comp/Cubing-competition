@@ -1,8 +1,18 @@
+body {
+  background: var(--background);
+  background-attachment: fixed;
+}
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 .profile-picture {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  outline: 2px solid black;
+  outline: 2px solid rgb(240, 240, 240);
   cursor: pointer;
 }
 .profile-picture:hover {
