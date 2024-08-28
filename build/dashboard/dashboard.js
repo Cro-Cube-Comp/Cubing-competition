@@ -12,7 +12,11 @@ import {
   addToken,
 } from "../Scripts/credentials.js";
 import { url, loadingHTML } from "../Scripts/variables.js";
-import { getUsers, deleteUserById } from "../Scripts/user.js";
+import {
+  getUsers,
+  deleteUserById,
+  assignUserToAdmin,
+} from "../Scripts/user.js";
 const usersDiv = document.querySelector(".users");
 async function setWinner(winnerId, winnerButton) {
   const originalHTML = winnerButton.innerHTML;
@@ -305,25 +309,6 @@ async function addSolve(userId, roundIndex, solves, event, competitionId) {
   return response.status;
 }
 
-async function assignAdmin(id, username) {
-  const body = {
-    method: "POST",
-    headers: addToken({}),
-  };
-  try {
-    const data = await fetch(`${url}/admin/assign/${id}`, body);
-    const response = await data.json();
-    alert(response.message);
-    if (data.ok) {
-      main();
-      return;
-    }
-  } catch (error) {
-    console.error(error);
-    alert(error);
-  }
-}
-
 function displayUsers(users) {
   const allUsersElement = document.createElement("div");
   allUsersElement.classList.add("all-users");
@@ -364,8 +349,8 @@ function displayUsers(users) {
     // Delete user button
     const deleteUserButton = document.createElement("button");
     deleteUserButton.textContent = "Izbriši";
-    deleteUserButton.addEventListener("click", () => {
-      const userDeletion = deleteUserById(id);
+    deleteUserButton.addEventListener("click", async () => {
+      const userDeletion = await deleteUserById(id);
       if (userDeletion.success) {
         return main();
       }
@@ -375,9 +360,15 @@ function displayUsers(users) {
     // Assign admin button
     const assignAdminButton = document.createElement("button");
     assignAdminButton.textContent = "Postavi za admina";
-    assignAdminButton.addEventListener("click", () =>
-      assignAdmin(id, username)
-    );
+    assignAdminButton.addEventListener("click", async () => {
+      const adminAssignment = await assignUserToAdmin(id);
+      if (adminAssignment.success) {
+        return main();
+      }
+      alert(
+        adminAssignment.message || "Greška prilikom dodijeljenja korisniku."
+      );
+    });
     userElement.appendChild(assignAdminButton);
     // Show competition button
     const showCompetitionButton = document.createElement("button");

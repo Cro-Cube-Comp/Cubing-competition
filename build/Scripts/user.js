@@ -1,5 +1,5 @@
 import { url } from "./variables.js";
-import { getId } from "./credentials.js";
+import { getId, addToken } from "./credentials.js";
 /**
  * Get all users (no authentication)
  * @returns {Promise<{parsed: any, success: boolean, response: Response, status: number}>}
@@ -73,6 +73,29 @@ export async function deleteUserById(id) {
     };
   } catch (error) {
     console.error(`Error deleting user: \n${error}`);
+    return {
+      success: false,
+    };
+  }
+}
+
+export async function assignUserToAdmin(id) {
+  const body = {
+    method: "POST",
+    headers: addToken({}),
+  };
+  try {
+    const response = await fetch(`${url}/admin/assign/${id}`, body);
+    const data = await response.json();
+    if (response.ok) {
+      return { success: true, data };
+    }
+    return {
+      success: false,
+      message: data.message,
+    };
+  } catch (error) {
+    console.error(error);
     return {
       success: false,
     };
