@@ -78,7 +78,11 @@ export async function deleteUserById(id) {
     };
   }
 }
-
+/**
+ * Assign admin role to a user
+ * @param {string} id - Id of user to which the admin role will be assigned
+ * @returns {Promise<{success: boolean, data?: any, response?: Response, message?: string}>} Returns a success message if the admin role was assigned successfullys
+ */
 export async function assignUserToAdmin(id) {
   const body = {
     method: "POST",
