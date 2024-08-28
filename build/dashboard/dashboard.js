@@ -12,6 +12,7 @@ import {
   addToken,
 } from "../Scripts/credentials.js";
 import { url, loadingHTML } from "../Scripts/variables.js";
+import { getUsers, deleteUserById } from "../Scripts/user.js";
 const usersDiv = document.querySelector(".users");
 async function setWinner(winnerId, winnerButton) {
   const originalHTML = winnerButton.innerHTML;
@@ -303,44 +304,6 @@ async function addSolve(userId, roundIndex, solves, event, competitionId) {
   alert("Greška prilikom dodavanja slaganja. Pokušaj ponovno.");
   return response.status;
 }
-async function getUsers() {
-  const body = {
-    method: "GET",
-    headers: addToken({}),
-  };
-  try {
-    const data = await fetch(`${url}/users`, body);
-    const result = await data.json();
-    return result;
-  } catch (error) {
-    console.error(error);
-    alert("Greška prilikom povezivanja.");
-  }
-}
-
-async function deleteUser(id) {
-  if (id === getId()) {
-    alert("Nedopušteno brisanje vlastitog računa.");
-    return;
-  }
-  try {
-    const body = {
-      method: "DELETE",
-      headers: addToken({}),
-    };
-    const data = await fetch(`${url}/users/${id}`, body);
-    const result = await data.json();
-    if (data.ok) {
-      main();
-      return;
-    }
-    console.error("Greška prilikom brisanja korisnika.\n", result.message);
-    alert("Greška prilikom brisanja korisnika.");
-  } catch (error) {
-    console.error(error);
-    alert(error);
-  }
-}
 
 async function assignAdmin(id, username) {
   const body = {
@@ -401,7 +364,13 @@ function displayUsers(users) {
     // Delete user button
     const deleteUserButton = document.createElement("button");
     deleteUserButton.textContent = "Izbriši";
-    deleteUserButton.addEventListener("click", () => deleteUser(id));
+    deleteUserButton.addEventListener("click", () => {
+      const userDeletion = deleteUserById(id);
+      if (userDeletion.success) {
+        return main();
+      }
+      alert(userDeletion.message || "Greška prilikom brisanja korisnika.");
+    });
     userElement.appendChild(deleteUserButton);
     // Assign admin button
     const assignAdminButton = document.createElement("button");
@@ -482,7 +451,11 @@ async function main() {
   getToken();
 
   const users = await getUsers();
-  displayUsers(users);
+  if (users.success) {
+    displayUsers(users.parsed);
+    return;
+  }
+  alert("Greška prilikom dohvaćanja korisnika.");
 }
 main();
 

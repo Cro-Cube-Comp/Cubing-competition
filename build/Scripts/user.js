@@ -1,4 +1,5 @@
 import { url } from "./variables.js";
+import { getId } from "./credentials.js";
 /**
  * Get all users (no authentication)
  * @returns {Promise<{parsed: any, success: boolean, response: Response, status: number}>}
@@ -40,5 +41,40 @@ export async function getUserByUsername(username) {
     return user ? user : null;
   } catch (error) {
     return null;
+  }
+}
+/**
+ * Delete a user by id
+ * @param {string} id - Id of user to delete
+ * @returns {Promise<{success: boolean, data?: any, response?: Response, message?: string}>}
+ */
+export async function deleteUserById(id) {
+  if (id === getId()) {
+    return {
+      success: false,
+      message: "Nedopušteno brisanje vlastitog računa.",
+    };
+  }
+  try {
+    const body = {
+      method: "DELETE",
+      headers: addToken({}),
+    };
+    const response = await fetch(`${url}/users/${id}`, body);
+    const data = await response.json();
+    if (data.ok) {
+      return { success: true, data, response };
+    }
+    return {
+      success: false,
+      data,
+      response,
+      message: "Greška prilikom brisanja korisnika.",
+    };
+  } catch (error) {
+    console.error(`Error deleting user: \n${error}`);
+    return {
+      success: false,
+    };
   }
 }
