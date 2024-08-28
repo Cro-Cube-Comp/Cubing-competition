@@ -1,4 +1,5 @@
 import { loadingHTML, url } from "../Scripts/variables.js";
+import { getUserInfoById } from "../Scripts/user.js";
 const profileId = getParams(window.location.href).get("id");
 const profilePictureElement = document.querySelector(".profile-picture");
 /**
@@ -26,6 +27,9 @@ async function getUserProfilePicture(id) {
     const profilePicture = await response.blob();
     return profilePicture;
   }
+  if (await response.json().userNotFound) {
+    return null;
+  }
   console.error(response);
   throw new Error("Failed to get profile picture for user.");
 }
@@ -35,6 +39,9 @@ async function getUserProfilePicture(id) {
  */
 function displayProfilePicture(profilePicture) {
   try {
+    if (!profilePicture) {
+      return;
+    }
     const profilePictureUrl = URL.createObjectURL(profilePicture);
     profilePictureElement.src = profilePictureUrl;
   } catch (error) {
@@ -45,6 +52,8 @@ async function main() {
   try {
     const profilePicture = await getUserProfilePicture(profileId);
     displayProfilePicture(profilePicture);
+    const userInfo = await getUserInfoById(profileId);
+    console.log(userInfo);
   } catch (error) {
     console.error(error);
     alert(error);

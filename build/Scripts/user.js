@@ -135,3 +135,18 @@ export async function registerUser(username, password, group) {
     };
   }
 }
+/**
+ * Get user info by id
+ * @param {string} id - Id of the user to be fetched
+ * @returns {Promise<{parsed: any, success: boolean, response: Response, status: number}>} Returns some values of user object
+ */
+export async function getUserInfoById(id) {
+  const userUrl = `${url}/users/${id}`;
+  const response = await fetch(userUrl);
+  return {
+    parsed: await response.json(),
+    success: response.ok,
+    response,
+    status: response.status,
+  };
+}
