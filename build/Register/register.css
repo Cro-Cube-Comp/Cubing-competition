@@ -18,6 +18,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 90vh;
+  flex-direction: column;
 }
 #loginForm {
   display: grid;
@@ -74,9 +75,13 @@ button:hover {
 button:focus {
   outline: none;
 }
+.message-container {
+  width: 300px;
+}
 #message {
   margin-top: 10px;
   text-align: center;
+  text-wrap: wrap;
   color: rgb(255, 255, 255);
   font-weight: 700;
 }

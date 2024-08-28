@@ -6,6 +6,7 @@ import {
   addToken,
   tokenValid,
 } from "../Scripts/credentials.js";
+import { registerUser } from "../Scripts/user.js";
 const group1Checkbox = document.querySelector(".group-1");
 const submitBtn = document.querySelector(".submit-btn");
 const messageElement = document.getElementById("message");
@@ -38,9 +39,13 @@ document
     const username = usernameElement.value;
     const password = passwordElement.value;
     const group = isChecked(group1Checkbox) ? 1 : 2;
-    if (credentialsCheck(username, password, group)) {
+    const credentialsCheckResult = credentialsCheck(username, password, group);
+    messageElement.textContent = "";
+    if (credentialsCheckResult) {
+      messageElement.textContent = credentialsCheckResult.message;
       return;
     }
+
     // Disable the button to prevent multiple clicks
     submitBtn.disabled = true;
 
@@ -48,27 +53,25 @@ document
 
     getToken(true); // Make sure that token exists, if not bring to login page
     try {
-      const response = await fetch(`${url}/register`, {
-        method: "POST",
-        headers: addToken({
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify({ username, password, group }),
-      });
+      const userRegistration = await registerUser(username, password, group);
+      if (!userRegistration.success) {
+        throw "Greška prilikom registracije korisnika.";
+      }
+      // Success message
+      messageElement.textContent = `Korisnik ${
+        userRegistration.user.username
+      } je uspešno registriran sa lozinkom ${maskMiddle(
+        userRegistration.user.password
+      )}.`;
+    } catch (error) {
+      messageElement.textContent =
+        error.message || error || "Greška prilikom registracije korisnika.";
+    } finally {
       submitBtn.disabled = false; // Re-enable the button
-      submitBtn.innerHTML = "Registriraj";
-      const data = await response.json();
-      alert(data.message);
-      messageElement.innerText = `${data.message}
-Username: ${data.registeredUser.username}
-Password: ${maskMiddle(data.registeredUser.password)}`;
+      submitBtn.textContent = "Registriraj";
       clearInput(usernameElement);
       clearInput(passwordElement);
-    } catch (error) {
-      console.error("Error:\n", error);
     }
-    submitBtn.disabled = false; // Re-enable the button
-    submitBtn.innerHTML = "Registriraj";
   });
 
 function isChecked(checkbox) {
@@ -76,26 +79,21 @@ function isChecked(checkbox) {
 }
 function credentialsCheck(username, password, group) {
   if (!username || !password) {
-    alert("Korisničko ime i lozinka su obavezni.");
-    return true;
+    return { message: "Korisničko ime i lozinka su obavezni." };
   }
   if (username.length <= 4) {
-    alert("Korisničko ime mora biti duže od 4 znaka.");
-    return true;
+    return { message: "Korisničko ime mora biti duže od 4 znaka." };
   }
   if (password.length <= 7) {
-    alert("Lozinka mora biti duža od 7 znakova.");
-    return true;
+    return { message: "Lozinka mora biti duža od 7 znaka." };
   }
   if (username === password) {
-    alert("Korisničko ime i lozinka ne mogu biti isti.");
-    return true;
+    return { message: "Korisničko ime i lozinka ne smiju biti isti." };
   }
   if (group !== 1 && group !== 2) {
-    alert("Grupa mora biti 1 ili 2.");
-    return true;
+    return { message: "Grupa mora biti 1. ili 2." };
   }
-  return false;
+  return null;
 }
 tokenValid(true);
 if (isUser(getRole(true))) {

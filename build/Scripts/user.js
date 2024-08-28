@@ -105,3 +105,32 @@ export async function assignUserToAdmin(id) {
     };
   }
 }
+/**
+ *
+ * @param {string} username - Username of the user to be registered
+ * @param {string} password - Password of the user to be registered
+ * @param {1 | 2} group - Group of the user to be registered
+ * @returns {Promise<>}
+ */
+export async function registerUser(username, password, group) {
+  try {
+    const response = await fetch(`${url}/register`, {
+      method: "POST",
+      headers: addToken({
+        "Content-Type": "application/json",
+      }),
+      body: JSON.stringify({ username, password, group }),
+    });
+    const data = await response.json();
+    return {
+      success: response.ok,
+      user: data.registeredUser,
+      message: data.message,
+    };
+  } catch (error) {
+    console.error("Error:\n", error);
+    return {
+      success: false,
+    };
+  }
+}
