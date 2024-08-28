@@ -1,0 +1,28 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--background);
+  background-attachment: fixed;
+  color: white;
+}
+.loading-modal {
+  position: fixed; /* Ensures the modal stays in place when scrolling */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.profile-picture {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  outline: 2px solid rgb(240, 240, 240);
+  cursor: pointer;
+}
+.profile-picture:hover {
+  border-radius: 2px;
+}

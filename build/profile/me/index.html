@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Objavi profilnu sliku</title>
+
+    <link
+      rel="preload"
+      href="../../Styles/font.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript><link rel="stylesheet" href="../../Styles/font.css" /></noscript>
+    <link rel="stylesheet" href="../../Styles/variables.css" />
+    <link rel="stylesheet" href="upload.css" />
+    <link rel="stylesheet" href="../../Styles/loading.css" />
+    <link rel="stylesheet" href="header.css" />
+
+    <link
+      rel="shortcut icon"
+      href="../../favicon50x50.ico"
+      type="image/x-icon"
+    />
+  </head>
+  <body>
+    <div class="header-container">
+      <div class="header">
+        <div class="logo-title-container">
+          <div class="logo-container">
+            <a class="logo-anchor" href="../">
+              <img alt="logo" class="logo" src="../../favicon.ico"
+            /></a>
+          </div>
+          <div class="title-container">
+            <h1 class="title">Profil</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <img
+      src="../../Images/default-pfp.webp"
+      class="profile-picture"
+      alt="Profilna slika"
+    />
+    <input
+      accept="image/jpeg, image/png, image/gif"
+      type="file"
+      class="pfp-fileinput"
+      style="display: none"
+    />
+    <script type="module" src="./upload.js"></script>
+  </body>
+</html>

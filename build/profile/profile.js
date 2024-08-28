@@ -59,6 +59,9 @@ function displayUserInfo(userInfo) {
 }
 async function main() {
   createLoadingModal();
+  if (!profileId) {
+    window.location.href = "./me";
+  }
   try {
     const profilePicture = await getUserProfilePicture(profileId);
     displayProfilePicture(profilePicture);
