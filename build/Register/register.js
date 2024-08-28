@@ -12,6 +12,7 @@ const submitBtn = document.querySelector(".submit-btn");
 const messageElement = document.getElementById("message");
 const usernameElement = document.getElementById("username");
 const passwordElement = document.getElementById("password");
+const registerForm = document.getElementById("registerForm");
 function clearInput(input) {
   input.value = "";
 }
@@ -32,47 +33,45 @@ function maskMiddle(str) {
   return firstPart + "*".repeat(middlePartLength) + lastPart;
 }
 
-document
-  .getElementById("registerForm")
-  .addEventListener("submit", async function (event) {
-    event.preventDefault();
-    const username = usernameElement.value;
-    const password = passwordElement.value;
-    const group = isChecked(group1Checkbox) ? 1 : 2;
-    const credentialsCheckResult = credentialsCheck(username, password, group);
-    messageElement.textContent = "";
-    if (credentialsCheckResult) {
-      messageElement.textContent = credentialsCheckResult.message;
-      return;
+registerForm.addEventListener("submit", async function (event) {
+  event.preventDefault();
+  const username = usernameElement.value;
+  const password = passwordElement.value;
+  const group = isChecked(group1Checkbox) ? 1 : 2;
+  const credentialsCheckResult = credentialsCheck(username, password, group);
+  messageElement.textContent = "";
+  if (credentialsCheckResult) {
+    messageElement.textContent = credentialsCheckResult.message;
+    return;
+  }
+
+  // Disable the button to prevent multiple clicks
+  submitBtn.disabled = true;
+
+  submitBtn.innerHTML = loadingHTML;
+
+  getToken(true); // Make sure that token exists, if not bring to login page
+  try {
+    const userRegistration = await registerUser(username, password, group);
+    if (!userRegistration.success) {
+      throw "Greška prilikom registracije korisnika.";
     }
-
-    // Disable the button to prevent multiple clicks
-    submitBtn.disabled = true;
-
-    submitBtn.innerHTML = loadingHTML;
-
-    getToken(true); // Make sure that token exists, if not bring to login page
-    try {
-      const userRegistration = await registerUser(username, password, group);
-      if (!userRegistration.success) {
-        throw "Greška prilikom registracije korisnika.";
-      }
-      // Success message
-      messageElement.textContent = `Korisnik ${
-        userRegistration.user.username
-      } je uspešno registriran sa lozinkom ${maskMiddle(
-        userRegistration.user.password
-      )}.`;
-    } catch (error) {
-      messageElement.textContent =
-        error.message || error || "Greška prilikom registracije korisnika.";
-    } finally {
-      submitBtn.disabled = false; // Re-enable the button
-      submitBtn.textContent = "Registriraj";
-      clearInput(usernameElement);
-      clearInput(passwordElement);
-    }
-  });
+    // Success message
+    messageElement.textContent = `Korisnik ${
+      userRegistration.user.username
+    } je uspešno registriran sa lozinkom ${maskMiddle(
+      userRegistration.user.password
+    )}.`;
+  } catch (error) {
+    messageElement.textContent =
+      error.message || error || "Greška prilikom registracije korisnika.";
+  } finally {
+    submitBtn.disabled = false; // Re-enable the button
+    submitBtn.textContent = "Registriraj";
+    clearInput(usernameElement);
+    clearInput(passwordElement);
+  }
+});
 
 function isChecked(checkbox) {
   return checkbox.checked;
