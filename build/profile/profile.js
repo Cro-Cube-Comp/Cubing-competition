@@ -2,6 +2,9 @@ import { loadingHTML, url } from "../Scripts/variables.js";
 import { getUserInfoById } from "../Scripts/user.js";
 const profileId = getParams(window.location.href).get("id");
 const profilePictureElement = document.querySelector(".profile-picture");
+const usernameElement = document.querySelector(".username");
+const groupElement = document.querySelector(".group");
+const roleElement = document.querySelector(".role");
 /**
  * Get parameters from URL
  * @param {string} url - URL to get params from
@@ -48,12 +51,18 @@ function displayProfilePicture(profilePicture) {
     throw new Error("Failed to display profile picture.");
   }
 }
+function displayUserInfo(userInfo) {
+  const { username, group, role } = userInfo.parsed;
+  usernameElement.textContent = username;
+  groupElement.textContent = `Grupa ${group}`;
+  roleElement.textContent = role;
+}
 async function main() {
   try {
     const profilePicture = await getUserProfilePicture(profileId);
     displayProfilePicture(profilePicture);
     const userInfo = await getUserInfoById(profileId);
-    console.log(userInfo);
+    displayUserInfo(userInfo);
   } catch (error) {
     console.error(error);
     alert(error);
