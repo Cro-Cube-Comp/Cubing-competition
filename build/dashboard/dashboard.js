@@ -12,6 +12,11 @@ import {
   addToken,
 } from "../Scripts/credentials.js";
 import { url, loadingHTML } from "../Scripts/variables.js";
+import {
+  getUsers,
+  deleteUserById,
+  assignUserToAdmin,
+} from "../Scripts/user.js";
 const usersDiv = document.querySelector(".users");
 async function setWinner(winnerId, winnerButton) {
   const originalHTML = winnerButton.innerHTML;
@@ -303,70 +308,13 @@ async function addSolve(userId, roundIndex, solves, event, competitionId) {
   alert("Greška prilikom dodavanja slaganja. Pokušaj ponovno.");
   return response.status;
 }
-async function getUsers() {
-  const body = {
-    method: "GET",
-    headers: addToken({}),
-  };
-  try {
-    const data = await fetch(`${url}/users/all`, body);
-    const result = await data.json();
-    return result;
-  } catch (error) {
-    console.error(error);
-    alert("Greška prilikom povezivanja.");
-  }
-}
-
-async function deleteUser(id) {
-  if (id === getId()) {
-    alert("Nedopušteno brisanje vlastitog računa.");
-    return;
-  }
-  try {
-    const body = {
-      method: "DELETE",
-      headers: addToken({}),
-    };
-    const data = await fetch(`${url}/users/${id}`, body);
-    const result = await data.json();
-    if (data.ok) {
-      main();
-      return;
-    }
-    console.error("Greška prilikom brisanja korisnika.\n", result.message);
-    alert("Greška prilikom brisanja korisnika.");
-  } catch (error) {
-    console.error(error);
-    alert(error);
-  }
-}
-
-async function assignAdmin(id, username) {
-  const body = {
-    method: "POST",
-    headers: addToken({}),
-  };
-  try {
-    const data = await fetch(`${url}/admin/assign/${id}`, body);
-    const response = await data.json();
-    alert(response.message);
-    if (data.ok) {
-      main();
-      return;
-    }
-  } catch (error) {
-    console.error(error);
-    alert(error);
-  }
-}
 
 function displayUsers(users) {
   const allUsersElement = document.createElement("div");
   allUsersElement.classList.add("all-users");
   users.forEach((user, index) => {
     const username = user.username;
-    const id = user.id;
+    const id = user._id;
     const role = user.role;
     const group = user.group;
     const userElement = document.createElement("div");
@@ -401,14 +349,26 @@ function displayUsers(users) {
     // Delete user button
     const deleteUserButton = document.createElement("button");
     deleteUserButton.textContent = "Izbriši";
-    deleteUserButton.addEventListener("click", () => deleteUser(id));
+    deleteUserButton.addEventListener("click", async () => {
+      const userDeletion = await deleteUserById(id);
+      if (userDeletion.success) {
+        return main();
+      }
+      alert(userDeletion.message || "Greška prilikom brisanja korisnika.");
+    });
     userElement.appendChild(deleteUserButton);
     // Assign admin button
     const assignAdminButton = document.createElement("button");
     assignAdminButton.textContent = "Postavi za admina";
-    assignAdminButton.addEventListener("click", () =>
-      assignAdmin(id, username)
-    );
+    assignAdminButton.addEventListener("click", async () => {
+      const adminAssignment = await assignUserToAdmin(id);
+      if (adminAssignment.success) {
+        return main();
+      }
+      alert(
+        adminAssignment.message || "Greška prilikom dodijeljenja korisniku."
+      );
+    });
     userElement.appendChild(assignAdminButton);
     // Show competition button
     const showCompetitionButton = document.createElement("button");
@@ -482,7 +442,11 @@ async function main() {
   getToken();
 
   const users = await getUsers();
-  displayUsers(users);
+  if (users.success) {
+    displayUsers(users.parsed);
+    return;
+  }
+  alert("Greška prilikom dohvaćanja korisnika.");
 }
 main();
 
