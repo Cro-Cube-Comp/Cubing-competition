@@ -58,6 +58,7 @@ function displayUserInfo(userInfo) {
   roleElement.textContent = role;
 }
 async function main() {
+  createLoadingModal();
   try {
     const profilePicture = await getUserProfilePicture(profileId);
     displayProfilePicture(profilePicture);
@@ -66,7 +67,18 @@ async function main() {
   } catch (error) {
     console.error(error);
     alert(error);
+  } finally {
+    removeLoadingModal();
   }
 }
-
+function createLoadingModal() {
+  const loadingModal = document.createElement("div");
+  loadingModal.classList.add("loading-modal");
+  loadingModal.innerHTML = loadingHTML;
+  document.body.appendChild(loadingModal);
+}
+function removeLoadingModal() {
+  const loadingModal = document.querySelector(".loading-modal");
+  loadingModal.remove();
+}
 main();

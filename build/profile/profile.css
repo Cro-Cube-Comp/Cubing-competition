@@ -5,6 +5,17 @@ body {
   background-attachment: fixed;
   color: white;
 }
+.loading-modal {
+  position: fixed; /* Ensures the modal stays in place when scrolling */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .profile-container {
   margin-top: 1rem;
   display: flex;
