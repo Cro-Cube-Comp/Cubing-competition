@@ -62,7 +62,8 @@ export async function deleteUserById(id) {
     };
     const response = await fetch(`${url}/users/${id}`, body);
     const data = await response.json();
-    if (data.ok) {
+
+    if (response.ok) {
       return { success: true, data, response };
     }
     return {
