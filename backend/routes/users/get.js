@@ -10,7 +10,7 @@ router.get("/:userId", async (req, res) => {
       });
     }
     // Fetch all users from the database
-    const user = await getUserById(userId, "username competitions");
+    const user = await getUserById(userId, "username competitions group role");
 
     // Send the response array
     res.status(200).json(user);
