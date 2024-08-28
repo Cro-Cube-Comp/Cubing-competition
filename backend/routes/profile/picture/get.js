@@ -5,6 +5,7 @@ const path = require("path");
 const {
   allowedPfpExtensions,
 } = require("../../../config/allowedPfpExtensions");
+const User = require("../../../Models/user");
 async function sendProfilePicture(req, res, id) {
   try {
     let pfpPath = null;
@@ -33,7 +34,18 @@ async function sendProfilePicture(req, res, id) {
 }
 
 router.get("/:id", async (req, res) => {
-  sendProfilePicture(req, res, req.params.id);
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "User not found", userNotFound: true });
+    }
+    sendProfilePicture(req, res, req.params.id);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error while sending profile picture" });
+  }
 });
 
 module.exports = router;
