@@ -24,15 +24,19 @@ body {
   display: flex;
   justify-content: center;
 }
-.username-input-container,
 .password-input-container {
   width: 100%;
   height: auto;
 }
-.change-password-container .username,
+.change-password-container,
 .change-password-container .new-password {
   width: 80%;
 }
+.username {
+  min-width: 135px;
+  cursor: pointer;
+}
+
 button {
   padding: 5px 7px;
   width: max(25%, fit-content);

@@ -10,7 +10,7 @@ const changePasswordSubmitBtn = document.querySelector(
   ".change-password-submit-btn"
 );
 const newPasswordInput = document.querySelector(".new-password");
-const usernameInput = document.querySelector(".username");
+const usernameSelect = document.querySelector(".username");
 
 async function getCompetitionById(id) {
   const allCompetitions = await getCompetitions(true);
@@ -75,7 +75,7 @@ changePasswordSubmitBtn.addEventListener("click", async () => {
   changePasswordSubmitBtn.disabled = true;
   const prevHtml = changePasswordSubmitBtn.innerHTML;
   changePasswordSubmitBtn.innerHTML = loadingHTML;
-  const username = usernameInput.value;
+  const username = usernameSelect.value;
   const password = newPasswordInput.value;
   const changePasswordOutput = await changePassword(username, password);
   changePasswordSubmitBtn.innerHTML = prevHtml;
@@ -101,5 +101,27 @@ competitions.forEach((competition) => {
   option.value = competition._id;
   option.innerText = competition.name;
   compResultsSelect.appendChild(option);
+});
+async function getUsers() {
+  const usersURL = `${url}/users`;
+  const data = await fetch(usersURL);
+  return await data.json();
+}
+const users = await getUsers();
+users.sort((a, b) => {
+  // sort alphabetically
+  if (a.username < b.username) {
+    return -1;
+  }
+  if (a.username > b.username) {
+    return 1;
+  }
+  return 0;
+});
+users.forEach((user) => {
+  const option = document.createElement("option");
+  option.value = user.username;
+  option.textContent = user.username;
+  usernameSelect.appendChild(option);
 });
 tokenValid(true);
