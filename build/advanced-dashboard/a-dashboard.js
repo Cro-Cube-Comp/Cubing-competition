@@ -33,19 +33,25 @@ async function downloadFile(url, fileName) {
 
 getResultsBtn.addEventListener("click", getResults);
 async function getResults() {
+  const previousHtml = getResultsBtn.innerHTML;
   getResultsBtn.disabled = true;
+  getResultsBtn.innerHTML = loadingHTML;
   const competition = await getCompetitionById(compResultsSelect.value);
   const competitionName = competition.name;
   const resultsUrl = `${url}/results?competitionId=${compResultsSelect.value}`;
   await downloadFile(resultsUrl, `${competitionName} - rezultati`);
+  getResultsBtn.innerHTML = previousHtml;
   getResultsBtn.disabled = false;
 }
 
 backupsBtn.addEventListener("click", getBackups);
 async function getBackups() {
+  const previousHtml = backupsBtn.innerHTML;
   backupsBtn.disabled = true;
+  backupsBtn.innerHTML = loadingHTML;
   const backupsUrl = `${url}/backup`;
   await downloadFile(backupsUrl, "backups");
+  backupsBtn.innerHTML = previousHtml;
   backupsBtn.disabled = false;
 }
 async function changePassword(username, newPassword) {
