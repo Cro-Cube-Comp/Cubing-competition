@@ -1,10 +1,19 @@
 import { tokenValid, addToken } from "../Scripts/credentials.js";
 import { url, loadingHTML } from "../Scripts/variables.js";
 const compResultsSelect = document.querySelector("#comp-results-select");
-function downloadFile(url, fileName) {
+
+async function getCompetitionById(id) {
+  const allCompetitions = await getCompetitions(true);
+  return allCompetitions.find((competition) => competition._id === id);
+}
+async function downloadFile(url, fileName) {
   if (!url || !fileName) return -1;
   const anchor = document.createElement("a");
-  anchor.href = url;
+  const data = await fetch(url, {
+    headers: addToken({}),
+  });
+  const blob = await data.blob();
+  anchor.href = URL.createObjectURL(blob);
   anchor.download = fileName;
   document.body.appendChild(anchor);
   anchor.click();
@@ -14,20 +23,20 @@ function downloadFile(url, fileName) {
 
 const getResultsBtn = document.querySelector(".results");
 getResultsBtn.addEventListener("click", getResults);
-function getResults() {
+async function getResults() {
   getResultsBtn.disabled = true;
-  const resultsUrl = addToken(
-    `${url}/results?competitionId=${compResultsSelect.value}`,
-  );
-  downloadFile(resultsUrl, "results"); // You can specify the desired file name
+  const competition = await getCompetitionById(compResultsSelect.value);
+  const competitionName = competition.name;
+  const resultsUrl = `${url}/results?competitionId=${compResultsSelect.value}`;
+  await downloadFile(resultsUrl, `${competitionName} - rezultati`);
   getResultsBtn.disabled = false;
 }
 const backupsBtn = document.querySelector(".backups");
 backupsBtn.addEventListener("click", getBackups);
-function getBackups() {
+async function getBackups() {
   backupsBtn.disabled = true;
-  const backupsUrl = addToken(`${url}/backup`);
-  downloadFile(backupsUrl, "backups"); // You can specify the desired file name
+  const backupsUrl = `${url}/backup`;
+  await downloadFile(backupsUrl, "backups");
   backupsBtn.disabled = false;
 }
 async function changePassword(username, newPassword) {
@@ -47,7 +56,7 @@ async function changePassword(username, newPassword) {
   return response;
 }
 const changePasswordSubmitBtn = document.querySelector(
-  ".change-password-submit-btn",
+  ".change-password-submit-btn"
 );
 const newPasswordInput = document.querySelector(".new-password");
 const usernameInput = document.querySelector(".username");
