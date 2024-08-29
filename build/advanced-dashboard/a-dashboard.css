@@ -1,5 +1,7 @@
 body {
   background: var(--background);
+  background-attachment: fixed;
+  color: white;
 }
 .options {
   padding: 20px;

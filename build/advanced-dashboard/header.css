@@ -1,31 +1,58 @@
-/* Style the header */
-.header {
-  padding: 10px 16px;
-  background: rgb(24, 24, 24);
-  color: #f1f1f1;
+.header-container {
+  width: 100%;
   display: flex;
+  justify-content: center;
   align-items: center;
+  margin-top: 10px;
 }
-.header h1 {
-  display: inline-block;
+.header {
+  width: 95vw;
+  background: var(--header-background-color);
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  border-radius: 30px;
+  padding: 1vw;
 }
-
-/* Page content */
-.content {
-  padding: 16px;
+@media screen and (max-width: 350px) {
+  .header {
+    border-radius: 20px;
+  }
 }
-.logo {
-  width: 20px;
-  margin-right: 20px;
+.logo-title-container {
+  height: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 1vw;
+}
+@media screen and (max-width: 300px) {
+  .header {
+    justify-content: center;
+  }
+  .logo-title-container {
+    row-gap: 10px;
+  }
 }
 .logo-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
 }
-.naslov-container {
+.logo-anchor {
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.naslov {
-  display: inline-block;
+.logo {
+  width: 24px;
+}
+.title-container {
+  width: 100%;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+.title {
+  margin: 0;
 }
