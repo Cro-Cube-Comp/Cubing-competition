@@ -1,6 +1,16 @@
 import { tokenValid, addToken } from "../Scripts/credentials.js";
 import { url, loadingHTML } from "../Scripts/variables.js";
+
 const compResultsSelect = document.querySelector("#comp-results-select");
+
+const backupsBtn = document.querySelector(".backups");
+const getResultsBtn = document.querySelector(".results");
+
+const changePasswordSubmitBtn = document.querySelector(
+  ".change-password-submit-btn"
+);
+const newPasswordInput = document.querySelector(".new-password");
+const usernameInput = document.querySelector(".username");
 
 async function getCompetitionById(id) {
   const allCompetitions = await getCompetitions(true);
@@ -21,7 +31,6 @@ async function downloadFile(url, fileName) {
   return 1;
 }
 
-const getResultsBtn = document.querySelector(".results");
 getResultsBtn.addEventListener("click", getResults);
 async function getResults() {
   getResultsBtn.disabled = true;
@@ -31,7 +40,7 @@ async function getResults() {
   await downloadFile(resultsUrl, `${competitionName} - rezultati`);
   getResultsBtn.disabled = false;
 }
-const backupsBtn = document.querySelector(".backups");
+
 backupsBtn.addEventListener("click", getBackups);
 async function getBackups() {
   backupsBtn.disabled = true;
@@ -55,11 +64,7 @@ async function changePassword(username, newPassword) {
   console.log(data.status);
   return response;
 }
-const changePasswordSubmitBtn = document.querySelector(
-  ".change-password-submit-btn"
-);
-const newPasswordInput = document.querySelector(".new-password");
-const usernameInput = document.querySelector(".username");
+
 changePasswordSubmitBtn.addEventListener("click", async () => {
   changePasswordSubmitBtn.disabled = true;
   const prevHtml = changePasswordSubmitBtn.innerHTML;
@@ -71,7 +76,6 @@ changePasswordSubmitBtn.addEventListener("click", async () => {
   changePasswordSubmitBtn.disabled = false;
   document.querySelector(".message").innerText = changePasswordOutput.message;
 });
-tokenValid(true);
 async function getCompetitions(parseAsJson = false) {
   try {
     const allCompetitionsResponse = await fetch(`${url}/competitions`);
@@ -92,3 +96,4 @@ competitions.forEach((competition) => {
   option.innerText = competition.name;
   compResultsSelect.appendChild(option);
 });
+tokenValid(true);
