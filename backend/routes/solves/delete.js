@@ -36,7 +36,7 @@ router.delete("/:userId", verifyToken, isAdmin, async (req, res) => {
       compToDelete,
       eventToDelete,
       roundToDelete,
-      solveToDelete
+      solveToDelete,
     );
     if (!result.success) {
       throw new Error(result);
@@ -59,7 +59,7 @@ async function deleteSolve(
   competitionId,
   eventName,
   roundNumber,
-  solveNumber
+  solveNumber,
 ) {
   try {
     if (!user.competitions) {
@@ -70,7 +70,7 @@ async function deleteSolve(
     });
     if (!comp) {
       console.log(
-        `An attempt was made to delete a solve in a competition with ID ${competitionId} that was not found in user ${user._id}.`
+        `An attempt was made to delete a solve in a competition with ID ${competitionId} that was not found in user ${user._id}.`,
       );
       return {
         status: 400,
@@ -82,7 +82,7 @@ async function deleteSolve(
     });
     if (!eventToDelete) {
       console.log(
-        `An attempt was made to delete a solve in a competition with ID ${competitionId} and event ${eventName} that was not found in user ${user._id}. Competition and user were found while event was not.`
+        `An attempt was made to delete a solve in a competition with ID ${competitionId} and event ${eventName} that was not found in user ${user._id}. Competition and user were found while event was not.`,
       );
       return {
         status: 400,
@@ -92,7 +92,7 @@ async function deleteSolve(
     let roundToDelete = eventToDelete.rounds[roundNumber - 1];
     if (!roundToDelete) {
       console.log(
-        `An attempt was made to delete a solve in a competition with ID ${competitionId} and event ${eventName} that was not found in user ${user._id}. Competition, user and event were found while round with number ${roundNumber} was not.`
+        `An attempt was made to delete a solve in a competition with ID ${competitionId} and event ${eventName} that was not found in user ${user._id}. Competition, user and event were found while round with number ${roundNumber} was not.`,
       );
       return {
         status: 400,
@@ -121,7 +121,7 @@ function checkTypes(
   roundToDelete,
   eventToDelete,
   compToDelete,
-  res
+  res,
 ) {
   if (typeof roundToDelete !== "number") {
     res.status(400).json({ message: "Runda za brisanje treba biti broj." });

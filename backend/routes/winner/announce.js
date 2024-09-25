@@ -26,7 +26,7 @@ router.post("/announce", verifyToken, isAdmin, async (req, res) => {
       allWinners,
       competitionId,
       group,
-      winnerId
+      winnerId,
     );
     if (sameWinner) {
       // If winner exists in the same group, and the existing winner has the same id, then delete the existing winner
@@ -37,7 +37,7 @@ router.post("/announce", verifyToken, isAdmin, async (req, res) => {
       allWinners,
       competitionId,
       group,
-      winnerId
+      winnerId,
     );
     if (differentWinner) {
       // If winner exists in the same group, but the existing winner has a different id, then update the existing winner
@@ -72,7 +72,7 @@ function checkIfWinnerExistsAndIsDifferent(
   allWinners,
   competitionId,
   group,
-  winnerId
+  winnerId,
 ) {
   const differentWinner = allWinners.find((winner) => {
     if (winner.competitionId.equals(competitionId) && winner.group === group) {
