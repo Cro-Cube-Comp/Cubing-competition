@@ -9,7 +9,7 @@ function getWinnersFromRound(users, competitionId, eventName, roundIndex) {
   users.forEach((user) => {
     // Find the specific competition for this user
     const competition = user.competitions.find((comp) =>
-      comp.competitionId.equals(competitionId)
+      comp.competitionId.equals(competitionId),
     );
     if (!competition) return; // If competition is not found, skip this user
 
@@ -62,7 +62,7 @@ async function getWinners(competitions, users, format = false) {
           users,
           competition._id,
           event.name,
-          i
+          i,
         );
 
         // Append the winners of the round to the event results
@@ -77,7 +77,7 @@ async function getWinners(competitions, users, format = false) {
   // Write the JSON results to a file
   await writeFile(
     path.join(__dirname, "competition_results.json"),
-    jsonResults
+    jsonResults,
   );
   return results;
 }
