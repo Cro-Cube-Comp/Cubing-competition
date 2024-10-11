@@ -1,3 +1,9 @@
+function matchesPrLink(origin) {
+    const regex = /^https:\/\/cubing-competition-nextjs-pr-\d+\.onrender\.com$/;
+
+    return regex.test(origin);
+}
+
 // Define the list of allowed origins
 const allowedOrigins = [
     "http://localhost:2500",
@@ -10,7 +16,11 @@ const allowedOrigins = [
 // CORS middleware function to check the origin against the allowed list
 const corsOptions = {
     origin: function (origin, callback) {
-        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        if (
+            allowedOrigins.indexOf(origin) !== -1 ||
+            !origin ||
+            matchesPrLink(origin)
+        ) {
             callback(null, true);
         } else {
             callback(new Error("Not allowed by CORS"));
