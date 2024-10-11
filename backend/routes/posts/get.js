@@ -1,6 +1,5 @@
 const express = require("express");
 const Post = require("../../Models/post");
-const cache = require("../../middleware/cache");
 const router = express.Router();
 const { getUsernameById } = require("../../functions/getUsernameById");
 router.get("/", async (req, res) => {

@@ -1,9 +1,8 @@
 const express = require("express");
 const User = require("../../Models/user");
-const cache = require("../../middleware/cache");
 const router = express.Router();
 // Route handler for getting live solves
-router.get("/", cache(5), async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const lastUpdated = new Intl.DateTimeFormat("fr-FR", {
       hour: "2-digit",
