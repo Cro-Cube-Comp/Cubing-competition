@@ -22,33 +22,33 @@ const app = express();
 // Use JSON middleware to parse the request body
 app.use(express.json());
 if (isRateLimitingEnabled) {
-  app.set("trust proxy", 1);
-  app.use(generalLimiter);
+    app.set("trust proxy", 1);
+    app.use(generalLimiter);
 } else {
-  console.warn(
-    "Rate limiting is disabled. It's recommended to enable it. Use only for development purposes.",
-  );
+    console.warn(
+        "Rate limiting is disabled. It's recommended to enable it. Use only for development purposes."
+    );
 }
 if (isCorsEnabled) {
-  app.use(cors(corsOptions));
+    app.use(cors(corsOptions));
 } else {
-  console.warn(
-    "CORS is disabled. It's recommended to enable it. Use only for development purposes.",
-  );
+    console.warn(
+        "CORS is disabled. It's recommended to enable it. Use only for development purposes."
+    );
 }
 const compressionOptions = {
-  filter: compressionFilter,
+    filter: compressionFilter,
 };
 app.use(compression(compressionOptions));
 // Connect to the MongoDB database using mongoose
 console.log("Trying to connect to mongoDB...");
 try {
-  console.time("Connect to MongoDB");
-  await mongoose.connect(process.env.MONGO_URI);
-  console.timeEnd("Connect to MongoDB");
+    console.time("Connect to MongoDB");
+    await mongoose.connect(process.env.MONGO_URI);
+    console.timeEnd("Connect to MongoDB");
 } catch (error) {
-  console.error("Failed to connect to MongoDB: \n" + error);
-  process.exit(1);
+    console.error("Failed to connect to MongoDB: \n" + error);
+    process.exit(1);
 }
 console.log("Connected to MongoDB");
 console.time("Routes");
@@ -93,3 +93,17 @@ console.timeEnd("Routes");
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+import Competition from "./Models/competition";
+const oldComp = new Competition({
+    _id: "668fd31dfa72a344cf016d1b",
+    name: "Test",
+    events: [
+        {
+            name: "3x3",
+            rounds: 3,
+        },
+    ],
+    date: String(new Date()),
+});
+await oldComp.save();
