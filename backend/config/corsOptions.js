@@ -11,7 +11,7 @@ const allowedOrigins = [
     "https://cro-cube-comp.github.io",
     "https://cubing-competition-nextjs.onrender.com",
     "https://cubing-competition-nextjs-beta.onrender.com",
-    "https://cubing-competition-nextjs.vercel.app/"
+    "https://cubing-competition-nextjs.vercel.app",
 ];
 
 // CORS middleware function to check the origin against the allowed list
